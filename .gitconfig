@@ -2,3 +2,5 @@
 	email = jaredconnor301@gmail.com
   name = Jared Connor
 
+[core]
+	filemode = false
