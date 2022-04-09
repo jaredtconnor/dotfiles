@@ -144,3 +144,9 @@ zstyle ':completion:*:messages' format '%d'
 zstyle ':completion:*:warnings' format "$fg[red]No matches for:$reset_color %d"
 zstyle ':completion:*:corrections' format '%B%d (errors: %e)%b'
 zstyle ':completion:*' group-name ''
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/jaredconnor/.google_cloud/path.zsh.inc' ]; then . '/Users/jaredconnor/.google_cloud/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/jaredconnor/.google_cloud/completion.zsh.inc' ]; then . '/Users/jaredconnor/.google_cloud/completion.zsh.inc'; fi
