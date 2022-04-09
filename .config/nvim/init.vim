@@ -20,6 +20,9 @@ Plug 'morhetz/gruvbox'
 Plug 'tomasr/molokai'
 Plug 'navarasu/onedark.nvim'
 
+
+Plug 'nvim-lualine/lualine.nvim'
+Plug 'kyazdani42/nvim-web-devicons'
 " Initialize plugin system
 call plug#end()
 
