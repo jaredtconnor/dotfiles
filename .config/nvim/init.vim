@@ -13,7 +13,7 @@ Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 Plug 'prabirshrestha/vim-lsp'
 Plug 'ctrlpvim/ctrlp.vim' " fuzzy find files
 Plug 'scrooloose/nerdcommenter'
-Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
+Plug 'prettier/vim-rettier', { 'do': 'yarn install --frozen-lockfile --production' }
 Plug 'christoomey/vim-tmux-navigator'
 
 Plug 'morhetz/gruvbox'

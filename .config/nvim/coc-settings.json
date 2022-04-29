@@ -5,7 +5,8 @@
     "javascript",
     "javascriptreact",
     "typescript",
-    "typescriptreact"
+    "typescriptreact",
+    "python"
   ],
   "coc.preferences.formatOnSaveFiletypes": [
     "javascript",
@@ -13,10 +14,12 @@
     "typescript",
     "typescriptreact",
     "json",
-    "graphql"
+    "graphql",
+    "python"
   ],
   "tsserver.formatOnType": true,
   "coc.preferences.formatOnType": true,
   "clangd.enabled": true,
-  "clangd.checkUpdates": true
+  "clangd.checkUpdates": true,
+  "diagnostic.checkCurrentLine": true
 }
