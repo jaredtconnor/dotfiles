@@ -1,13 +1,6 @@
 {
   "eslint.autoFixOnSave": true,
   "suggest.noselect": false,
-  "eslint.filetypes": [
-    "javascript",
-    "javascriptreact",
-    "typescript",
-    "typescriptreact",
-    "python"
-  ],
   "coc.preferences.formatOnSaveFiletypes": [
     "javascript",
     "javascriptreact",
@@ -21,5 +14,8 @@
   "coc.preferences.formatOnType": true,
   "clangd.enabled": true,
   "clangd.checkUpdates": true,
-  "diagnostic.checkCurrentLine": true
+  "diagnostic.checkCurrentLine": true,
+  "python.venvPath": "${env:HOME}/.pyenv/versions",
+  "python.formatting.provider": "black",
+  "python.formatting.blackPath": "${env:HOME}/.pyenv/versions/coc/bin/black"
 }

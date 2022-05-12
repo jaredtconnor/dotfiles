@@ -13,13 +13,13 @@ Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 Plug 'prabirshrestha/vim-lsp'
 Plug 'ctrlpvim/ctrlp.vim' " fuzzy find files
 Plug 'scrooloose/nerdcommenter'
-Plug 'prettier/vim-rettier', { 'do': 'yarn install --frozen-lockfile --production' }
 Plug 'christoomey/vim-tmux-navigator'
 
 Plug 'morhetz/gruvbox'
 Plug 'tomasr/molokai'
 Plug 'navarasu/onedark.nvim'
 
+Plug 'pappasam/coc-jedi', { 'do': 'yarn install --frozen-lockfile && yarn build', 'branch': 'main' }
 
 Plug 'nvim-lualine/lualine.nvim'
 Plug 'kyazdani42/nvim-web-devicons'
@@ -31,6 +31,7 @@ nmap <C-n> :NERDTreeToggle<CR>
 vmap ++ <plug>NERDCommenterToggle
 nmap ++ <plug>NERDCommenterToggle
 set mouse=a
+set wildmode=longest,full
 
 " open NERDTree automatically
 " autocmd StdinReadPre * let s:std_in=1
