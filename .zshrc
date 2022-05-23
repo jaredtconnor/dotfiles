@@ -150,3 +150,5 @@ if [ -f '/Users/jaredconnor/.google_cloud/path.zsh.inc' ]; then . '/Users/jaredc
 
 # The next line enables shell command completion for gcloud.
 if [ -f '/Users/jaredconnor/.google_cloud/completion.zsh.inc' ]; then . '/Users/jaredconnor/.google_cloud/completion.zsh.inc'; fi
+
+export PATH="$HOME/.poetry/bin:$PATH"

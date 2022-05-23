@@ -5,10 +5,10 @@ Plug 'glepnir/galaxyline.nvim' , {'branch': 'main'}
 Plug 'ryanoasis/vim-devicons' " vimscript
 Plug 'rhysd/vim-clang-format'
 Plug 'vim-syntastic/syntastic'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'jackguo380/vim-lsp-cxx-highlight'
 Plug 'scrooloose/nerdtree'
 Plug 'Xuyuanp/nerdtree-git-plugin'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 Plug 'prabirshrestha/vim-lsp'
 Plug 'ctrlpvim/ctrlp.vim' " fuzzy find files
