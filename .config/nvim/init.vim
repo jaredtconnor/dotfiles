@@ -14,6 +14,8 @@ Plug 'prabirshrestha/vim-lsp'
 Plug 'ctrlpvim/ctrlp.vim' " fuzzy find files
 Plug 'scrooloose/nerdcommenter'
 Plug 'christoomey/vim-tmux-navigator'
+Plug 'kyazdani42/nvim-web-devicons'
+Plug 'romgrk/barbar.nvim'
 
 Plug 'morhetz/gruvbox'
 Plug 'tomasr/molokai'
