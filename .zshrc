@@ -126,6 +126,16 @@ if type brew &>/dev/null; then
   compinit
 fi
 
+
+# Pyenv Location
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+export PYENV_VIRTUALENV_DISABLE_PROMPT=1
+
+eval "$(pyenv init --path)"
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
+
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
@@ -152,3 +162,5 @@ if [ -f '/Users/jaredconnor/.google_cloud/path.zsh.inc' ]; then . '/Users/jaredc
 if [ -f '/Users/jaredconnor/.google_cloud/completion.zsh.inc' ]; then . '/Users/jaredconnor/.google_cloud/completion.zsh.inc'; fi
 
 export PATH="$HOME/.poetry/bin:$PATH"
+
+
