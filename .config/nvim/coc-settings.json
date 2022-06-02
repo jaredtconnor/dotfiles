@@ -16,6 +16,9 @@
   "clangd.checkUpdates": true,
   "diagnostic.checkCurrentLine": true,
   "pyright.enable": true,
+
+  // Python setup
+  "python.pythonPath": "${env:HOME}/.pyenv/versions/coc/bin/python",
   "python.venvPath": "${env:HOME}/.pyenv/versions",
   "python.formatting.provider": "black",
   "python.formatting.blackPath": "${env:HOME}/.pyenv/versions/coc/bin/black"
