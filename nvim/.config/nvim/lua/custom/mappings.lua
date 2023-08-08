@@ -6,17 +6,15 @@ M.general = {
     ["<C-l>"] = { "<cmd> TmuxNavigateRight<CR>", "window right" },
     ["<C-j>"] = { "<cmd> TmuxNavigateDown<CR>", "window down" },
     ["<C-k>"] = { "<cmd> TmuxNavigateUp<CR>", "window up" },
-    ["<leader>gg"] = { "<cmd>LazyGit<CR>", "LazyGit Panel" },
+
+    ["<leader>gg"] = { "<cmd> LazyGit<CR>", "LazyGit" },
   }
 }
 
 M.dap = {
   plugin = true,
   n = {
-    ["<leader>db"] = {
-      "<cmd> DapToggleBreakpoint <CR>",
-      "Add breakpoint at line"
-    },
+    ["<leader>db"] = { "<cmd> DapToggleBreakpoint <CR>" },
     ["<leader>dus"] = {
       function ()
         local widgets = require('dap.ui.widgets');
@@ -31,7 +29,7 @@ M.dap = {
 M.dap_go = {
   plugin = true,
   n = {
-    ["<leader>dgt"] = {
+    ["<leader>dgr"] = {
       function()
         require('dap-go').debug_test()
       end,
