@@ -2,8 +2,8 @@
   defaultBranch = main 
 
 [user]
-	email = jaredconnor301@gmail.com
 	name = Jared Connor
+	email = jaredconnor301@gmail.com
 
 [core]
 	filemode = false
@@ -11,11 +11,10 @@
   eol = lf
    
 [safe]
-	directory = %(prefix)/mnt/personal-shared/
 	directory = *
 
 [pack]
 	windowMemory = 32m
 
 [credential]
-	helper = /mnt/c/Program\\ Files/Git/mingw64/bin/git-credential-manager-core.exe
+	helper = cache
