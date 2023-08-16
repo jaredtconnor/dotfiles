@@ -21,6 +21,7 @@ return {
 
   -- Themes
   { import = "astrocommunity.colorscheme.catppuccin" },
+  { import = "astrocommunity.colorscheme.nightfox-nvim" },
 
   -- Tooles
   { import = "astrocommunity.completion.copilot-lua-cmp" },
