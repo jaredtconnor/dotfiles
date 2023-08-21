@@ -29,6 +29,11 @@ local plugins = {
         "gopls",
         "rust-analyzer",
         "python-lsp-server",
+        "black",
+        "debugpy",
+        "mypy",
+        "ruff",
+        "pyright",
       },
     },
   },
@@ -52,7 +57,7 @@ local plugins = {
   },
   {
     "jose-elias-alvarez/null-ls.nvim",
-    ft = "go",
+    ft = {"go", "python"},
     opts = function()
       return require "custom.configs.null-ls"
     end,
@@ -71,6 +76,19 @@ local plugins = {
       require("dap-go").setup(opts)
       require("core.utils").load_mappings("dap_go")
     end
+  },
+  {
+    "mfussenegger/nvim-dap-python",
+    ft = "python",
+    dependencies = {
+      "mfussenegger/nvim-dap",
+      "rcarriga/nvim-dap-ui",
+    },
+    config = function(_, opts)
+      local path = "~/.local/share/nvim/mason/packages/debugpy/venv/bin/python"
+      require("dap-python").setup(path)
+      require("core.utils").load_mappings("dap_python")
+    end,
   },
   {
     "olexsmir/gopher.nvim",
