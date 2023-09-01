@@ -1,48 +1,42 @@
-local plugins = {
-  {
-    "christoomey/vim-tmux-navigator",
-    lazy = false,
-  }, 
-  {
-    "zbirenbaum/copilot.lua",
-    cmd="Copilot",
-    event="InsertEnter",
-    lazy = false,
-    opts = function ()
-      return require "custom.configs.copilot"
-    end,
-    config = function(_, opts)
-      require("copilot").setup(opts)
-    end
-  },
-  {
-    "anuvyklack/pretty-fold.nvim",
-    lazy = false,
-    config = function()
-      require("pretty-fold").setup()
-    end
-  },
+local overrides = require("custom.configs.overrides")
+
+local plugins = { 
+
+  -- override default plugins
+    -- override plugin configs
   {
     "williamboman/mason.nvim",
-    opts = {
-      ensure_installed = {
-        "gopls",
-        "rust-analyzer",
-        "python-lsp-server",
-        "black",
-        "debugpy",
-        "mypy",
-        "ruff",
-        "pyright",
-      },
-    },
+    opts = overrides.mason
   },
+
+   {
+    "nvim-treesitter/nvim-treesitter",
+    opts = overrides.treesitter,
+  },
+ 
+
+  {
+    "nvim-tree/nvim-tree.lua",
+    opts = overrides.nvimtree,
+  },
+
+  -- lsp settings
+
   {
     "neovim/nvim-lspconfig",
+    dependencies = {
+      -- format & linting
+      {
+        "jose-elias-alvarez/null-ls.nvim",
+        config = function()
+          require "custom.configs.null-ls"
+        end,
+      },
+    },
     config = function()
       require "plugins.configs.lspconfig"
       require "custom.configs.lspconfig"
-    end,
+    end, -- Override to setup mason-lspconfig
   },
   {
     "simrat39/rust-tools.nvim",
@@ -54,13 +48,6 @@ local plugins = {
     config = function(_, opts)
       require('rust-tools').setup(opts)
     end
-  },
-  {
-    "jose-elias-alvarez/null-ls.nvim",
-    ft = {"go", "python"},
-    opts = function()
-      return require "custom.configs.null-ls"
-    end,
   },
   {
     "mfussenegger/nvim-dap",
@@ -125,6 +112,30 @@ local plugins = {
     lazy = false,
     config = function(_, opts)
       require("nvim-dap-virtual-text").setup()
+    end
+  },
+  {
+    "christoomey/vim-tmux-navigator",
+    lazy = false,
+  },
+
+  {
+    "zbirenbaum/copilot.lua",
+    cmd="Copilot",
+    event="InsertEnter",
+    lazy = false,
+    opts = function ()
+      return require "custom.configs.copilot"
+    end,
+    config = function(_, opts)
+      require("copilot").setup(opts)
+    end
+  },
+  {
+    "anuvyklack/pretty-fold.nvim",
+    lazy = false,
+    config = function()
+      require("pretty-fold").setup()
     end
   },
   {
