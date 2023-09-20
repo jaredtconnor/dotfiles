@@ -12,6 +12,7 @@ M.treesitter = {
 		"c",
 		"markdown",
 		"markdown_inline",
+    "svelte"
 	},
 	indent = {
 		enable = true,
@@ -48,8 +49,10 @@ M.mason = {
 		"gopls",
 
 		-- rust development
-
 		"rust-analyzer",
+
+		-- svelt development 
+    "svelte-language-server"
 	},
 }
 
