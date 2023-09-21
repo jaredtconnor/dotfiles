@@ -40,6 +40,18 @@ lspconfig.terraformls.setup({
 lspconfig.svelte.setup({
 	on_attach = on_attach,
 	capabilities = capabilities,
+	cmd = { "serveserver", "--stdio" },
 	filetypes = { "svelte" },
+	root_dir = util.root_pattern("package.json", ".git"),
+})
 
+lspconfig.astro.setup({
+	on_attach = on_attach,
+	capabilities = capabilities,
+	cmd = { "astro-ls", "--stdio" },
+	filetypes = { "astro" },
+	{
+		typescript = {},
+	},
+	root_dir = util.root_pattern("package.json", "tsconfig.json", "jsconfig.json", ".git"),
 })

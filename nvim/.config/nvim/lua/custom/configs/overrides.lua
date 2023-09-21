@@ -2,6 +2,7 @@ local M = {}
 
 M.treesitter = {
 	ensure_installed = {
+		"astro",
 		"vim",
 		"lua",
 		"html",
@@ -12,7 +13,7 @@ M.treesitter = {
 		"c",
 		"markdown",
 		"markdown_inline",
-    "svelte"
+		"svelte",
 	},
 	indent = {
 		enable = true,
@@ -32,6 +33,7 @@ M.mason = {
 		"typescript-language-server",
 		"deno",
 		"prettier",
+		"astro-language-server",
 
 		-- c/cpp stuff
 		"clangd",
@@ -51,8 +53,8 @@ M.mason = {
 		-- rust development
 		"rust-analyzer",
 
-		-- svelt development 
-    "svelte-language-server"
+		-- svelt development
+		"svelte-language-server",
 	},
 }
 
