@@ -50,15 +50,24 @@ lspconfig.astro.setup({
 	capabilities = capabilities,
 	cmd = { "astro-ls", "--stdio" },
 	filetypes = { "astro" },
-	{
-		typescript = {},
-	},
 	root_dir = util.root_pattern("package.json", "tsconfig.json", "jsconfig.json", ".git"),
 })
 
 lspconfig.html.setup({
 	on_attach = on_attach,
 	capabilities = capabilities,
+})
+
+lspconfig.tsserver.setup({
+
+	on_attach = on_attach,
+	capabilities = capabilities,
+	cmd = { "typescript-language-server", "--stdio" },
+	filetypes = { "javascript", "javascriptreact", "javascript.jsx", "typescript", "typescriptreact", "typescript.tsx" },
+	init_option = {
+		hostInfo = "neovim",
+	},
+	root_dir = util.root_pattern("package.json", "tsconfig.json", "jsconfig.json", ".git"),
 })
 
 lspconfig.tailwindcss.setup({
