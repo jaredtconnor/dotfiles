@@ -67,7 +67,6 @@ plugins=(
 	git 
 	zsh-syntax-highlighting 
 	zsh-autosuggestions 
-	zsh-nvm
   z
 )
 
@@ -101,8 +100,6 @@ eval "$(starship init zsh)"
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 
 # Support for two Homebrew installations
 export PATH=/opt/homebrew/bin:/usr/local/bin:$PATH
@@ -162,19 +159,9 @@ export PATH=$PATH:$GOPATH/bin
 ######################################
 LS_COLORS=$LS_COLORS:'ow=1;34'; export LS_COLORS
 
-# Setup for lvim
-export PATH="$HOME/.local/bin":$PATH 
-export EDITOR='lvim'
 
-# pnpm
-export PNPM_HOME="/Users/jaredconnor/Library/pnpm"
-case ":$PATH:" in
-  *":$PNPM_HOME:"*) ;;
-  *) export PATH="$PNPM_HOME:$PATH" ;;
-esac
-# pnpm end  
-
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
-
-
+export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
