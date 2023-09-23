@@ -1,22 +1,16 @@
 local on_attach = require("plugins.configs.lspconfig").on_attach
 local capabilities = require("plugins.configs.lspconfig").capabilities
-local config = require("plugins.configs.lspconfig")
 
 local lspconfig = require("lspconfig")
 local util = require("lspconfig/util")
 
 local function organize_imports()
-  local params {
-    command = "_typescript.organizeImports",
-    arguments = {vim.api.nvim_buf_get_name(0)},
-  } 
-  
-  vim.lsp.buf.execute_command(params)
-  
+	local params = {
+		command = "_typescript.organizeImports",
+		arguments = { vim.api.nvim_buf_get_name(0) },
+	}
+	vim.lsp.buf.execute_command(params)
 end
-
-
-
 
 lspconfig.pyright.setup({
 	on_attach = on_attach,
@@ -73,96 +67,17 @@ lspconfig.html.setup({
 })
 
 lspconfig.tsserver.setup({
-
 	on_attach = on_attach,
 	capabilities = capabilities,
-	cmd = { "typescript-language-server", "--stdio" },
-	filetypes = { "javascript", "javascriptreact", "javascript.jsx", "typescript", "typescriptreact", "typescript.tsx" },
-	init_option = {
-		hostInfo = "neovim",
+	init_options = {
+		preferences = {
+			disableSuggestions = true,
+		},
 	},
-	root_dir = util.root_pattern("package.json", "tsconfig.json", "jsconfig.json", ".git"),
-})
-
-lspconfig.tailwindcss.setup({
-	on_attach = on_attach,
-	capabilities = capabilities,
-	root_dir = util.root_pattern(
-		"tailwind.config.js",
-		"tailwind.config.cjs",
-		"tailwind.config.mjs",
-		"tailwind.config.ts",
-		"postcss.config.js",
-		"postcss.config.cjs",
-		"postcss.config.mjs",
-		"postcss.config.ts",
-		"package.json",
-		"node_modules",
-		".git"
-	),
-	cmd = { "tailwindcss-language-server", "--stdio" },
-	filetypes = {
-		"aspnetcorerazor",
-		"astro",
-		"astro-markdown",
-		"blade",
-		"clojure",
-		"django-html",
-		"htmldjango",
-		"edge",
-		"eelixir",
-		"elixir",
-		"ejs",
-		"erb",
-		"eruby",
-		"gohtml",
-		"haml",
-		"handlebars",
-		"hbs",
-		"html",
-		"html-eex",
-		"heex",
-		"jade",
-		"leaf",
-		"liquid",
-		"markdown",
-		"mdx",
-		"mustache",
-		"njk",
-		"nunjucks",
-		"php",
-		"razor",
-		"slim",
-		"twig",
-		"css",
-		"less",
-		"postcss",
-		"sass",
-		"scss",
-		"stylus",
-		"sugarss",
-		"javascript",
-		"javascriptreact",
-		"reason",
-		"rescript",
-		"typescript",
-		"typescriptreact",
-		"vue",
-		"svelte",
-	},
-	settings = {
-		tailwindCSS = {
-			classAttributes = { "class", "className", "class:list", "classList", "ngClass" },
-			lint = {
-				cssConflict = "warning",
-				invalidApply = "error",
-				invalidConfigPath = "error",
-				invalidScreen = "error",
-				invalidTailwindDirective = "error",
-				invalidVariant = "error",
-				recommendedVariantOrder = "warning",
-			},
-			validate = true,
+	commands = {
+		OrganizeImports = {
+			organize_imports,
+			description = "Organize Imports",
 		},
 	},
 })

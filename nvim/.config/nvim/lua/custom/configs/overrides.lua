@@ -30,9 +30,7 @@ M.mason = {
 		-- web dev stuff
 		"css-lsp",
 		"html-lsp",
-		"typescript-language-server",
 		"deno",
-		"prettier",
 		"astro-language-server",
 		"tailwindcss-language-server",
 
@@ -56,6 +54,12 @@ M.mason = {
 
 		-- svelt development
 		"svelte-language-server",
+
+		-- node setup
+		"eslint-lsp",
+		"js-debug-adapter",
+		"prettier",
+		"typescript-language-server",
 	},
 }
 
