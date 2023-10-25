@@ -16,7 +16,6 @@ local sources = {
 	builtin.formatting.golines,
 
 	-- Python
-	builtin.formatting.black,
 	builtin.diagnostics.mypy,
 	builtin.diagnostics.ruff,
 
