@@ -10,7 +10,10 @@ local function organize_imports()
 		arguments = { vim.api.nvim_buf_get_name(0) },
 	}
 	vim.lsp.buf.execute_command(params)
-end
+end 
+
+
+
 
 lspconfig.pyright.setup({
 	on_attach = on_attach,
@@ -58,6 +61,9 @@ lspconfig.astro.setup({
 	capabilities = capabilities,
 	cmd = { "astro-ls", "--stdio" },
 	filetypes = { "astro" },
+  init_options = {
+    typescript = {}
+  },
 	root_dir = util.root_pattern("package.json", "tsconfig.json", "jsconfig.json", ".git"),
 })
 
