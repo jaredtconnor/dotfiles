@@ -88,31 +88,30 @@ while [ "$CHOICE -ne 4" ]; do
 		sudo dnf update -y
 		sudo -s dnf install -y fontconfig-font-replacements
 		sudo -s dnf install -y fontconfig-enhanced-defaults  
-    sudo dnf copr enable atim/lazygit -y
-    sudo dnf install -y lazygit
+    		sudo dnf copr enable atim/lazygit -y
+		sudo dnf install -y lazygit
 		sudo dnf update -y 
 		sudo dnf install -y iosevka-term-fonts jetbrains-mono-fonts-all gnome-shell-theme-flat-remix flat-remix-icon-theme flat-remix-theme terminus-fonts terminus-fonts-console google-noto-fonts-common mscore-fonts-all fira-code-fonts
-    cd ~/Downloads 
-    wget https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/JetBrainsMono.zip
-    wget https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/Hack.zip
+    		cd ~/Downloads 
+    		wget https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/JetBrainsMono.zip
+		wget https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/Hack.zip
 
-    # unpack fonts
-    mkdir ~/.fonts && cd ~/.fonts
-    unzip ~/Downloads/JetBrainsMono.zip
-    unzip ~/Downloads/Hack.zip 
+		# unpack fonts
+		mkdir ~/.fonts && cd ~/.fonts
+		unzip ~/Downloads/JetBrainsMono.zip
+		unzip ~/Downloads/Hack.zip 
 
-    # rebuild Fedora font cache
-    fc-cache 
-    cd ~/.dotfiles/
+		# rebuild Fedora font cache
+		fc-cache 
+		cd ~/.dotfiles/
 		notify-send "All done" --expire-time=10
-
 		;; 
   8) 
 		echo "Installing required programming languages"
-    sudo dnf install -y gcc gcc-c++ golang nodejs python
-
-		notify-send "All base programming langauges have been installed" --expire-time=10
-	9)
+    		sudo dnf install -y gcc gcc-c++ golang nodejs python
+		notify-send "All base programming langauges have been installed" --expire-time=10	 
+		;;
+   9)
 		echo "Installing neovim" 
     sudo dnf install -y neovim
 		;;
