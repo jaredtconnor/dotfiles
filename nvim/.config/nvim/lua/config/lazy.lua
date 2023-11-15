@@ -24,7 +24,18 @@ require("lazy").setup({
     { import = "lazyvim.plugins.extras.lang.tailwind" },
     { import = "lazyvim.plugins.extras.lang.yaml" },
 
+    -- Formatting
+    { import = "lazyvim.plugins.extras.formatting.prettier" },
+
+    -- Linting
+    { import = "lazyvim.plugins.extras.linting.eslint" },
+
+    -- UI
     { import = "lazyvim.plugins.extras.ui.mini-animate" },
+
+    -- extras
+    { import = "lazyvim.plugins.extras.coding.copilot" },
+    { import = "lazyvim.plugins.extras.util.mini-hipatterns" },
 
     -- import/override with your plugins
     { import = "plugins" },
