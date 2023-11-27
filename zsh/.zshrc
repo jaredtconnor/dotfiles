@@ -99,7 +99,9 @@ eval "$(starship init zsh)"
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
+#
 
+export PATH=:$HOME/.local/bin:$PATH
 
 # Support for two Homebrew installations
 export PATH=/opt/homebrew/bin:/usr/local/bin:$PATH
