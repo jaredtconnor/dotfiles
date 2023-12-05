@@ -4,6 +4,7 @@ return {
     "williamboman/mason.nvim",
     opts = function(_, opts)
       vim.list_extend(opts.ensure_installed, {
+
         "stylua",
         "selene",
         "luacheck",
@@ -11,6 +12,7 @@ return {
         "shfmt",
         "tailwindcss-language-server",
         "typescript-language-server",
+        "astro-language-server",
         "css-lsp",
       })
     end,
