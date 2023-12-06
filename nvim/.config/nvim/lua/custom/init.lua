@@ -4,6 +4,6 @@
 -- autocmd("VimResized", {
 --   pattern = "*",
 --   command = "tabdo wincmd =",
--- }) 
+-- })
 --
-vim.g.node_host_prog = os.getenv('NVM_BIN')
+vim.g.node_host_prog = os.getenv("NVM_BIN")
