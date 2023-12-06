@@ -4,11 +4,22 @@ local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
 
 local sources = {
 
-	-- webdev development
-	builtin.formatting.prettier.with({ filetypes = { "html", "markdown", "css" } }), -- so prettier works only on these filetypes
+	-- webdev development 
+  builtin.formatting.deno_fmt, 
+	builtin.formatting.prettier.with({  
+    
+    filetypes = { "html", "markdown", "css"},
+    extra_filetypes = {"astro"},
+    extra_args = {"--single-quote"},
+  }), -- so prettier works only on these filetypes
 
 	-- Lua
-	builtin.formatting.stylua,
+	builtin.formatting.stylua.with({
+    filetypes = {
+      "lua",
+    },
+    args = { "--indent-width", "2", "--indent-type", "Spaces", "-" },
+  }),
 
 	-- Golang
 	builtin.formatting.gofumpt,
@@ -19,12 +30,18 @@ local sources = {
 	builtin.diagnostics.mypy,
 	builtin.diagnostics.ruff,
 
-	-- Rust 
+	-- Rust  
+  builtin.formatting.rustfmt,
 
+  -- Clang 
+  builtin.formatting.clang_format,
 
   -- Node 
   null_ls.builtins.diagnostics.eslint,
-  null_ls.builtins.formatting.prettier
+  null_ls.builtins.formatting.prettier,
+
+  -- Diagnostics 
+  null_ls.diagnostics.shellcheck.with({ diagnostics_format = "#{m} [#{c}]" }),
 }
 
 local opts = {
@@ -51,3 +68,5 @@ return opts
 -- 	debug = true,
 -- 	sources = sources,
 -- })
+
+

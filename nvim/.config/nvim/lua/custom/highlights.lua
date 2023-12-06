@@ -4,8 +4,11 @@
 
 local M = {}
 
----@type Base46HLGroupsList
+---@type HLTable
 M.override = {
+  CursorLine = {
+    bg = "black2",
+  },
   Comment = {
     italic = true,
   },
