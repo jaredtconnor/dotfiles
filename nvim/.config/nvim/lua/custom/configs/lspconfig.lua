@@ -58,6 +58,9 @@ lspconfig.astro.setup({
 	capabilities = capabilities,
 	cmd = { "astro-ls", "--stdio" },
 	filetypes = { "astro" },
+  init_options = {
+    typescript = {vim.fs.normalize "/Users/jaredconnor/.nvm/versions/node/v20.9.0/bin/tsserver",}
+  },
 	root_dir = util.root_pattern("package.json", "tsconfig.json", "jsconfig.json", ".git"),
 })
 
@@ -81,3 +84,5 @@ lspconfig.tsserver.setup({
 		},
 	},
 })
+
+
