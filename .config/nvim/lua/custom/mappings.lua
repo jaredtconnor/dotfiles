@@ -8,6 +8,8 @@ M.general = {
     ["<C-k>"] = { "<cmd> TmuxNavigateUp<CR>", "window up" },
 
     ["<leader>gg"] = { "<cmd> LazyGit<CR>", "LazyGit" },
+
+    ["<leader>]"] = { "<cmd> Gen<CR>", "Gen" },
   },
 }
 
