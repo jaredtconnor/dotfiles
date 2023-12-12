@@ -3,7 +3,6 @@ local overrides = require("custom.configs.overrides")
 local plugins = {
 
   -- override default plugins
-  -- override plugin configs
   {
     "williamboman/mason.nvim",
     opts = overrides.mason,
@@ -68,7 +67,7 @@ local plugins = {
       "mfussenegger/nvim-dap",
       "rcarriga/nvim-dap-ui",
     },
-    config = function(_, opts)
+    config = function()
       local path = "~/.local/share/nvim/mason/packages/debugpy/venv/bin/python"
       require("dap-python").setup(path)
       require("core.utils").load_mappings("dap_python")
@@ -107,7 +106,7 @@ local plugins = {
   {
     "theHamsta/nvim-dap-virtual-text",
     lazy = false,
-    config = function(_, opts)
+    config = function()
       require("nvim-dap-virtual-text").setup()
     end,
   },
@@ -115,17 +114,23 @@ local plugins = {
     "christoomey/vim-tmux-navigator",
     lazy = false,
   },
-
+  -- {
+  --   "zbirenbaum/copilot.lua",
+  --   cmd = "Copilot",
+  --   event = "InsertEnter",
+  --   lazy = false,
+  --   opts = function()
+  --     return require("custom.configs.copilot")
+  --   end,
+  --   config = function(_, opts)
+  --     require("copilot").setup(opts)
+  --   end,
+  -- },
   {
-    "zbirenbaum/copilot.lua",
-    cmd = "Copilot",
-    event = "InsertEnter",
+    "David-Kunz/gen.nvim",
     lazy = false,
-    opts = function()
-      return require("custom.configs.copilot")
-    end,
     config = function(_, opts)
-      require("copilot").setup(opts)
+      require("gen").setup(opts)
     end,
   },
   {
@@ -148,22 +153,22 @@ local plugins = {
     "ThePrimeagen/harpoon",
     name = "harpoon",
   },
-  {
-    "jackMort/ChatGPT.nvim",
-    event = "VeryLazy",
-    config = function()
-      require("chatgpt").setup({
-        -- keymaps = {
-        -- submit = "<C-s>"
-        -- }
-      })
-    end,
-    dependencies = {
-      "MunifTanjim/nui.nvim",
-      "nvim-lua/plenary.nvim",
-      "nvim-telescope/telescope.nvim",
-    },
-  },
+  -- {
+  --   "jackMort/ChatGPT.nvim",
+  --   event = "VeryLazy",
+  --   config = function()
+  --     require("chatgpt").setup({
+  --       -- keymaps = {
+  --       -- submit = "<C-s>"
+  --       -- }
+  --     })
+  --   end,
+  --   dependencies = {
+  --     "MunifTanjim/nui.nvim",
+  --     "nvim-lua/plenary.nvim",
+  --     "nvim-telescope/telescope.nvim",
+  --   },
+  -- },
   "Bryley/neoai.nvim",
   dependencies = {
     "MunifTanjim/nui.nvim",
