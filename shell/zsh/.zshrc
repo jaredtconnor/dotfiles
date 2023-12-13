@@ -1,113 +1,159 @@
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
+#!/usr/bin/env bash
+# Get zgen
+source ~/.zgenom/zgenom.zsh
+
+export DOTFILES="$HOME/.dotfiles"
+export GPG_TTY=$TTY # https://unix.stackexchange.com/a/608921
+
+# Override compdump name: https://github.com/jandamm/zgenom/discussions/121
+export ZGEN_CUSTOM_COMPDUMP="~/.zcompdump-$(whoami).zwc"
+
+# Generate zgen init.sh if it doesn't exist
+if ! zgenom saved; then
+    zgenom ohmyzsh
+
+    # Plugins
+    zgenom ohmyzsh plugins/git
+    zgenom ohmyzsh plugins/github
+    zgenom ohmyzsh plugins/sudo
+    zgenom ohmyzsh plugins/command-not-found
+    zgenom ohmyzsh plugins/kubectl
+    zgenom ohmyzsh plugins/docker
+    zgenom ohmyzsh plugins/docker-compose
+    zgenom load zsh-users/zsh-autosuggestions
+    zgenom load jocelynmallon/zshmarks
+    zgenom load denolfe/git-it-on.zsh
+    zgenom load caarlos0/zsh-mkc
+    zgenom load caarlos0/zsh-git-sync
+    zgenom load caarlos0/zsh-add-upstream
+    zgenom load denolfe/zsh-prepend
+
+    zgenom load agkozak/zsh-z
+    zgenom load andrewferrier/fzf-z
+    zgenom load reegnz/jq-zsh-plugin
+
+    zgenom ohmyzsh plugins/asdf
+
+    zgenom load ntnyq/omz-plugin-pnpm
+
+    # These 2 must be in this order
+    zgenom load zsh-users/zsh-syntax-highlighting
+    zgenom load zsh-users/zsh-history-substring-search
+
+    # Set keystrokes for substring searching
+    zmodload zsh/terminfo
+    bindkey "$terminfo[kcuu1]" history-substring-search-up
+    bindkey "$terminfo[kcud1]" history-substring-search-down
+    bindkey "^k" history-substring-search-up
+    bindkey "^j" history-substring-search-down
+
+    # Warn you when you run a command that you've got an alias for
+    zgenom load djui/alias-tips
+
+    # Completion-only repos
+    zgenom load zsh-users/zsh-completions src
+
+    # Generate init.sh
+    zgenom save
+fi
+
+# source $DOTFILES/shell/zsh/p10k.zsh 
+eval "$(starship init zsh)"
+
+# History Options
+setopt append_history
+setopt extended_history
+setopt hist_expire_dups_first
+setopt hist_ignore_all_dups
+setopt hist_ignore_dups
+setopt hist_ignore_space
+setopt hist_reduce_blanks
+setopt hist_save_no_dups
+setopt hist_verify
+setopt inc_append_history
+
+# Share history across all your terminal windows
+setopt share_history
+#setopt noclobber
+
+# set some more options
+setopt pushd_ignore_dups
+#setopt pushd_silent
+
+# Increase history size
+HISTSIZE=1000000000
+SAVEHIST=1000000000
+HISTFILE=~/.zsh_history
+export HISTIGNORE="ls:cd:cd -:pwd:exit:date:* --help"
+
+# Return time on long running processes
+REPORTTIME=2
+TIMEFMT="%U user %S system %P cpu %*Es total"
+
+# Source local zshrc if exists
+test -f ~/.zshrc.local && source ~/.zshrc.local
+
+# Place to stash environment variables
+test -f ~/.secrets && source ~/.secrets
+
+# Load functions
+for f in $DOTFILES/shell/functions/*; do source $f; done
+
+# Load aliases
+for f in $DOTFILES/shell/aliases/*.aliases.*sh; do source $f; done
+
+# Load all path files
+for f in $DOTFILES/shell/paths/*.path.sh; do source $f; done
+
+if type fd > /dev/null 2>&1; then
+  export FZF_DEFAULT_COMMAND='fd --type f'
+fi
+
+# FZF config and theme
+export FZF_DEFAULT_OPTS='--reverse --bind 'ctrl-l:cancel' --height=90% --pointer='▶''
+source $DOTFILES/shell/zsh/fzf-theme-dark-plus.sh
+export FZF_TMUX_HEIGHT=80%
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+export EXA_ICON_SPACING=2
+
+export BAT_THEME='Visual Studio Dark+'
+
+export AWS_PAGER='bat -p'
+
+# Needed for Crystal on mac - openss + pkg-config
+if [ `uname` = Darwin ]; then
+  export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/opt/openssl/lib/pkgconfig
+fi
+
+export ASDF_DOWNLOAD_PATH=bin/install
+source /opt/homebrew/opt/asdf/libexec/asdf.sh
+source /opt/homebrew/share/zsh/site-functions
+
+# pnpm
+export PNPM_HOME="/Users/elliot/Library/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end
+
+# tabtab source for packages
+# uninstall by removing these lines
+[[ -f ~/.config/tabtab/zsh/__tabtab.zsh ]] && . ~/.config/tabtab/zsh/__tabtab.zsh || true
+
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}  
 
 
-# Set list of themes to pick from when loading at random
-# Setting this variable when ZSH_THEME=random will cause zsh to load
-# a theme from this variable instead of looking in $ZSH/themes/
-# If set to an empty array, this variable will have no effect.
-# ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
-
-# Uncomment the following line to use case-sensitive completion.
-# CASE_SENSITIVE="true"
-
-# Uncomment the following line to use hyphen-insensitive completion.
-# Case-sensitive completion must be off. _ and - will be interchangeable.
-# HYPHEN_INSENSITIVE="true"
-
-# Uncomment the following line to disable bi-weekly auto-update checks.
-# DISABLE_AUTO_UPDATE="true"
-
-# Uncomment the following line to automatically update without prompting.
-# DISABLE_UPDATE_PROMPT="true"
-
-# Uncomment the following line to change how often to auto-update (in days).
-# export UPDATE_ZSH_DAYS=13
-
-# Uncomment the following line if pasting URLs and other text is messed up.
-# DISABLE_MAGIC_FUNCTIONS="true"
-
-# Uncomment the following line to disable colors in ls.
-# DISABLE_LS_COLORS="true"
-
-# Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
-
-# Uncomment the following line to enable command auto-correction.
-# ENABLE_CORRECTION="true"
-
-# Uncomment the following line to display red dots whilst waiting for completion.
-# Caution: this setting can cause issues with multiline prompts (zsh 5.7.1 and newer seem to work)
-# See https://github.com/ohmyzsh/ohmyzsh/issues/5765
-# COMPLETION_WAITING_DOTS="true"
-
-# Uncomment the following line if you want to disable marking untracked files
-# under VCS as dirty. This makes repository status check for large repositories
-# much, much faster.
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
-
-# Uncomment the following line if you want to change the command execution time
-# stamp shown in the history command output.
-# You can set one of the optional three formats:
-# "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
-# or set a custom format using the strftime function format specifications,
-# see 'man strftime' for details.
-# HIST_STAMPS="mm/dd/yyyy"
-
-# Would you like to use another custom folder than $ZSH/custom?
-# ZSH_CUSTOM=/path/to/new-custom-folder
-
-# Which plugins would you like to load?
-# Standard plugins can be found in $ZSH/plugins/
-# Custom plugins may be added to $ZSH_CUSTOM/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-# Add wisely, as too many plugins slow down shell startup.
-plugins=(
-	git 
-	zsh-syntax-highlighting 
-	zsh-autosuggestions 
-  z
-)
-
-source $ZSH/oh-my-zsh.sh 
-
-eval "$(starship init zsh)"
-
-# User configuration
-
-# export MANPATH="/usr/local/man:$MANPATH"
-
-# You may need to manually set your language environment
-# export LANG=en_US.UTF-8
-
-# Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
-# fi
-
-# Compilation flags
-# export ARCHFLAGS="-arch x86_64"
-
-# Set personal aliases, overriding those provided by oh-my-zsh libs,
-# plugins, and themes. Aliases can be placed here, though oh-my-zsh
-# users are encouraged to define aliases within the ZSH_CUSTOM folder.
-# For a full list of active aliases, run `alias`.
-#
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
-# 
-
-####################################### 
-# Fedora Setup
-#######################################  
-export QT_QPA_PLATFORMTHEME='qt5ct'
-export QT_STYLE_OVERRIDE="qt5ct"
-
-export PATH=:$HOME/.local/bin:$PATH
 
 # Support for two Homebrew installations
 export PATH=/opt/homebrew/bin:/usr/local/bin:$PATH
@@ -120,7 +166,6 @@ if type brew &>/dev/null; then
   compinit
 fi
 
-
 # Pyenv Location
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/bin:$PATH"
@@ -130,30 +175,6 @@ eval "$(pyenv init --path)"
 eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
 
- # Do menu-driven completion.
-zstyle ':completion:*' menu select
-
-# Color completion for some things.
-# http://linuxshellaccount.blogspot.com/2008/12/color-completion-using-zsh-modules-on.html
-zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
-
-# formatting and messages
-# http://www.masterzen.fr/2009/04/19/in-love-with-zsh-part-one/
-zstyle ':completion:*' verbose yes
-zstyle ':completion:*:descriptions' format "$fg[yellow]%B--- %d%b"
-zstyle ':completion:*:messages' format '%d'
-zstyle ':completion:*:warnings' format "$fg[red]No matches for:$reset_color %d"
-zstyle ':completion:*:corrections' format '%B%d (errors: %e)%b'
-zstyle ':completion:*' group-name ''
-
-# The next line updates PATH for the Google Cloud SDK.
-if [ -f '/Users/jaredconnor/.google_cloud/path.zsh.inc' ]; then . '/Users/jaredconnor/.google_cloud/path.zsh.inc'; fi
-
-# The next line enables shell command completion for gcloud.
-if [ -f '/Users/jaredconnor/.google_cloud/completion.zsh.inc' ]; then . '/Users/jaredconnor/.google_cloud/completion.zsh.inc'; fi
-
-export PATH="$HOME/.poetry/bin:$PATH"
-
 ####################################### 
 # GO-Lang Setup
 ####################################### 
@@ -161,15 +182,5 @@ export PATH="$HOME/.poetry/bin:$PATH"
 export GOPATH=$HOME/go 
 export PATH=$PATH:$GOPATH/bin
 
-######################################
-# Windows Terminal Setup
-# Source - https://blog.jongallant.com/2020/06/wsl-ls-folder-highlight/
-######################################
-LS_COLORS=$LS_COLORS:'ow=1;34'; export LS_COLORS
-
-
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
-export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
