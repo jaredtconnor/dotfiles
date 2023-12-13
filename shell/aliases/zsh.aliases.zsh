@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 #
 # Zsh only aliases
-
 alias -g H='| head'
 alias -g Hn='| head -n'
 alias -g T='| tail'
@@ -32,4 +31,12 @@ esac
 alias g="jump"
 alias s="bookmark"
 alias d="deletemark"
-alias l="showmarks"
+alias l="showmarks" 
+
+# LSD - https://github.com/lsd-rs/lsd
+alias ls='lsd'
+alias l='ls -l'
+alias la='ls -a'
+alias lla='ls -la'
+alias lt='ls --tree' 
+

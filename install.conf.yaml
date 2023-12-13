@@ -3,174 +3,137 @@
       relink: true
       create: true
 
-- clean: ["~", "~/bin"] 
+- clean: ["~", "~/bin"]
 
 - shell:
-  - [git submodule update --init --recursive, Installing submodules]
-  -
-    command: ./machines/osx/setup-homebrew.sh
-    description: Installing Homebrew and Essential Packages
-    stdout: true
-  -
-    description: Downloading NvChad editor to ~/.config/nvim/
-    command: git clone https://github.com/NvChad/NvChad ~/.config/nvim --depth 1
-    stdout: true
+    - [git submodule update --init --recursive, Installing submodules]
+    - command: ./machines/osx/setup-homebrew.sh
+      description: Installing Homebrew and Essential Packages
+      stdout: true
+    - description: Downloading NvChad editor to ~/.config/nvim/
+      command: git clone https://github.com/NvChad/NvChad ~/.config/nvim --depth 1
+      stdout: true
 
 - link:
-
-
-    # Editor
-
-    # shell
-
+    # ------------------------------------------------------------
     # editor
-  ~/.config/alacritty/alacritty.yml: ./terminal/alacritty/alacritty.yml
-
-- link:  
-  # ------------------------------------------------------------
-  # editor 
-  # ------------------------------------------------------------
-  ~/.config/nvim/lua/custom:
-    path: ./editor/nvim/lua/custom
-    force: true
+    # ------------------------------------------------------------
+    ~/.config/nvim/lua/custom:
+      path: ./editor/nvim/lua/custom
+      force: true
 
     # VS Code Linux
     ~/.config/Code/User:
-      if: '[[ `uname` = Linux ]]'
+      if: "[[ `uname` = Linux ]]"
       glob: true
-      path: vscode/linux/*.json
+      path: ./editor/vscode/linux/*.json
       force: true
 
     # VS Code MacOS
     ~/Library/Application Support/Code/User:
-      if: '[ `uname` = Darwin ]'
+      if: "[ `uname` = Darwin ]"
       glob: true
-      path: vscode/macos/*.json
+      path: ./editor/vscode/macos/*.json
       force: true
 
     ~/Library/Application Support/Code/User/snippets:
-      if: '[ `uname` = Darwin ]'
-      path: vscode/snippets
+      if: "[ `uname` = Darwin ]"
+      path: ./editor/vscode/snippets
       force: true
 
     # VS Code MacOS Insiders
     ~/Library/Application Support/Code - Insiders/User:
-      if: '[ `uname` = Darwin ]'
+      if: "[ `uname` = Darwin ]"
       glob: true
-      path: vscode/macos/*.json
+      path: ./editor/vscode/macos/*.json
       force: true
 
-
-  # ------------------------------------------------------------
-  # shell 
-  # ------------------------------------------------------------
-    ~/.vimrc: vim/vimrc 
-
-
+    # ------------------------------------------------------------
+    # shell
+    # ------------------------------------------------------------
     ~/.zshrc:
       path: ./shell/zsh/.zshrc
-      force: true 
+      force: true
 
-    ~/.oh-my-zsh: 
-      path: ./shell/zsh/oh-my-zsh 
+    ~/.oh-my-zsh/custom:
+      glob: true
+      path: ./shell/zsh/oh-my-zsh/custom/*
+      relink: true
 
-    ~/.zgenom: zsh/zgenom
-    ~/.asdfrc: zsh/asdfrc
-    ~/.hushlogin: zsh/hushlogin 
+    ~/.zgenom: ./shell/zsh/zgenom
+    ~/.asdfrc: ./shell/zsh/.asdfrc
 
     ~/.bashrc:
-      path: bash/bashrc
-      force: true 
+      path: ./shell/bash/.bashrc
+      force: true
 
     ~/bin:
       glob: true
-      path: scripts/*
+      path: ./shell/functions/*
       relink: true
 
-  # ------------------------------------------------------------
-  # terminal 
-  # ------------------------------------------------------------
-  # ------------------------------------------------------------
-  # tools 
-  # ------------------------------------------------------------  
+    # ------------------------------------------------------------
+    # terminal
+    # ------------------------------------------------------------
+    ~/.config/alacritty/alacritty.yml: ./terminal/alacritty/alacritty.yml
 
-    ~/.tmux.conf: 
-      path: ./tools/tmux/.tmux.conf 
+    # ------------------------------------------------------------
+    # tools
+    # ------------------------------------------------------------
 
-    ~/.gitconfig: 
-    path:  ./tools/git/.gitconfig
+    ~/.tmux.conf:
+      path: ./tools/tmux/.tmux.conf
+
+    ~/.gitconfig:
+    path: ./tools/git/.gitconfig
 
     ~/.prettierrc.js:
-      path: ./tools/node/prettierrc.js 
-
-    ~/.phoenix.js:
-      path: ./languages/node/phoenix/dist/phoenix.js
-      force: true
+      path: ./languages/node/prettierrc.js
 
     ~/.hammerspoon:
-      if: '[ `uname` = Darwin ]'
+      if: "[ `uname` = Darwin ]"
       path: ./tools/hammerspoon
-      force: true 
+      force: true
 
     ~/Library/Application Support/com.colliderli.iina/input_conf/YouTube.conf:
-      if: '[ `uname` = Darwin ]'
+      if: "[ `uname` = Darwin ]"
       path: ./tools/iina/YouTube.conf
       force: true
 
     ~/Library/Application Support/espanso:
-      if: '[ `uname` = Darwin ]'
+      if: "[ `uname` = Darwin ]"
       path: ./tools/espanso
-      force: true 
+      force: true
 
-        
 - asdf:
-  - plugin: nodejs
-    url: https://github.com/asdf-vm/asdf-nodejs
-    global: lts-gallium
-    versions:
-      - lts-carbon
-      - lts-dubnium
-      - lts-erbium
-      - lts-fermium
-      - lts-gallium
-      - latest 
-  - plugin: yarn
-    url: https://github.com/twuni/asdf-yarn
-    global: latest
-    versions:
-      - latest
-  - plugin: golang
-    url: https://github.com/kennyp/asdf-golang 
+    - plugin: nodejs
+      url: https://github.com/asdf-vm/asdf-nodejs
+      global: lts-gallium
+      versions:
+        - lts-carbon
+        - lts-dubnium
+        - lts-erbium
+        - lts-fermium
+        - lts-gallium
+        - latest
+    - plugin: yarn
+      url: https://github.com/twuni/asdf-yarn
+      global: latest
+      versions:
+        - latest
+    - plugin: golang
+      url: https://github.com/kennyp/asdf-golang
 
 - shell:
-  -
-    command: ./git/set-gitconfig.sh
-    description: Configuring Git
-    stdout: true
-    quiet: false
-  -
-    command: yarn config set prefix ~/.yarn
-    description: Configuring yarn prefix
-    stdout: true
-    quiet: false 
+    - command: ./tools/git/set-gitconfig.sh
+      description: Configuring Git
+      stdout: true
+      quiet: false
+    - command: yarn config set prefix ~/.yarn
+      description: Configuring yarn prefix
+      stdout: true
+      quiet: false
 
   # ------------------------------------------------------------
-  # machines 
+  # machines
   # ------------------------------------------------------------
-
-
-- clean: ['~']
-
-- link:
-    ~/.profile: profile
-    ~/.bashrc: bashrc
-    ~/.ssh/config:
-        path: ssh/config
-        create: true
-    ~/.zprofile: zprofile
-    ~/.zshenv: zshenv
-    ~/bin:
-        path: bin/
-        create: true
-
-
