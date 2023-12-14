@@ -56,13 +56,12 @@
       path: ./shell/zsh/.zshrc
       force: true
 
-    ~/.oh-my-zsh/custom:
-      glob: true
-      path: ./shell/zsh/oh-my-zsh/custom/*
-      relink: true
+    ~/.oh-my-zsh: zsh/oh-my-zsh
 
     ~/.asdfrc: 
-      path: ./tools/asdf/.asdfrc
+      path: ./tools/asdf/.asdfrc 
+
+    ~/.zgenom: zsh/zgenom
 
     ~/.bashrc:
       path: ./shell/bash/.bashrc
