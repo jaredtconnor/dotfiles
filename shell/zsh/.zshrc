@@ -1,9 +1,5 @@
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
+# source $DOTFILES/shell/zsh/p10k.zsh 
+eval "$(starship init zsh)"
 
 #!/usr/bin/env bash
 # Get zgen
@@ -64,8 +60,6 @@ if ! zgenom saved; then
     zgenom save
 fi
 
-# source $DOTFILES/shell/zsh/p10k.zsh 
-eval "$(starship init zsh)"
 
 # History Options
 setopt append_history
@@ -166,15 +160,6 @@ if type brew &>/dev/null; then
   compinit
 fi
 
-# Pyenv Location
-export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
-export PYENV_VIRTUALENV_DISABLE_PROMPT=1
-
-eval "$(pyenv init --path)"
-eval "$(pyenv init -)"
-eval "$(pyenv virtualenv-init -)"
-
 ####################################### 
 # GO-Lang Setup
 ####################################### 
@@ -182,5 +167,3 @@ eval "$(pyenv virtualenv-init -)"
 export GOPATH=$HOME/go 
 export PATH=$PATH:$GOPATH/bin
 
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh

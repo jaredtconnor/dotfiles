@@ -2,7 +2,7 @@
 # shellcheck disable=SC2016
 
 # Name
-git config --global user.name "Elliot DeNolf"
+git config --global user.name "Jared Connor"
 
 # Set git global settings
 git config --global core.autocrlf false
