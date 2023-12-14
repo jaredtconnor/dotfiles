@@ -56,12 +56,12 @@
       path: ./shell/zsh/.zshrc
       force: true
 
-    ~/.oh-my-zsh: zsh/oh-my-zsh
+    ~/.oh-my-zsh: ./shell/zsh/oh-my-zsh
 
     ~/.asdfrc: 
       path: ./tools/asdf/.asdfrc 
 
-    ~/.zgenom: zsh/zgenom
+    ~/.zgenom: ./shell/zsh/zgenom
 
     ~/.bashrc:
       path: ./shell/bash/.bashrc
