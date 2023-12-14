@@ -1,5 +1,5 @@
 [init]
-  defaultBranch = main 
+	defaultBranch = main
 
 [user]
 	name = Jared Connor
@@ -7,8 +7,9 @@
 
 [core]
 	filemode = false
-	autocrlf = input
+	autocrlf = false
   eol = lf
+	whitespace = cr-at-eol
    
 [safe]
 	directory = *
@@ -18,3 +19,58 @@
 
 [credential]
 	helper = cache
+[push]
+	default = current
+	autoSetupRemote = true
+	followTags = true
+[pull]
+	rebase = true
+[rebase]
+	autoStash = true
+[status]
+	short = true
+	branch = true
+[branch]
+	autoSetupMerge = true
+[alias]
+	last = log -1 HEAD
+	unstage = reset HEAD --
+	hist = log --oneline --graph --decorate --all
+	stu = status -uno
+	st = status
+	unp = log origin/master..HEAD
+	subup = submodule update --remote --merge
+	aliases = config --get-regexp '^alias\\.'
+	pom = push origin master
+	undolast = reset HEAD~1
+	revertlast = revert HEAD
+	editlast = commit --amend -m
+	pr = "!f() { git fetch -fu ${2:-$(git remote |grep ^upstream || echo origin)} refs/pull/$1/head:pr/$1 && git checkout pr/$1; }; f"
+	pr-clean = "!git for-each-ref refs/heads/pr/* --format=\"%(refname)\" | while read ref ; do branch=${ref#refs/heads/} ; git branch -D $branch ; done"
+	fzau = !git ls-files -m --exclude-standard | fzf -m --print0 --preview-window down,90% --preview \"git diff $@ -- {-1} | delta\" | xargs -0 -o -t git add -p
+	fza = !git ls-files -m -o --exclude-standard | fzf -m --print0 --preview-window down,90% --preview \"git diff $@ -- {-1} | delta\" | xargs -0 -o -t git add -p
+	authors = shortlog -s -n -e --all --no-merges
+	l = log --oneline --graph --decorate --all
+	l1 = log --graph --abbrev-commit --decorate --date=relative --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(blue)<%an>%Creset%C(yellow)%d%Creset' --all
+	l2 = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''          %C(white)%s%C(reset) %C(dim white)- %an%C(reset)' --all
+	l3 = log --format='%C(bold cyan)%h%Creset %s %Cgreen(%cr) %C(blue)<%an>%Creset%C(yellow)%d%Creset'
+	sync = !zsh -ic git-sync
+	add-upstream = !zsh -ic add-upstream
+	trav = !zsh -ic git-trav
+[pager]
+	diff = delta
+	log = delta
+	reflog = delta
+	show = delta
+[delta]
+	plus-style = "syntax #012800"
+	plus-emph-style = "syntax #1B421A"
+	minus-style = "syntax #340001"
+	minus-emph-style = "syntax #4E1A1B"
+	file-decoration-style = blue box
+	hunk-header-style = omit
+	navigate = true
+	syntax-theme = Solarized (dark)
+	line-numbers = true
+[interactive]
+	diffFilter = delta --color-only
