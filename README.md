@@ -27,7 +27,7 @@ _Prerequisites: python, git, zsh_
 ### Installation
 
 ```sh
-git clone git@github.com:denolfe/dotfiles.git .dotfiles --recursive
+git clone git@github.com:jaredtconnor/dotfiles.git .dotfiles --recursive
 cd .dotfiles
 make install
 ```
