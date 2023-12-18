@@ -9,18 +9,10 @@ link:
 
 # Build and output karabiner.json
 karabiner:
-	deno run --allow-env --allow-read --allow-write karabiner/karabiner.ts
+	deno run --allow-env --allow-read --allow-write ./tools/karabiner/karabiner.ts
 
 karabiner-dev:
-	deno run --watch --allow-env --allow-read --allow-write karabiner/karabiner.ts
-
-# Build and output phoenix config
-phoenix:
-	yarn --cwd phoenix run build
-
-# Watch and build phoenix config
-phoenix-dev:
-	yarn --cwd phoenix run dev
+	deno run --watch --allow-env --allow-read --allow-write ./tools/karabiner/karabiner.ts
 
 # Install extensions from vscode/extensions.txt
 vscode-install:
