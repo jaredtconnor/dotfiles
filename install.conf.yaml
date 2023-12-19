@@ -19,8 +19,10 @@
     # ------------------------------------------------------------
     # editor
     # ------------------------------------------------------------
-    ~/.config/nvim/lua/custom/:
-      path: ./editor/nvim/lua/custom
+    ~/.config/nvim/lua/custom/:  
+      create: true
+      glob: true
+      path: ./editor/nvim/lua/custom/**/*.lua
       force: true
 
     # VS Code Linux
