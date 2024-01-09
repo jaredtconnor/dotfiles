@@ -134,7 +134,9 @@
     - plugin: golang
       url: https://github.com/kennyp/asdf-golang 
     - plugin: python
-      url: https://github.com/tuvistavie/asdf-python.git
+      url: https://github.com/tuvistavie/asdf-python.git 
+    - plugin: pnpm
+      url: https://github.com/jonathanmorley/asdf-pnpm
 
 - shell:
     - command: ./tools/git/set-gitconfig.sh
