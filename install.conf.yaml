@@ -76,6 +76,10 @@
 
     ~/.config/starship.toml: 
       path: ./shell/starship.toml 
+      relink: true 
+
+    ~/.ssh/config: 
+      path: ./ssh/config 
       relink: true
 
     # ------------------------------------------------------------
