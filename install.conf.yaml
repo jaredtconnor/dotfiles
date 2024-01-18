@@ -85,7 +85,7 @@
     # ------------------------------------------------------------
     # terminal
     # ------------------------------------------------------------
-    ~/.config/alacritty/alacritty.yml: ./terminal/alacritty/alacritty.yml   
+    ~/.config/alacritty/alacritty.toml: ./terminal/alacritty/alacritty.toml
 
     ~/.config/wezterm/: 
       glob: true 
