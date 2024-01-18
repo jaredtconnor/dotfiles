@@ -23,7 +23,7 @@
       create: true
       glob: true
       path: ./editor/nvim/lua/custom/**/*.lua
-      force: true
+      force: false 
 
     # VS Code Linux
     ~/.config/Code/User:

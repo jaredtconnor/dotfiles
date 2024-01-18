@@ -57,11 +57,11 @@ lspconfig.astro.setup({
   on_attach = on_attach,
   capabilities = capabilities,
   cmd = { "astro-ls", "--stdio" },
-  filetypes = { "astro" },
-  init_options = {
-    typescript = { vim.fs.normalize("/Users/jaredconnor/.nvm/versions/node/v20.9.0/bin/tsserver") },
-  },
-  root_dir = util.root_pattern("package.json", "tsconfig.json", "jsconfig.json", ".git"),
+  filetypes = { "astro", "mdx" },
+  -- init_options = {
+  --   typescript = { vim.fs.normalize("/Users/jaredconnor/.asdf/installs/nodejs/21.5.0/bin/npm/typescript") },
+  -- },
+  root_dir = util.root_pattern("package.json", "tsconfig.json", "jsconfig.json", ".git", "astro.config.mjs"),
 })
 
 lspconfig.html.setup({
