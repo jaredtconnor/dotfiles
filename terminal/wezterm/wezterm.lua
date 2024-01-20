@@ -8,11 +8,11 @@ local config = {
   enable_tab_bar = false,
   window_decorations = "RESIZE",
   window_close_confirmation = "NeverPrompt",
-  font = wezterm.font("Monaspace Argon", { weight = "Regular" }),
+  font = wezterm.font("JetBrainsMono Nerd Font", { weight = "Regular" }),
   font_rules = {
     {
       italic = true,
-      font = wezterm.font("Monaspace Radon", { weight = "Medium" }),
+      font = wezterm.font("JetBrainsMono Nerd Font", { weight = "Medium" }),
     },
   },
   harfbuzz_features = { "calt", "dlig", "clig=1", "ss01", "ss02", "ss03", "ss04", "ss05", "ss06", "ss07", "ss08" },
