@@ -8,6 +8,8 @@ local config = {
   keys = {},
 }
 
-config.color_scheme = "tokyonight-storm"
+-- config.color_scheme = "tokyonight-storm"
+-- config.color_scheme = "Catppuccin Mocha"
+config.color_scheme = "tokyonight"
 
 return config
