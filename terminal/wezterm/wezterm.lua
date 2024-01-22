@@ -1,6 +1,7 @@
 local wezterm = require("wezterm")
 
 local config = {
+  window_decorations = "RESIZE",
   font = wezterm.font("JetBrainsMono Nerd Font"),
   font_size = 12.0,
   leader = { key = "a", mods = "CTRL" },
