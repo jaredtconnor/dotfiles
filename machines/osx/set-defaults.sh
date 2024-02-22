@@ -67,15 +67,8 @@ echo "  › Use function keys on external keyboards"
 defaults write NSGlobalDomain com.apple.keyboard.fnState -int 1
 
 echo "  › Set up trackpad & mouse speed to a reasonable number"
-defaults write -g com.apple.trackpad.scaling 3
-defaults write -g com.apple.mouse.scaling 3
-
-echo "  › Enable tap to click for trackpad"
-defaults -currentHost write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
-defaults write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
-
-echo " › Set touchbar to app controls with control strip"
-defaults write com.apple.touchbar.agent PresentationModeGlobal -string appWithControlStrip
+defaults write -g com.apple.trackpad.scaling 1
+defaults write -g com.apple.mouse.scaling 1
 
 echo " › Enable full keyboard access for all controls (Tab in modal dialogs)"
 defaults write NSGlobalDomain AppleKeyboardUIMode -int 3
@@ -158,6 +151,7 @@ echo "› Photos:"
 echo "  › Disable it from starting everytime a device is plugged in"
 defaults -currentHost write com.apple.ImageCapture disableHotPlug -bool true
 
+#############################
 echo ""
 echo "› Dock"
 echo "  › Setting the icon size of Dock items to 48 pixels for optimal size/screen-realestate"
@@ -169,15 +163,16 @@ defaults write com.apple.dock showAppExposeGestureEnabled -int 1
 defaults write com.apple.dock expose-group-by-app -int 1
 
 echo "  › Remove the auto-hiding Dock delay"
-defaults write com.apple.dock autohide-delay -float 0
+defaults write com.apple.dock autohide-delay -float 0.2
+
 echo "  › Remove the animation when hiding/showing the Dock"
-defaults write com.apple.dock autohide-time-modifier -float 0
+defaults write com.apple.dock autohide-time-modifier -float 0.2
 
 echo "  › Automatically hide and show the Dock"
-defaults write com.apple.dock autohide -bool true
+defaults write com.apple.dock autohide -bool false
 
 echo "  › Don't animate opening applications from the Dock"
-defaults write com.apple.dock launchanim -bool false
+defaults write com.apple.dock launchanim -bool true
 
 echo "  › Show App Switcher on all displays"
 defaults write com.apple.dock appswitcher-all-displays -bool true
