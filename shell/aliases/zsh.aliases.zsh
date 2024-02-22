@@ -34,9 +34,9 @@ alias d="deletemark"
 alias l="showmarks" 
 
 # LSD - https://github.com/lsd-rs/lsd
-alias ls='lsd'
-alias l='ls -l'
-alias la='ls -a'
-alias lla='ls -la'
-alias lt='ls --tree' 
+alias ls='eza'
+alias l='eza -l'
+alias la='eza -a'
+alias lla='eza -la'
+alias lt='eza --tree' 
 
