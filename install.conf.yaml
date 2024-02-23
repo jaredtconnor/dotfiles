@@ -96,6 +96,9 @@
     # ------------------------------------------------------------
 
     ~/.tmux.conf:
+      path: ./tools/tmux/.tmux.conf 
+
+    ~/.config/tmux/tmux.reset.conf:
       path: ./tools/tmux/.tmux.conf
 
     ~/.gitconfig:
