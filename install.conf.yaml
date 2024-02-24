@@ -128,13 +128,15 @@
 - asdf:
     - plugin: nodejs
       url: https://github.com/asdf-vm/asdf-nodejs
-      global: lts-gallium
+      global: lts-iron
       versions:
         - lts-carbon
         - lts-dubnium
         - lts-erbium
         - lts-fermium
         - lts-gallium
+        - lts-hydrogen
+        - lts-iron
         - latest
     - plugin: yarn
       url: https://github.com/twuni/asdf-yarn
