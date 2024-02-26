@@ -1,66 +1,25 @@
-Host 24.199.117.6
-  HostName 24.199.117.6
-  User jaredconnor
-
-Host flip
-  HostName access.engr.oregonstate.edu
-  User connorja
-  IdentityFile ~/.ssh/id_rsa
-
-Host flip1
-  HostName flip1.engr.oregonstate.edu
-  User connorja
-  IdentityFile ~/.ssh/id_rsa
-
-Host flip2
-  HostName flip2.engr.oregonstate.edu
-  User connorja
-  IdentityFile ~/.ssh/id_rsa
-
-Host flip3
-  HostName flip3.engr.oregonstate.edu
-  User connorja
-  IdentityFile ~/.ssh/id_rsa
-
-Host os1
-  HostName os1.engr.oregonstate.edu
-  User connorja
- ##  IdentityFile ~/.ssh/id_rsa
- ##  ProxyJump flip
-
-Host rabbit
-  HostName rabbit.engr.oregonstate.edu
-  User connorja
-  IdentityFile ~/.ssh/id_rsa
-
-Host os2
-  HostName os2.engr.oregonstate.edu
-  User connorja
-  IdentityFile ~/.ssh/id_rsa
-  ProxyJump flip
-
-Host pi
+Host dns.home
   HostName 192.168.1.3
   User user1
   IdentityFile ~/.ssh/id_rsa
 
-Host nas-server
-  HostName nas.home
+Host nas.home
+  HostName 192.168.1.8
   User jaredconnor
   IdentityFile ~/.ssh/id_rsa
 
-Host opie
-  HostName opie.home
+Host opie.home
+  HostName 192.168.1.11
   User jaredconnor
   IdentityFile ~/.ssh/id_rsa
 
-Host docker-vm
-  HostName docker.home
+Host docker.home
+  HostName 192.168.1.5
   User jaredconnor
   IdentityFile ~/.ssh/id_rsa
 
-Host draco
-  HostName draco.home
+Host draco.home
+  HostName 192.168.1.4
   User jaredconnor
   IdentityFile ~/.ssh/id_rsa
 
