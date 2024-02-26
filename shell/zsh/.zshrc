@@ -165,5 +165,10 @@ fi
 ####################################### 
 
 export GOPATH=$HOME/go 
-export PATH=$PATH:$GOPATH/bin
+export PATH=$PATH:$GOPATH/bin 
+
+####################################### 
+# Deno setup
+####################################### 
+export PATH="$DENO_INSTALL/bin:$PATH"
 

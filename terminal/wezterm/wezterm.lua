@@ -2,7 +2,7 @@ local wezterm = require("wezterm")
 
 local config = {
   window_decorations = "RESIZE",
-  font = wezterm.font("JetBrainsMono Nerd Font"),
+  font = wezterm.font("JetBrains Mono"),
   font_size = 12.0,
   leader = { key = "a", mods = "CTRL" },
   hide_tab_bar_if_only_one_tab = true,
