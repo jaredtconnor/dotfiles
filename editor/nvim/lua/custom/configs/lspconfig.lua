@@ -58,9 +58,9 @@ lspconfig.astro.setup({
   capabilities = capabilities,
   cmd = { "astro-ls", "--stdio" },
   filetypes = { "astro", "mdx" },
-  -- init_options = {
-  --   typescript = { vim.fs.normalize("/Users/jaredconnor/.asdf/installs/nodejs/21.5.0/bin/npm/typescript") },
-  -- },
+  init_options = {
+    typescript = { tsdk = "node_modules/typescript/lib" },
+  },
   root_dir = util.root_pattern("package.json", "tsconfig.json", "jsconfig.json", ".git", "astro.config.mjs"),
 })
 
