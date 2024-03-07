@@ -116,8 +116,6 @@ source $DOTFILES/shell/zsh/fzf-theme-dark-plus.sh
 export FZF_TMUX_HEIGHT=80%
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-export EXA_ICON_SPACING=2
-
 export BAT_THEME='Visual Studio Dark+'
 
 export AWS_PAGER='bat -p'
