@@ -14,7 +14,7 @@ PACKAGES=(
   "asdf"
   "fzf"
   "git"
-  "exa"
+  "lsd"
   "neovim"
   "tree"
   "fd"
