@@ -12,17 +12,17 @@
       description: Installing Homebrew and Essential Packages
       stdout: true
     - description: Downloading NvChad editor to ~/.config/nvim/
-      command: git clone https://github.com/NvChad/NvChad ~/.config/nvim --depth 1
+      command: git clone https://github.com/NvChad/starter ~/.config/nvim
       stdout: true
 
 - link:
     # ------------------------------------------------------------
     # editor
     # ------------------------------------------------------------
-    ~/.config/nvim/lua/custom/:  
+    ~/.config/nvim:  
       create: true
       glob: true
-      path: ./editor/nvim/lua/custom/**/*.lua
+      path: ./editor/nvim
       force: false 
 
     # VS Code Linux
