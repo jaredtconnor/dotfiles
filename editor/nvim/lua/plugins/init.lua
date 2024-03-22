@@ -1,7 +1,7 @@
 return {
   {
     "stevearc/conform.nvim",
-    event = 'BufWritePre',
+    event = "BufWritePre",
     config = function()
       require "configs.conform"
     end,
@@ -16,22 +16,71 @@ return {
   },
 
   {
-  	"williamboman/mason.nvim",
-  	opts = {
-  		ensure_installed = {
-  			"lua-language-server", "stylua",
-  			"html-lsp", "css-lsp" , "prettier"
-  		},
-  	},
+    "williamboman/mason.nvim",
+    opts = {
+      ensure_installed = {
+        -- lua stuff
+        "lua-language-server",
+        "stylua",
+
+        -- web dev stuff
+        "css-lsp",
+        "html-lsp",
+        "deno",
+        "astro-language-server",
+        "tailwindcss-language-server",
+
+        -- c/cpp stuff
+        "clangd",
+        "clang-format",
+
+        -- python development
+        "python-lsp-server",
+        "debugpy",
+        "mypy",
+        "ruff",
+        "pyright",
+
+        -- golang development
+        "gopls",
+
+        -- rust development
+        "rust-analyzer",
+
+        -- svelt development
+        "svelte-language-server",
+
+        -- node setup
+        "eslint-lsp",
+        "js-debug-adapter",
+        "prettier",
+        "typescript-language-server",
+      },
+    },
   },
 
   {
-  	"nvim-treesitter/nvim-treesitter",
-  	opts = {
-  		ensure_installed = {
-  			"vim", "lua", "vimdoc",
-       "html", "css"
-  		},
-  	},
+    "nvim-treesitter/nvim-treesitter",
+    opts = {
+      ensure_installed = {
+        "astro",
+        "vim",
+        "lua",
+        "html",
+        "css",
+        "javascript",
+        "typescript",
+        "tsx",
+        "c",
+        "markdown",
+        "markdown_inline",
+        "svelte",
+        "python",
+      },
+      indent = {
+        enable = true,
+        disable = {},
+      },
+    },
   },
 }
