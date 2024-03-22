@@ -58,7 +58,6 @@ return {
       },
     },
   },
-
   {
     "nvim-treesitter/nvim-treesitter",
     opts = {
@@ -81,6 +80,13 @@ return {
         enable = true,
         disable = {},
       },
+    },
+  },
+  {
+    "kdheepak/lazygit.nvim",
+    lazy = false,
+    dependencies = {
+      "nvim-lua/plenary.nvim",
     },
   },
 }
