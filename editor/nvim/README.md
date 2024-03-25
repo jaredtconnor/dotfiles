@@ -1,59 +1,103 @@
-# NVIM
+# NvChad Customised
 
-The perfect blazingly fast Neovim configuration for myself, combining the aesthetics of [NvChad](https://github.com/NvChad/NvChad) with the LSP, formatter and lint configurations from [LazyVim](https://github.com/LazyVim/LazyVim).
+## Cute Dashboard (Customised)
 
-![](https://i.imgur.com/cz9UoNW.jpg)
-![](https://i.imgur.com/3ObkUwz.jpg)
+<img width="1134" alt="image" src="https://github.com/t1gu1/nvchad/assets/12479055/ac0bd860-e3ad-411a-9d36-323b1250cd12">
 
-## Getting started
+## Ready to work for these types of projects
 
-```sh
-$ git clone git@github.com:wochap/nvim.git ~/.config/nvim
-$ nvim
-```
+- React, Javascript, Typescript
+- Astro
+- Markdown
+- Lua
+- html
+- css
 
-### Vue projects
+### Install Pre-requisites
 
-Create a file `.volar` in the root of your project to disable typescript-tools and enable tsserver, only tsserver can use @vue/typescript-plugin for now...
+- [Install Nvim 0.9.5](https://neovim.io/)
+- `git clone https://github.com/t1gu1/nvchad ~/.config/nvim && nvim`
+- [Nerd Font](https://www.nerdfonts.com/) as your terminal font. Make sure the nerd font you set doesn't end with Mono to prevent small icons. Example : JetbrainsMono Nerd Font and not JetbrainsMono Nerd Font Mono
+- Ripgrep is required for grep searching with Telescope (OPTIONAL).
+- GCC, Windows users must have mingw installed and set on path.
+- Make, Windows users must have GnuWin32 installed and set on path.
+- When you open the first time, always check your setup with the `:checkhealth` command
 
-## Troubleshooting
+### Nice little plugins added & ajustment (Cause not mentionned later in this doc)
 
-- Anything Eslint related
+First there is an ajustement to not replace the yank by using `d`, `c`, `p` so you can copy and paste without the fear of replacing the yarnked buffer.
 
-  Run in nvim
+- `rainbow-delimiters`  | Make a rainbow with () {} [] - Easier to see the bloc
+- `mini.cursorword`     | Underline all words similar to the one under the cursor
+- `mini.surround`       | Sourround content with () {} [] "" ''
+- `mini.move`           | Move line or selection
+- `lspsaga`             | Nice Lsp action, debug, etc bubble
+- `project.nvim`        | Added to NvDash quick find project
+- `lazygit.nvim`        | An incredible way to have a git visual inside nvim
 
-  ```
-  :w
-  :e
-  ```
+## Terminal is simple and keep the theme hilights (NvChad.term)
 
-  If that didn't work, kill all eslint processes
+<img width="1029" alt="image" src="https://github.com/t1gu1/nvchad/assets/12479055/14300c6c-51e7-48a7-9dd8-0f6a1a36f105">
 
-## Requirements
+## Nice way to access the terminal (Custom NvChad.term mapping)
 
-Any requirement from [Mason](https://github.com/williamboman/mason.nvim#requirements), Mason will install [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig), [conform.nvim](https://github.com/stevearc/conform.nvim), [nvim-lint](https://github.com/mfussenegger/nvim-lint) and [nvim-dap](https://github.com/mfussenegger/nvim-dap) dependencies
+### Simply use these shorcuts:
 
-- [neovim >= 0.9.4](https://github.com/neovim/neovim)
-- [neovim-remote](https://github.com/mhinz/neovim-remote)
-- [kitty](https://sw.kovidgoyal.net/kitty) (recommended)
-- [tree-sitter](https://github.com/tree-sitter/tree-sitter)
-- ripgrep (required by [telescope](https://github.com/nvim-telescope/telescope.nvim)
-  )
-- fd (required by [telescope](https://github.com/nvim-telescope/telescope.nvim))
-- deno (required by [peek](https://github.com/toppair/peek.nvim))
-- nixfmt (required by [conform.nvim](https://github.com/stevearc/conform.nvim))
-- statix (required by [nvim-lint](https://github.com/mfussenegger/nvim-lint))
-- [ts-node](https://www.npmjs.com/package/ts-node) (required by [nvim-dap](https://github.com/mfussenegger/nvim-dap))
-- [typescript](https://www.npmjs.com/package/typescript) (required by [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig))
-- [@vue/typescript-plugin](https://www.npmjs.com/package/@vue/typescript-plugin) (required by [typescript-tools.nvim](https://www.npmjs.com/package/@vue/typescript-plugin) and [tsserver](https://github.com/typescript-language-server/typescript-language-server))
+- `<leader>t` Open the last opened terminal (Create one if none created)
+- `1<leader>t` Open the second terminal (Create one if none created)
+- `2<leader>t` Open the second terminal (Create one if none created)
+- `3<leader>t` Open the second terminal (Create one if none created)
+- `4<leader>t` Open the second terminal (Create one if none created)
+- `5<leader>t` Open the second terminal (Create one if none created)
+- You get it. It works from `1` to `9`.
 
-## Tips to learn to use this nvim config
+### An other way to switch or simply view opened terminal
 
-- Learn [https://github.com/folke/lazy.nvim](https://github.com/folke/lazy.nvim), then remove all lazy.nvim plugin specs that you are not going to use in `lua/custom/plugins/*`. For example, if you don't use neorg remove `neorg.lua`, if you don't code zig, remove `lang-zig.lua`. If you don't use Kitty, remove `mikesmithgh/kitty-scrollback.nvim` and `mrjones2014/smart-splits.nvim`.
-- Keymaps are located in `lua/custom/keymaps.lua` (global), `lua/custom/plugins/lsp/keymaps.lua` (active when an LSP server is running), and within each plugin spec.
-- If you need autoformatting on save, create an autocmd that calls `conform.nvim`.
-- Formatting, linting, and LSP config are the same as in Lazyvim, so feel free to import extras from Lazyvim, and add LSP servers in the same manner you did in Lazyvim.
-- If you use a different theme than catppuccino, replace the plugin spec in `lua/custom/plugins/colorscheme/init.lua`. Also, update the configurations for lualine, bufferline, and lazy.nvim.
-- To reduce startup time, lazily load `nvim-treesitter/nvim-treesitter` on "LazyFile" or "VeryLazy". However, this may cause the code to momentarily appear without correct colors for a few milliseconds. The nvim startuptime on my computer is approximately 30ms, and with `nvim-treesitter/nvim-treesitter` lazily loaded, it is around 25ms.
+Shortcut: Simply `t`
 
-Lastly read all lua files 😅, starting from `lua/custom/init.lua`
+<img width="1550" alt="image" src="https://github.com/t1gu1/nvchad/assets/12479055/889dc45c-fc48-4346-a5d2-c7c24813a80d">
+
+## Nice nvim-tree & UI (Customised)
+
+It's nice to know that it will auto close if you'll go out of focus or select a file.
+
+<img width="1703" alt="image" src="https://github.com/t1gu1/nvchad/assets/12479055/cd66209a-3347-4f26-a0ee-277689f69a6a">
+
+## A Noice popup/box for searching and commands
+
+This is what appear when you press `:` or `/`.
+It remove that space at the bottom of the screen for that visual with nice context icons.
+
+<img width="997" alt="image" src="https://github.com/t1gu1/nvchad/assets/12479055/5046ccf0-a3ee-4e3f-a493-7dfa26e57782">
+<img width="997" alt="image" src="https://github.com/t1gu1/nvchad/assets/12479055/201dfb98-4b2f-4a4b-af47-6b11c2283007">
+
+## Colorfull Markdown
+
+![image](https://github.com/t1gu1/nvchad/assets/12479055/0eca0601-1c05-4f36-888b-7d57f6090ff7)
+
+## Navigate Blazingly fast with Harpoon 2 (Added)
+
+- `<leader>a` Add file in Harpoon
+- `<leader>E` Show Harpoon explorer (This is a CAP E)
+- `<leader>1` Open the second terminal (Create one if none created)
+- `<leader>2` Open the second terminal (Create one if none created)
+- `<leader>3` Open the second terminal (Create one if none created)
+- `<leader>4` Open the second terminal (Create one if none created)
+- `<leader>5` Open the second terminal (Create one if none created)
+- You get it. It works from `1` to `9`.
+
+<img width="1611" alt="image" src="https://github.com/t1gu1/nvchad/assets/12479055/29fbd5df-d618-47bb-83ab-9a6f392140c3">
+
+## Cheat Sheet - The BLAZINGLY FAST way to learn about this config shorcuts
+
+`<leader>ch` Will open the Cheat Sheet
+
+<img width="1627" alt="image" src="https://github.com/t1gu1/nvchad/assets/12479055/18156a1c-2b61-42ae-882f-170bd8f7c40b">
+
+## Even Telescope looks gorgeous
+
+<img width="1560" alt="image" src="https://github.com/t1gu1/nvchad/assets/12479055/bd951f95-04ec-46f6-b197-248544c12e27">
+
+## A lot of themes
+
+<img width="721" alt="image" src="https://github.com/t1gu1/nvchad/assets/12479055/d3820bfd-13b0-4449-a90f-6b4d9887e3b0">
