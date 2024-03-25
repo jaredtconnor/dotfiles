@@ -1,103 +1,99 @@
-# NvChad Customised
+<div align="center">
 
-## Cute Dashboard (Customised)
+![Last commit](https://img.shields.io/github/last-commit/Alexis12119/nvim-config?style=for-the-badge&logo=git&color=000F10&logoColor=dark%20orange&labelColor=302D41)
 
-<img width="1134" alt="image" src="https://github.com/t1gu1/nvchad/assets/12479055/ac0bd860-e3ad-411a-9d36-323b1250cd12">
+[![](https://img.shields.io/badge/Neovim-0.9+-blueviolet.svg?style=for-the-badge&color=000F10&logo=Neovim&logoColor=green&labelColor=302D41)](https://github.com/neovim/neovim)
 
-## Ready to work for these types of projects
+![Preview](https://github.com/Alexis12119/nvim-config/assets/74944536/c6a3225a-eb52-4c21-bd9d-12a689173a0f)
 
-- React, Javascript, Typescript
-- Astro
-- Markdown
-- Lua
-- html
-- css
+</div>
 
-### Install Pre-requisites
+## 📄 Requirements
 
-- [Install Nvim 0.9.5](https://neovim.io/)
-- `git clone https://github.com/t1gu1/nvchad ~/.config/nvim && nvim`
-- [Nerd Font](https://www.nerdfonts.com/) as your terminal font. Make sure the nerd font you set doesn't end with Mono to prevent small icons. Example : JetbrainsMono Nerd Font and not JetbrainsMono Nerd Font Mono
-- Ripgrep is required for grep searching with Telescope (OPTIONAL).
-- GCC, Windows users must have mingw installed and set on path.
-- Make, Windows users must have GnuWin32 installed and set on path.
-- When you open the first time, always check your setup with the `:checkhealth` command
+Before you dive in, ensure you have the following requirements installed:
 
-### Nice little plugins added & ajustment (Cause not mentionned later in this doc)
+<details>
+<summary>Click to see the requirements</summary><br />
 
-First there is an ajustement to not replace the yank by using `d`, `c`, `p` so you can copy and paste without the fear of replacing the yarnked buffer.
+In windows, you can use [scoop](https://scoop.sh/) to install them.
 
-- `rainbow-delimiters`  | Make a rainbow with () {} [] - Easier to see the bloc
-- `mini.cursorword`     | Underline all words similar to the one under the cursor
-- `mini.surround`       | Sourround content with () {} [] "" ''
-- `mini.move`           | Move line or selection
-- `lspsaga`             | Nice Lsp action, debug, etc bubble
-- `project.nvim`        | Added to NvDash quick find project
-- `lazygit.nvim`        | An incredible way to have a git visual inside nvim
+- **Git:**
 
-## Terminal is simple and keep the theme hilights (NvChad.term)
+  - [lazygit](https://github.com/jesseduffield/lazygit)
 
-<img width="1029" alt="image" src="https://github.com/t1gu1/nvchad/assets/12479055/14300c6c-51e7-48a7-9dd8-0f6a1a36f105">
+- **Telescope:**
 
-## Nice way to access the terminal (Custom NvChad.term mapping)
+  - [fd](https://github.com/sharkdp/fd)
+  - [bat](https://github.com/sharkdp/bat)
+  - [ripgrep](https://github.com/BurntSushi/ripgrep)
+  - [make](https://www.gnu.org/software/make/)
+  - [mingw-nuwen](https://nuwen.net/mingw.html)
 
-### Simply use these shorcuts:
+- **Nerd Font (For Icons):**
 
-- `<leader>t` Open the last opened terminal (Create one if none created)
-- `1<leader>t` Open the second terminal (Create one if none created)
-- `2<leader>t` Open the second terminal (Create one if none created)
-- `3<leader>t` Open the second terminal (Create one if none created)
-- `4<leader>t` Open the second terminal (Create one if none created)
-- `5<leader>t` Open the second terminal (Create one if none created)
-- You get it. It works from `1` to `9`.
+  - [JetBrainsMono](https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/JetBrainsMono)
+  - [Other Fonts](https://www.nerdfonts.com/font-downloads)
 
-### An other way to switch or simply view opened terminal
+- **Neovim:**
 
-Shortcut: Simply `t`
+  - [Neovim 0.9+](https://github.com/neovim/neovim/releases)
+  </details>
 
-<img width="1550" alt="image" src="https://github.com/t1gu1/nvchad/assets/12479055/889dc45c-fc48-4346-a5d2-c7c24813a80d">
+## 💻 Installation
 
-## Nice nvim-tree & UI (Customised)
+Please follow these steps:
 
-It's nice to know that it will auto close if you'll go out of focus or select a file.
+1. **Preparation**:
 
-<img width="1703" alt="image" src="https://github.com/t1gu1/nvchad/assets/12479055/cd66209a-3347-4f26-a0ee-277689f69a6a">
+   - Ensure that Neovim is not running.
+   - Remove or move your current `nvim` directory (if it exists).
 
-## A Noice popup/box for searching and commands
+2. **Installation**:
 
-This is what appear when you press `:` or `/`.
-It remove that space at the bottom of the screen for that visual with nice context icons.
+   - On Linux/MacOS:
 
-<img width="997" alt="image" src="https://github.com/t1gu1/nvchad/assets/12479055/5046ccf0-a3ee-4e3f-a493-7dfa26e57782">
-<img width="997" alt="image" src="https://github.com/t1gu1/nvchad/assets/12479055/201dfb98-4b2f-4a4b-af47-6b11c2283007">
+     ```sh
+     bash <(curl -s https://raw.githubusercontent.com/Alexis12119/nvim-config/main/installer/install.sh)
+     ```
 
-## Colorfull Markdown
+   - On Windows (Powershell):
+     ```ps1
+     Invoke-WebRequest https://raw.githubusercontent.com/Alexis12119/nvim-config/main/installer/install.ps1 -UseBasicParsing | Invoke-Expression
+     ```
 
-![image](https://github.com/t1gu1/nvchad/assets/12479055/0eca0601-1c05-4f36-888b-7d57f6090ff7)
+## ✨ Features
 
-## Navigate Blazingly fast with Harpoon 2 (Added)
+- **Plugin Management**: Efficiently manage plugins with [lazy.nvim](https://github.com/folke/lazy.nvim).
+- **Compiler**: Compile your code with [compiler.nvim](https://github.com/Zeioth/compiler.nvim).
+- **Debugging**: Debug issues with [nvim-dap](https://github.com/mfussenegger/nvim-dap) with [nvim-dap-ui](https://github.com/rcarriga/nvim-dap-ui).
+- **Tests**: Run tests with [neotest](https://github.com/nvim-neotest/neotest).
+- **Project Management**: Simplify project handling with [project.nvim](https://github.com/ahmedkhalf/project.nvim).
+- **Diff Viewer**: Easily cycle through diffs with [diffview.nvim](https://github.com/sindrets/diffview.nvim).
+- **Enhanced Searching**: Improve searching with [flash.nvim](https://github.com/folke/flash.nvim).
+- **Autocompletion**: Experience intelligent autocompletion with [nvim-cmp](https://github.com/hrsh7th/nvim-cmp).
+- **Language Support**: Harness the power of Language Server Protocol with [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig).
+- **Formatting**: Keep your code clean with [conform.nvim](https://github.com/stevearc/conform.nvim).
+- **Syntax Highlighting**: Enjoy enhanced syntax highlighting with [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter).
+- **Fuzzy Finding**: Find files and more with ease using [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim).
+- **Integrated Terminal**: Access a terminal within Neovim using [toggleterm.nvim](https://github.com/akinsho/toggleterm.nvim).
+- **Git Integration**: Effortlessly manage Git repositories with [gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim) and [lazygit](https://github.com/jesseduffield/lazygit).
+- **Keymap Cheatsheet**: Quickly reference keymaps with [which-key.nvim](https://github.com/folke/which-key.nvim).
+- **Markdown Preview**: Preview your Markdown files with [markdown-preview.nvim](https://github.com/iamcco/markdown-preview.nvim).
 
-- `<leader>a` Add file in Harpoon
-- `<leader>E` Show Harpoon explorer (This is a CAP E)
-- `<leader>1` Open the second terminal (Create one if none created)
-- `<leader>2` Open the second terminal (Create one if none created)
-- `<leader>3` Open the second terminal (Create one if none created)
-- `<leader>4` Open the second terminal (Create one if none created)
-- `<leader>5` Open the second terminal (Create one if none created)
-- You get it. It works from `1` to `9`.
+## 🌟 Stargazers
 
-<img width="1611" alt="image" src="https://github.com/t1gu1/nvchad/assets/12479055/29fbd5df-d618-47bb-83ab-9a6f392140c3">
+I appreciate the support from all the Stargazers!
 
-## Cheat Sheet - The BLAZINGLY FAST way to learn about this config shorcuts
+[![Stargazers](http://reporoster.com/stars/dark/notext/Alexis12119/nvim-config)](https://github.com/Alexis12119/nvim-config/stargazers)
 
-`<leader>ch` Will open the Cheat Sheet
+### CREDITS
 
-<img width="1627" alt="image" src="https://github.com/t1gu1/nvchad/assets/12479055/18156a1c-2b61-42ae-882f-170bd8f7c40b">
+This Neovim configuration is built upon the foundation of NvChad. Special thanks to the NvChad community and developers for their fantastic work.
 
-## Even Telescope looks gorgeous
+- [NvChad](https://github.com/NvChad/NvChad)
 
-<img width="1560" alt="image" src="https://github.com/t1gu1/nvchad/assets/12479055/bd951f95-04ec-46f6-b197-248544c12e27">
+> “Make it work, make it right, make it fast.”
 
-## A lot of themes
+\- Kent Beck
 
-<img width="721" alt="image" src="https://github.com/t1gu1/nvchad/assets/12479055/d3820bfd-13b0-4449-a90f-6b4d9887e3b0">
+---

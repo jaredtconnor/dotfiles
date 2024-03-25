@@ -1,7 +1,16 @@
+-- NOTE: Lazy(Plugin Manager) options
 return {
   defaults = { lazy = true },
   install = { colorscheme = { "nvchad" } },
+  change_detection = {
+    -- automatically check for config file changes and reload the ui
+    enabled = true,
+    notify = false, -- get a notification when changes are found
+  },
 
+  diff = {
+    cmd = "diffview.nvim",
+  },
   ui = {
     icons = {
       ft = "",
@@ -10,7 +19,6 @@ return {
       not_loaded = "",
     },
   },
-
   performance = {
     rtp = {
       disabled_plugins = {
@@ -24,7 +32,7 @@ return {
         "netrwPlugin",
         "netrwSettings",
         "netrwFileHandlers",
-        "matchit",
+        -- "matchit",
         "tar",
         "tarPlugin",
         "rrhelper",
@@ -33,7 +41,7 @@ return {
         "vimballPlugin",
         "zip",
         "zipPlugin",
-        "tutor",
+        -- "tutor",
         "rplugin",
         "syntax",
         "synmenu",
@@ -44,4 +52,5 @@ return {
       },
     },
   },
+
 }
