@@ -1,23 +1,20 @@
--- EXAMPLE 
-local on_attach = require("nvchad.configs.lspconfig").on_attach
-local on_init = require("nvchad.configs.lspconfig").on_init
-local capabilities = require("nvchad.configs.lspconfig").capabilities
+local configs = require("nvchad.configs.lspconfig") 
 
-local lspconfig = require "lspconfig"
-local servers = { "html", "cssls" }
+local servers = {
+	html = {},
+	cssls = {},
+	tsserver = {},
+	lua_ls = {},
+	astro = {},
+	tailwindcss = {},
+	gdscript = {},
+} 
 
--- lsps with default config
-for _, lsp in ipairs(servers) do
-  lspconfig[lsp].setup {
-    on_attach = on_attach,
-    on_init = on_init,
-    capabilities = capabilities,
-  }
+local nomap = vim.keymap.del
+
+for server_name, server in pairs(servers) do
+	server.on_init = configs.on_init
+	server.on_attach = configs.on_attach
+	server.capabilities = configs.capabilities
+	require("lspconfig")[server_name].setup(server)
 end
-
--- typescript
-lspconfig.tsserver.setup {
-  on_attach = on_attach,
-  on_init = on_init,
-  capabilities = capabilities,
-}
