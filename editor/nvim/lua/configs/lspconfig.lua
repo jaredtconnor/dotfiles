@@ -8,6 +8,7 @@ local servers = {
 	astro = {},
 	tailwindcss = {},
 	gdscript = {},
+  eslint = {},
 } 
 
 local nomap = vim.keymap.del

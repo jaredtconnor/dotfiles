@@ -11,9 +11,10 @@ local options = {
 		"fixjson",
 		"prettierd",
 		"luacheck",
-		"stylua",
+		"stylua", 
 		"markdownlint",
 		"tailwindcss-language-server",
+    "typescript-language-server",
 	}, -- not an option from mason.nvim
 
 	PATH = "skip",
