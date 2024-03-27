@@ -1,41 +1,72 @@
 tap "homebrew/bundle"
 tap "homebrew/cask-fonts"
+tap "thezoraiz/ascii-image-converter"
 brew "coreutils"
 brew "asdf"
+brew "bash"
+brew "bat"
+brew "ccls"
+brew "clipboard"
 brew "cmatrix"
 brew "commitizen"
 brew "curl"
 brew "docker"
 brew "docker-compose"
 brew "docker-machine"
-brew "eza" 
-brew "lsd"
+brew "eza"
 brew "fd"
+brew "figlet"
 brew "fzf"
 brew "gh"
 brew "git"
+brew "gpatch"
 brew "graphicsmagick"
+brew "harfbuzz"
 brew "jq"
 brew "lazygit"
+brew "lerna"
+brew "pango"
+brew "lolcat"
+brew "lsd"
+brew "lua-language-server"
+brew "luarocks"
 brew "mas"
 brew "neovim"
+brew "neovim-remote"
 brew "nvm"
 brew "pnpm"
 brew "python-setuptools"
+brew "railway"
+brew "rich-cli"
 brew "ripgrep"
+brew "tealdeer"
 brew "tmux"
 brew "tree"
 brew "vips"
 brew "wget"
-brew "zsh" 
-brew "railway"
+brew "xclip"
+brew "xsel"
+brew "zoxide"
+brew "zsh"
+brew "thezoraiz/ascii-image-converter/ascii-image-converter"
 cask "font-jetbrains-mono"
-cask "mactex" 
+cask "mactex"
+mas "Adobe Lightroom", id: 1451544217
+mas "Bitwarden", id: 1352778147
+mas "DaVinci Resolve", id: 571213070
+mas "Day One", id: 1055511498
+mas "iMovie", id: 408981434
+mas "Keynote", id: 409183694
+mas "Kindle", id: 302584613
+mas "Numbers", id: 409203825
+mas "Pages", id: 409201541
+mas "Reeder", id: 1529448980
+mas "Slack", id: 803453959
+mas "Spark", id: 1176895641
+mas "Spark Desktop", id: 6445813049
+mas "The Unarchiver", id: 425424353
+mas "Things", id: 904280696
+mas "Xcode", id: 497799835
 vscode "farosystemappender constructor"
 vscode "astro-build.astro-vscode"
-vscode "bradlc.vscode-tailwindcss"
-vscode "enkia.tokyo-night"
-vscode "ms-vscode.vscode-typescript-next"
-vscode "svelte.svelte-vscode"
-vscode "vscode-icons-team.vscode-icons"
 vscode "vscodevim.vim"

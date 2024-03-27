@@ -4,6 +4,8 @@ eval "$(starship init zsh)"
 #!/usr/bin/env bash
 # Get zgen
 source ~/.zgenom/zgenom.zsh
+ 
+eval "$(/opt/homebrew/bin/brew shellenv)"
 
 export DOTFILES="$HOME/.dotfiles"
 export GPG_TTY=$TTY # https://unix.stackexchange.com/a/608921
