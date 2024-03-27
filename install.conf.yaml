@@ -69,6 +69,10 @@
       path: ./shell/bash/.bashrc
       force: true
 
+    ~/.bash_profile:
+      path: ./shell/bash/.bash_profile
+      force: true
+
     ~/bin:
       glob: true
       path: ./shell/functions/*
