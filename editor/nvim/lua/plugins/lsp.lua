@@ -1,11 +1,4 @@
-return { 
-  {
-    "stevearc/conform.nvim",
-    -- event = 'BufWritePre', -- uncomment for format on save
-    config = function()
-      require "configs.conform"
-    end,
-  },
+return {
 
   -- These are some examples, uncomment them if you want to see them work!
   {
@@ -15,16 +8,9 @@ return {
       require "configs.lspconfig"
     end,
   },
-  
-  {
-  	"williamboman/mason.nvim",
-  	opts = require("configs.mason")
-  },
-  
-  {
-  	"nvim-treesitter/nvim-treesitter",
-  	opts =  require("configs.treesitter")
 
+  {
+    "williamboman/mason.nvim",
+    opts = require "configs.mason",
   },
-
 }
