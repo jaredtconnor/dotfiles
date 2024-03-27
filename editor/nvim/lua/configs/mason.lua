@@ -1,5 +1,3 @@
-
-
 local options = {
 	auto_install = true,
 
