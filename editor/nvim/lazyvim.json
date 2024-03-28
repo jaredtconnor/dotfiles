@@ -1,0 +1,10 @@
+{
+  "extras": [
+
+  ],
+  "news": {
+    "NEWS.md": "2850",
+    "doc/news.txt": "24600"
+  },
+  "version": 3
+}
