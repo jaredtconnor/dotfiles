@@ -1,9 +1,36 @@
-local overrides = require("configs.treesitter")
-
+-- NOTE: Treesitter configuration
 return {
-
-  {
-    "nvim-treesitter/nvim-treesitter",
-    opts = overrides.treesitter,
-  },
+	{
+		"nvim-treesitter/nvim-treesitter",
+		lazy = false,
+		opts = {
+			ensure_installed = { -- Treesitter installed languages
+				"vim",
+				"lua",
+				"html",
+				"css",
+				"javascript",
+				"typescript",
+				"tsx",
+				"c",
+				"markdown",
+				"markdown_inline",
+				"bash",
+				"rust",
+				"go",
+				"matlab",
+				"arduino",
+				"fortran",
+				"python",
+				"java",
+				"json",
+				"cpp",
+				"latex",
+				"vala",
+				"yaml",
+				"dockerfile",
+				"nix",
+			},
+		},
+	},
 }

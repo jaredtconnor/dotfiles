@@ -1,86 +1,82 @@
 local M = {}
 
-M.general = {
-	n = {
-		["<C-h>"] = { "<cmd> TmuxNavigateLeft<CR>", "window left" },
-		["<C-l>"] = { "<cmd> TmuxNavigateRight<CR>", "window right" },
-		["<C-j>"] = { "<cmd> TmuxNavigateDown<CR>", "window down" },
-		["<C-k>"] = { "<cmd> TmuxNavigateUp<CR>", "window up" },
-	},
-}
-
 M.mason = {
-	ensure_installed = {
-		-- lua
-		"lua-language-server",
-		"stylua",
-		-- web
-		"css-lsp",
-		"html-lsp",
-		"eslint-lsp",
-		"typescript-language-server",
-		"js-debug-adapter",
-		"deno",
-		"prettier",
-		"prettierd",
-		-- go
-		"gopls",
-		"golangci-lint",
-		"golangci-lint-langserver",
-		"goimports",
-		"goimports-reviser",
-		-- java
-		"java-language-server",
-		"jdtls",
-		-- azure
-		"azure-pipelines-language-server",
-		-- bash
-		"shellcheck",
-		"bash-language-server",
-		-- python
-		"pyright",
-		"flake8",
-		"black",
-		"debugpy",
-		"mypy",
-		"pydocstyle",
-		"pylint",
-		"pyre",
-		"autoflake",
-		"autopep8",
-		"python-lsp-server",
-	},
+  ensure_installed = {
+    -- lua stuff
+    "lua-language-server",
+    "stylua",
+
+    -- web dev stuff
+    "typescript-language-server",
+    "eslint-lsp",
+    "prettier",
+    "js-debug-adapter",
+    "tailwindcss-language-server",
+
+    -- c/cpp stuff
+    "clangd",
+    "clang-format",
+    "codelldb",
+
+    -- rust
+    "rust-analyzer",
+
+    -- python
+    "pyright",
+    "ruff-lsp",
+    "mypy",
+    "black",
+    "debugpy",
+
+    -- go
+    "gopls",
+    "goimports-reviser",
+    "golines",
+    "gofumpt",
+  },
 }
 
-
-M.copilot = {
-	-- Possible configurable fields can be found on:
-	-- https://github.com/zbirenbaum/copilot.lua#setup-and-configuration
-	suggestion = {
-		enable = false,
-	},
-	panel = {
-		enable = false,
-	},
-	filetypes = {
-		markdown = true,
-		go = true,
-		javascript = true,
-		typescript = true,
-		yaml = true,
-	},
+M.treesitter = {
+  ensure_installed = {
+    "vim",
+    "lua",
+    "html",
+    "css",
+    "javascript",
+    "typescript",
+    "tsx",
+    "c",
+    "markdown",
+    "markdown_inline",
+    "bash",
+    "rust",
+    "go",
+    "matlab",
+    "arduino",
+    "fortran",
+    "python",
+    "java",
+    "json",
+    "cpp",
+    "latex",
+    "vala",
+    "yaml",
+    "dockerfile",
+    "nix",
+  },
 }
 
-M.nvimcmp = {
-	sources = {
-		{ name = "nvim_lsp", group_index = 2 },
-		{ name = "copilot", group_index = 2 },
-		{ name = "luasnip", group_index = 2 },
-		{ name = "buffer", group_index = 2 },
-		{ name = "nvim_lua", group_index = 2 },
-		{ name = "path", group_index = 2 },
-	},
+M.nvimtree = {
+  git = {
+    enable = true,
+  },
+  renderer = {
+    highlight_git = true,
+    icons = {
+      show = {
+        git = true,
+      },
+    },
+  },
 }
-
 return M
-
