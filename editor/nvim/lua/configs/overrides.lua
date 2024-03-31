@@ -1,4 +1,3 @@
-
 local M = {}
 
 M.general = {
@@ -7,42 +6,6 @@ M.general = {
 		["<C-l>"] = { "<cmd> TmuxNavigateRight<CR>", "window right" },
 		["<C-j>"] = { "<cmd> TmuxNavigateDown<CR>", "window down" },
 		["<C-k>"] = { "<cmd> TmuxNavigateUp<CR>", "window up" },
-	},
-}
-
-M.treesitter = {
-	ensure_installed = {  
-    "astro",
-		"bash",
-		"c",
-		"css",
-		"go",
-		"gomod",
-		"gosum",
-		"html",
-		"java",
-		"javascript",
-		"json",
-		"jsonc",
-		"lua",
-		"markdown_inline",
-		"markdown",
-    "mdx",
-		"python",
-		"typescript",
-		"vim",
-		"vimdoc",
-		"yaml",
-	},
-	highlight = {
-		enable = true,
-		additional_vim_regex_highlighting = false,
-	},
-	indent = {
-		enable = true,
-		-- disable = {
-		--   "python"
-		-- },
 	},
 }
 
@@ -89,30 +52,6 @@ M.mason = {
 	},
 }
 
--- git support in nvimtree
-M.nvimtree = {
-	git = {
-		enable = true,
-	},
-	filters = {
-		dotfiles = false,
-	},
-	view = {
-		width = 40,
-	},
-	renderer = {
-		group_empty = true,
-		highlight_git = true,
-		icons = {
-			show = {
-				git = true,
-			},
-		},
-	},
-	sort = {
-		sorter = "case_sensitive",
-	},
-}
 
 M.copilot = {
 	-- Possible configurable fields can be found on:

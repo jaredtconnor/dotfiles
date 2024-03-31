@@ -1,5 +1,5 @@
 function nvims() {
-	items=("default" "NvChad")
+	items=("default" "NvChad" "LazyVim")
 	config=$(printf "%s\n" "${items[@]}" | fzf --prompt=" Neovim Config  " --height=~50% --layout=reverse --border --exit-0)
 	if [[ -z $config ]]; then
 		echo "Nothing selected"
