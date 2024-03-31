@@ -18,12 +18,12 @@ local function get_header()
 end
 
 M.ui = {
-  theme = "catppuccin",
+  theme = "one_light",
   statusline = {
     theme = "minimal", -- default/vscode/vscode_colored/minimal
     separator_style = "round", -- default/round/block/arrow separators only for "default"; (round and block for the minimal only)
     overriden_modules = nil,
-    --  theme_toggle = { "catppuccin", "yoru" },
+    --  theme_toggle = { "one_light", "yoru" },
   },
   tabufline = {
     lazyload = true,
@@ -42,9 +42,9 @@ M.ui = {
       { "󰔚  Find All", "Spc f a", "Telescope find_all" },
       { "󰈚  Recent Files", "Spc f o", "Telescope oldfiles" },
       { "󰈭  Find Word", "Spc f w", "Telescope live_grep" },
-      -- { "  Find Projects", "Spc f p", "Telescope projects" },
-      -- { "󰔚  Find Sessions", "Spc f s", "Telescope persisted" },
-      -- { "  Themes", "Spc f t", "Telescope themes" },
+      { "  Find Projects", "Spc f p", "Telescope projects" },
+      { "󰔚  Find Sessions", "Spc f s", "Telescope persisted" },
+      { "  Themes", "Spc f t", "Telescope themes" },
       { "  Mappings", "Spc c h", "NvCheatsheet" },
     },
   },
