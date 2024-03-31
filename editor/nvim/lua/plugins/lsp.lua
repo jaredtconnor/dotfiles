@@ -1,4 +1,4 @@
-local overrides = require "configs.overrides"
+local overrides = require "configs.mason" 
 
 return {
 
