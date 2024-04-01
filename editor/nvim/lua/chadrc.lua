@@ -18,12 +18,12 @@ local function get_header()
 end
 
 M.ui = {
-  theme = "one_light",
+  theme = "tokyodark",
   statusline = {
     theme = "minimal", -- default/vscode/vscode_colored/minimal
     separator_style = "round", -- default/round/block/arrow separators only for "default"; (round and block for the minimal only)
     overriden_modules = nil,
-    --  theme_toggle = { "one_light", "yoru" },
+    --  theme_toggle = { "tokyodark", "yoru" },
   },
   tabufline = {
     lazyload = true,
