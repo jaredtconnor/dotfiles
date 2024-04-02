@@ -36,8 +36,8 @@ map("n", "<leader>dd", "<cmd>lua require'dapui'.toggle()<CR>", { desc = "Dap UI"
 map("n", "<leader>dl", "<cmd>lua require'dap'.run_last()<CR>", { desc = "Run Last", silent = true })
 
 -- ChatGPT key mappings
-
-map("n", "<leader>cg", "<cmd> ChatGPT <CR>", { desc = "ChatGPT" })
+map("n", "<leader>ca", "<cmd> ChatGPT <CR>", { desc = "ChatGPT" })
+map({ "n", "v" }, "<leader>cl", "<cmd> Gen <CR>", { desc = "Gen.nvim" })
 
 -- Todo Comments mappings
 
