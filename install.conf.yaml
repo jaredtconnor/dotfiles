@@ -21,6 +21,11 @@
       glob: true
       path: ./editor/nvim
       force: false
+    ~/.config/LazyVim/:
+      create: true
+      glob: true
+      path: ./editor/lazyvim/
+      force: false
     # VS Code Linux
     ~/.config/Code/User:
       if: "[[ `uname` = Linux ]]"
