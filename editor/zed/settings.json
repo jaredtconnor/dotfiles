@@ -7,21 +7,119 @@
 // custom settings, run the `open default settings` command
 // from the command palette or from `Zed` application menu.
 {
-  "theme": "Ayu Dark",
-  "base_keymap": "VSCode",
-  "vim_mode": true,
-  "buffer_font_family": "JetBrains Mono",
-  "buffer_font_size": 12,
-  "relative_line_numbers": true,
-  "cursor_blink": false,
-  "scrollbar": {
-    "show": "never"
-  },
-  "terminal": {
-    "font_family": "JetBrains Mono",
-    "font_size": 15,
-    "line_height": {
-      "custom": 1.5
+    // ----------------------------------------------
+    // Theme
+    // ----------------------------------------------
+    "theme": "Ayu Dark",
+    "buffer_font_family": "JetBrains Mono",
+    // ----------------------------------------------
+    // Appearance
+    // ----------------------------------------------
+    "buffer_font_size": 12,
+    "relative_line_numbers": true,
+    "cursor_blink": true,
+    "scrollbar": {
+        "show": "system",
+        "git_diff": true
+    },
+    "toolbar": {
+        "breadcrumbs": true,
+        "quick_actions": true
+    },
+    "project_panel": {
+        "dock": "left",
+        "git_status": true
+    },
+    // ----------------------------------------------
+    // Editor
+    // ----------------------------------------------
+    "always_treat_brackets_as_autoclosed": true,
+    "tab_size": 4,
+    "soft_wrap": "none",
+    "autosave": "on_focus_change",
+    // ----------------------------------------------
+    // Git
+    // ----------------------------------------------
+    "git": {
+        "git_gutter": "tracked_files",
+        "inline_blame": {
+            "enabled": true
+        }
+    },
+    // ----------------------------------------------
+    // LSP
+    // ----------------------------------------------
+    "enable_language_server": true,
+    "lsp": {},
+    "format_on_save": "on",
+    "inlay_hints": {
+        "enabled": true,
+        "show_type_hints": true,
+        "show_parameter_hints": true,
+        "show_other_hints": true,
+        "edit_debounce_ms": 700,
+        "scroll_debounce_ms": 50
+    },
+    "language_overrides": {
+        "C": {
+            "format_on_save": "off",
+            "preferred_line_length": 64,
+            "soft_wrap": "preferred_line_length"
+        },
+        "JSON": {
+            "tab_size": 4
+        },
+        "JavaScript": {
+            "format_on_save": {
+                "external": {
+                    "command": "prettier",
+                    "arguments": [
+                        "--stdin-filepath",
+                        "{buffer_path}"
+                    ]
+                }
+            }
+        },
+        "Python": {
+            "format_on_save": {
+                "external": {
+                    "command": "black",
+                    "arguments": [
+                        "-"
+                    ]
+                }
+            }
+        },
+        "Astro": {},
+        "Go": {},
+        "C++": {},
+        "Markdown": {},
+        "CSS": {},
+        "TypeScript": {},
+        "TSX": {}
+    },
+    // ----------------------------------------------
+    // Fomratters
+    // ----------------------------------------------
+    "formatter": "language_server",
+    // ----------------------------------------------
+    // Keymaps
+    // ----------------------------------------------
+    "base_keymap": "VSCode",
+    "vim_mode": true,
+    // ----------------------------------------------
+    // Terminal
+    // ----------------------------------------------
+    "terminal": {
+        "blinking": "off",
+        "font_family": "JetBrains Mono",
+        "font_size": 15,
+        "line_height": {
+            "custom": 1.5
+        },
+        "button": true
     }
-  }
+    // ----------------------------------------------
+    // Utils
+    // ----------------------------------------------
 }
