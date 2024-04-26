@@ -50,7 +50,7 @@
       path: ./editor/vscode/macos/*.json
       force: true
     # Zed 
-    ~/.config/zed/keymaps.json:
+    ~/.config/zed/keymap.json:
       path: ./editor/zed/keymap.json
       force: false
     ~/.config/zed/settings.json:
