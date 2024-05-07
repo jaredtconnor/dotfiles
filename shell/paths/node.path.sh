@@ -4,3 +4,5 @@
 # https://github.com/asdf-vm/asdf-nodejs/issues/42#issuecomment-386783059
 
 export PATH="$PATH:$HOME/.yarn/bin"
+
+export PNPM_HOME=/Users/jaredconnor/Library/pnpm/

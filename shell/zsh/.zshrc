@@ -132,7 +132,7 @@ source /opt/homebrew/opt/asdf/libexec/asdf.sh
 source /opt/homebrew/share/zsh/site-functions
 
 # pnpm
-export PNPM_HOME="/Users/elliot/Library/pnpm"
+export PNPM_HOME="/Users/jaredconnor/Library/pnpm"
 case ":$PATH:" in
   *":$PNPM_HOME:"*) ;;
   *) export PATH="$PNPM_HOME:$PATH" ;;
