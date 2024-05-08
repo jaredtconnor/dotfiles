@@ -1,3 +1,8 @@
+Host mac-studio
+    HostName 192.168.1.72
+    User jaredconnor
+  IdentityFile ~/.ssh/id_rsa
+
 Host dns.home
   HostName 192.168.1.3
   User user1
