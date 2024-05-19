@@ -25,7 +25,6 @@ if ! zgenom saved; then
     zgenom ohmyzsh plugins/kubectl
     zgenom ohmyzsh plugins/docker
     zgenom ohmyzsh plugins/docker-compose
-    zgenom load zsh-users/zsh-autosuggestions
     zgenom load jocelynmallon/zshmarks
     zgenom load denolfe/git-it-on.zsh
     zgenom load caarlos0/zsh-mkc
@@ -41,7 +40,10 @@ if ! zgenom saved; then
 
     zgenom load ntnyq/omz-plugin-pnpm
 
-    # These 2 must be in this order
+    zgenom load zsh-users/zsh-autosuggestions
+    zgenom load zsh-users/zsh-completions 
+
+    # These 2 must be in this order 
     zgenom load zsh-users/zsh-syntax-highlighting
     zgenom load zsh-users/zsh-history-substring-search
 
@@ -76,17 +78,17 @@ setopt hist_verify
 setopt inc_append_history
 
 # Share history across all your terminal windows
-setopt share_history
+setopt sharehistory 
 #setopt noclobber
 
 # set some more options
 setopt pushd_ignore_dups
-#setopt pushd_silent
 
 # Increase history size
 HISTSIZE=1000000000
-SAVEHIST=1000000000
-HISTFILE=~/.zsh_history
+SAVEHIST=$HISTSIZE
+HISTFILE=~/.zsh_history 
+HISDUP=erase 
 export HISTIGNORE="ls:cd:cd -:pwd:exit:date:* --help"
 
 # Return time on long running processes

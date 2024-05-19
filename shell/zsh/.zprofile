@@ -1,4 +1,3 @@
-
 FPATH=opt/homebrew/share/zsh/site-functions:$FPATH
 export PATH="/opt/local/bin:/opt/local/sbin:$PATH"
 
