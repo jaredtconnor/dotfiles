@@ -92,6 +92,9 @@
     ~/.config/wezterm/:
       glob: true
       path: ./terminal/wezterm/*
+    ~/.config/kitty/:
+      glob: true
+      path: ./terminal/kitty/*
     # ------------------------------------------------------------
     # tools
     # ------------------------------------------------------------
