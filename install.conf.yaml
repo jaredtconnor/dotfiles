@@ -101,7 +101,7 @@
     ~/.tmux.conf:
       path: ./tools/tmux/.tmux.conf
     ~/.config/tmux/tmux.reset.conf:
-      path: ./tools/tmux/.tmux.conf
+      path: ./tools/tmux/.tmux.reset.conf
     ~/.gitconfig:
       path: ./tools/git/.gitconfig
     ~/.prettierrc.js:
