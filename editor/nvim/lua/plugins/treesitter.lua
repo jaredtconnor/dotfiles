@@ -5,6 +5,7 @@ return {
     lazy = false,
     opts = {
       ensure_installed = { -- Treesitter installed languages
+        "c_sharp",
         "astro",
         "vim",
         "lua",
