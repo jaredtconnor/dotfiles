@@ -99,7 +99,7 @@
     # tools
     # ------------------------------------------------------------
     ~/.tmux.conf:
-      path: ./tools/tmux/.tmux.minimal.conf
+      path: ./tools/tmux/.tmux.conf
     ~/.gitconfig:
       path: ./tools/git/.gitconfig
     ~/.prettierrc.js:
