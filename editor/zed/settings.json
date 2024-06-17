@@ -7,119 +7,146 @@
 // custom settings, run the `open default settings` command
 // from the command palette or from `Zed` application menu.
 {
-    // ----------------------------------------------
-    // Theme
-    // ----------------------------------------------
-    "theme": "Tokyo Night",
-    "buffer_font_family": "JetBrains Mono",
-    // ----------------------------------------------
-    // Appearance
-    // ----------------------------------------------
-    "buffer_font_size": 12,
-    "relative_line_numbers": true,
-    "cursor_blink": true,
-    "scrollbar": {
-        "show": "system",
-        "git_diff": true
-    },
-    "toolbar": {
-        "breadcrumbs": true,
-        "quick_actions": true
-    },
-    "project_panel": {
-        "dock": "left",
-        "git_status": true
-    },
-    // ----------------------------------------------
-    // Editor
-    // ----------------------------------------------
-    "always_treat_brackets_as_autoclosed": true,
-    "tab_size": 4,
-    "soft_wrap": "none",
-    "autosave": "on_focus_change",
-    // ----------------------------------------------
-    // Git
-    // ----------------------------------------------
-    "git": {
-        "git_gutter": "tracked_files",
-        "inline_blame": {
-            "enabled": true
-        }
-    },
-    // ----------------------------------------------
-    // LSP
-    // ----------------------------------------------
-    "enable_language_server": true,
-    "lsp": {},
-    "format_on_save": "on",
-    "inlay_hints": {
-        "enabled": true,
-        "show_type_hints": true,
-        "show_parameter_hints": true,
-        "show_other_hints": true,
-        "edit_debounce_ms": 700,
-        "scroll_debounce_ms": 50
-    },
-    "language_overrides": {
-        "C": {
-            "format_on_save": "off",
-            "preferred_line_length": 64,
-            "soft_wrap": "preferred_line_length"
-        },
-        "JSON": {
-            "tab_size": 4
-        },
-        "JavaScript": {
-            "format_on_save": {
-                "external": {
-                    "command": "prettier",
-                    "arguments": [
-                        "--stdin-filepath",
-                        "{buffer_path}"
-                    ]
-                }
-            }
-        },
-        "Python": {
-            "format_on_save": {
-                "external": {
-                    "command": "black",
-                    "arguments": [
-                        "-"
-                    ]
-                }
-            }
-        },
-        "Astro": {},
-        "Go": {},
-        "C++": {},
-        "Markdown": {},
-        "CSS": {},
-        "TypeScript": {},
-        "TSX": {}
-    },
-    // ----------------------------------------------
-    // Fomratters
-    // ----------------------------------------------
-    "formatter": "language_server",
-    // ----------------------------------------------
-    // Keymaps
-    // ----------------------------------------------
-    "base_keymap": "VSCode",
-    "vim_mode": true,
-    // ----------------------------------------------
-    // Terminal
-    // ----------------------------------------------
-    "terminal": {
-        "blinking": "off",
-        "font_family": "JetBrains Mono",
-        "font_size": 12,
-        "line_height": {
-            "custom": 1.5
-        },
-        "button": true
+  // ----------------------------------------------
+  // Theme
+  // ----------------------------------------------
+  "theme": "Tokyo Night",
+  "buffer_font_family": "JetBrains Mono",
+  // ----------------------------------------------
+  // Appearance
+  // ----------------------------------------------
+  "buffer_font_size": 12,
+  "ui_font_size": 14,
+  "relative_line_numbers": true,
+  "cursor_blink": true,
+  "scrollbar": {
+    "show": "system",
+    "git_diff": true
+  },
+  "toolbar": {
+    "breadcrumbs": true,
+    "quick_actions": true
+  },
+  "project_panel": {
+    "dock": "left",
+    "git_status": true
+  },
+  "tab_bar": {
+    "show": true
+  },
+  // ----------------------------------------------
+  // Editor
+  // ----------------------------------------------
+  "always_treat_brackets_as_autoclosed": true,
+  "tab_size": 4,
+  "soft_wrap": "none",
+  "autosave": "on_focus_change",
+  // ----------------------------------------------
+  // Coding
+  // ----------------------------------------------
+  "assistant": {
+    "version": "1",
+    "provider": {
+      "name": "openai",
+      "type": "openai",
+      "default_model": "gpt-4-turbo-preview",
+      "api_url": "http://localhost:11434/v1"
     }
-    // ----------------------------------------------
-    // Utils
-    // ----------------------------------------------
+  },
+  // ----------------------------------------------
+  // Git
+  // ----------------------------------------------
+  "git": {
+    "git_gutter": "tracked_files",
+    "inline_blame": {
+      "enabled": true
+    }
+  },
+  // ----------------------------------------------
+  // LSP
+  // ----------------------------------------------
+  "enable_language_server": true,
+  "lsp": {},
+  "format_on_save": "on",
+  "inlay_hints": {
+    "enabled": true,
+    "show_type_hints": true,
+    "show_parameter_hints": true,
+    "show_other_hints": true,
+    "edit_debounce_ms": 700,
+    "scroll_debounce_ms": 50
+  },
+  "languages": {
+    "TypeScript": {
+      // Refer https://github.com/jellydn/ts-inlay-hints for how to setup for Neovim and VSCode
+      "inlay_hints": {
+        "enabled": true,
+        "show_parameter_hints": false,
+        "show_other_hints": true,
+        "show_type_hints": true
+      }
+      // Uncomment below if use vtsls instead of typescript-language-server
+      // "language_servers": ["!typescript-language-server", "vtsls", ".."]
+    }
+  },
+  "language_overrides": {
+    "C": {
+      "format_on_save": "off",
+      "preferred_line_length": 64,
+      "soft_wrap": "preferred_line_length"
+    },
+    "JSON": {
+      "tab_size": 4
+    },
+    "JavaScript": {
+      "format_on_save": {
+        "external": {
+          "command": "prettier",
+          "arguments": ["--stdin-filepath", "{buffer_path}"]
+        }
+      }
+    },
+    "Python": {
+      "format_on_save": {
+        "external": {
+          "command": "black",
+          "arguments": ["-"]
+        }
+      }
+    },
+    "Astro": {},
+    "Go": {},
+    "C++": {},
+    "Markdown": {},
+    "CSS": {},
+    "TypeScript": {},
+    "TSX": {}
+  },
+  // ----------------------------------------------
+  // Fomratters
+  // ----------------------------------------------
+  "formatter": "language_server",
+  // ----------------------------------------------
+  // Keymaps
+  // ----------------------------------------------
+  "base_keymap": "VSCode",
+  "vim_mode": true,
+  // ----------------------------------------------
+  // Terminal
+  // ----------------------------------------------
+  "terminal": {
+    "blinking": "off",
+    "font_family": "JetBrains Mono",
+    "font_size": 12,
+    "line_height": {
+      "custom": 1.5
+    },
+    "button": true,
+    "env": {
+      "EDITOR": "zed --wait"
+    }
+  }
+  // ----------------------------------------------
+  // Utils
+  // ----------------------------------------------
 }
