@@ -10,6 +10,11 @@
   // ----------------------------------------------
   // Theme
   // ----------------------------------------------
+  "language_models": {
+    "openai": {
+      "api_url": "http://localhost:11434/v1"
+    }
+  },
   "theme": "Tokyo Night",
   "buffer_font_family": "JetBrains Mono",
   // ----------------------------------------------
@@ -45,13 +50,12 @@
   // Coding
   // ----------------------------------------------
   "assistant": {
-    "version": "1",
-    "provider": {
-      "name": "openai",
-      "type": "openai",
-      "default_model": "gpt-4-turbo-preview",
-      "api_url": "http://localhost:11434/v1"
-    }
+    "default_model": {
+      "provider": "openai",
+      "model": "gpt-4-turbo-preview"
+    },
+    "version": "2",
+    "provider": null
   },
   // ----------------------------------------------
   // Git
