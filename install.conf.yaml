@@ -155,6 +155,11 @@
       url: https://github.com/asdf-community/asdf-deno.git
       global: latest
       versions:
+        - latest 
+    - plugin: bun
+      url: https://github.com/cometkim/asdf-bun
+      global: latest
+      versions: 
         - latest
 - shell:
     - command: ./tools/git/set-gitconfig.sh
