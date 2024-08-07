@@ -1,0 +1,6 @@
+return {
+	cmd =
+    { "svelteserver", "--stdio" }
+}
+
+

@@ -32,6 +32,7 @@ mason_lspconfig.setup({
     "cssls",
     "html",
     "tailwindcss",
+    "svelte",
 
     -- c/cpp stuff
     "clangd",
