@@ -58,7 +58,11 @@
             // Save file
             "ctrl-s": "workspace::Save",
             // File finder
-            "space space": "file_finder::Toggle"
+            "space space": "file_finder::Toggle",
+            // Open Dock
+            "space e": "workspace::ToggleLeftDock",
+            // Close window
+            "space q": "pane::CloseActiveItem"
         }
     },
     // Comment code
