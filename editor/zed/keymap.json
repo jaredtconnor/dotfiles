@@ -62,7 +62,8 @@
             // Open Dock
             "space e": "workspace::ToggleLeftDock",
             // Close window
-            "space q": "pane::CloseActiveItem"
+            "space q": "pane::CloseActiveItem",
+            "space q a": "pane::CloseAllItems"
         }
     },
     // Comment code

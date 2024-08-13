@@ -10,6 +10,9 @@
     // ----------------------------------------------
     // Theme
     // ----------------------------------------------
+    "auto_update_extensions": {
+        "html": false
+    },
     "language_models": {
         "openai": {
             "version": "1",
@@ -129,7 +132,18 @@
         "C++": {},
         "Markdown": {},
         "CSS": {},
-        "TypeScript": {},
+        "TypeScript": {
+            "preferences": {
+                "includeInlayParameterNameHints": "all",
+                "includeInlayParameterNameHintsWhenArgumentMatchesName": true,
+                "includeInlayFunctionParameterTypeHints": true,
+                "includeInlayVariableTypeHints": true,
+                "includeInlayVariableTypeHintsWhenTypeMatchesName": true,
+                "includeInlayPropertyDeclarationTypeHints": true,
+                "includeInlayFunctionLikeReturnTypeHints": true,
+                "includeInlayEnumMemberValueHints": true,
+            }
+        },
         "TSX": {}
     },
     // ----------------------------------------------
