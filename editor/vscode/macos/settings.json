@@ -671,7 +671,7 @@
     "githubPullRequests.pullBranch": "never",
     "typescript.inlayHints.parameterTypes.enabled": true,
     "workbench.tree.renderIndentGuides": "always",
-    "typescript.tsserver.log": "verbose",
+    "typescript.tsserver.log": "off",
     "explorer.autoReveal": true,
     // "editor.experimental.stickyScroll.enabled": true,
     "deno.enable": false,
