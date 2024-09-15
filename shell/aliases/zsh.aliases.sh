@@ -98,4 +98,10 @@ alias jqkeys="jq -r 'select(objects)|=[.] | map( paths(scalars) ) | map( map(sel
 alias reflux='osascript -e "tell application \"Flux\" to quit" && open -a Flux'
 
 # nvim aliases
-alias nvim-chad="NVIM_APPNAME=NvChad nvim"
+alias nvim-chad="NVIM_APPNAME=NvChad nvim" 
+
+# kitty aliases
+alias ssh-orig="ssh"
+alias ssh="kitten ssh"
+
+
