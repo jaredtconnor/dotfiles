@@ -1,8 +1,21 @@
-.PHONY: install karabiner phoenix macos brew brew-restore phoenix-dev
+.PHONY: install install-osx install-linux karabiner phoenix macos brew brew-restore phoenix-dev
 
 # Run dotbot install script
 install:
-	./install
+	@if [ "$(shell uname)" = "Darwin" ]; then \
+		make install-macos; \
+	elif [ "$(shell uname)" = "Linux" ]; then \
+		make install-linux; \
+	else \
+		echo "Unsupported OS"; \
+		exit 1; \
+	fi
+
+install-linux:
+	./install-linux.sh
+
+install-macos:
+	./install-macos.sh
 
 link:
 	./install --only link
