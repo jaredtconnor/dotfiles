@@ -1,21 +1,28 @@
-.PHONY: install install-osx install-linux karabiner phoenix macos brew brew-restore phoenix-dev
+.PHONY: install install-osx install-linux install-windows karabiner phoenix macos brew brew-restore phoenix-dev
 
+# Run dotbot install script
 # Run dotbot install script
 install:
 	@if [ "$(shell uname)" = "Darwin" ]; then \
 		make install-macos; \
 	elif [ "$(shell uname)" = "Linux" ]; then \
 		make install-linux; \
+	elif [ "$(OS)" = "Windows_NT" ]; then \
+		make install-windows; \
 	else \
 		echo "Unsupported OS"; \
 		exit 1; \
 	fi
 
+
 install-linux:
 	./install-linux.sh
 
 install-macos:
-	./install-macos.sh
+	./install-macos.sh 
+
+install-windows:
+	powershell.exe -ExecutionPolicy Bypass -File ./install.ps1
 
 link:
 	./install --only link
