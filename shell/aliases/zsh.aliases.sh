@@ -101,7 +101,4 @@ alias reflux='osascript -e "tell application \"Flux\" to quit" && open -a Flux'
 alias nvim-chad="NVIM_APPNAME=NvChad nvim" 
 
 # kitty aliases
-alias ssh-orig="ssh"
-alias ssh="kitten ssh"
-
 
