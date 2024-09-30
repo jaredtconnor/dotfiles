@@ -2,7 +2,7 @@
   // Navigation
   {
     "key": "ctrl-h",
-    "command": "workbench.action.navigateLeft",
+    "command": "workbench.action.navigateLeft"
   },
   {
     "key": "ctrl-l",
