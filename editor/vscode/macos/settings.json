@@ -688,4 +688,6 @@
     "tailwind-fold.foldedTextBackgroundColor": "#2F2F2F",
     "tailwind-fold.autoFold": false,
     "tailwind-fold.showTailwindImage": false,
+    "svelte.enable-ts-plugin": true,
+    "git.confirmSync": false,
 }
