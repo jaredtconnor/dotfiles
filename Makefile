@@ -4,7 +4,7 @@
 # Run dotbot install script
 install:
 	@if [ "$(shell uname)" = "Darwin" ]; then \
-		make install-macos; \
+		make install-osx; \
 	elif [ "$(shell uname)" = "Linux" ]; then \
 		make install-linux; \
 	elif [ "$(OS)" = "Windows_NT" ]; then \
@@ -18,8 +18,8 @@ install:
 install-linux:
 	./install-linux.sh
 
-install-macos:
-	./install-macos.sh 
+install-osx:
+	./install-osx.sh 
 
 install-windows:
 	powershell.exe -ExecutionPolicy Bypass -File ./install.ps1
