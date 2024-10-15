@@ -16,4 +16,9 @@ return {
     lazy = true,
     name = "catppuccin",
   },
+  {
+    "scottmckendry/cyberdream.nvim",
+    lazy = false,
+    priority = 1000,
+}
 }
