@@ -1,5 +1,3 @@
-# theme
-# 
 import = ["~/.config/alacritty/cyberdream.toml"]
 
 [cursor]
