@@ -2,7 +2,8 @@
 
 return {
 
-  -- Use last-used colorscheme
+  -- Use last-used colorscheme 
+  { "scottmckendry/cyberdream.nvim", lazy = false, priority = 100 },
   { "rafi/neo-hybrid.vim", priority = 100, lazy = false },
   { "rafi/awesome-vim-colorschemes", lazy = false },
   { "AlexvZyl/nordic.nvim" },
@@ -11,14 +12,11 @@ return {
   { "olimorris/onedarkpro.nvim" },
   { "EdenEast/nightfox.nvim" },
   { "nyoom-engineering/oxocarbon.nvim" },
+  { "catppuccin/nvim", lazy = true, name = "catppuccin", },
   {
-    "catppuccin/nvim",
-    lazy = true,
-    name = "catppuccin",
-  },
-  {
-    "scottmckendry/cyberdream.nvim",
-    lazy = false,
-    priority = 1000,
-}
+    "LazyVim/LazyVim",
+    opts = {
+      colorscheme = "cyberdream",
+    },
+  }
 }
