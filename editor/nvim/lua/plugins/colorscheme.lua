@@ -2,8 +2,8 @@
 
 return {
 
-  -- Use last-used colorscheme  
-  { "EdenEast/nightfox.nvim" },
+  -- Use last-used colorscheme
+  { "EdenEast/nightfox.nvim", lazy = false },
   { "scottmckendry/cyberdream.nvim", lazy = false, priority = 100 },
   { "rafi/neo-hybrid.vim", priority = 100, lazy = false },
   { "rafi/awesome-vim-colorschemes", lazy = false },
@@ -13,11 +13,11 @@ return {
   { "olimorris/onedarkpro.nvim" },
   { "EdenEast/nightfox.nvim" },
   { "nyoom-engineering/oxocarbon.nvim" },
-  { "catppuccin/nvim", lazy = true, name = "catppuccin", },
+  { "catppuccin/nvim", lazy = true, name = "catppuccin" },
   {
     "LazyVim/LazyVim",
     opts = {
       colorscheme = "carbonfox",
     },
-  }
-} 
+  },
+}
