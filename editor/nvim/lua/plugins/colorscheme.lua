@@ -2,7 +2,8 @@
 
 return {
 
-  -- Use last-used colorscheme 
+  -- Use last-used colorscheme  
+  { "EdenEast/nightfox.nvim" },
   { "scottmckendry/cyberdream.nvim", lazy = false, priority = 100 },
   { "rafi/neo-hybrid.vim", priority = 100, lazy = false },
   { "rafi/awesome-vim-colorschemes", lazy = false },
@@ -16,7 +17,7 @@ return {
   {
     "LazyVim/LazyVim",
     opts = {
-      colorscheme = "cyberdream",
+      colorscheme = "carbonfox",
     },
   }
-}
+} 

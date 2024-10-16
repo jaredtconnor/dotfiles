@@ -101,7 +101,9 @@
     # ------------------------------------------------------------
     # terminal
     # ------------------------------------------------------------
-    ~/.config/alacritty/alacritty.toml: ./terminal/alacritty/alacritty.toml
+    ~/.config/alacritty/:
+      glob: true
+      path: ./terminal/alacritty/*
     ~/.config/wezterm/:
       glob: true
       path: ./terminal/wezterm/*
