@@ -3,33 +3,29 @@ Host mac-studio
     User jaredconnor
   IdentityFile ~/.ssh/id_rsa
 
-Host dns.home
-  HostName 192.168.1.3
-  User user1
-  IdentityFile ~/.ssh/id_rsa
-
-Host nas.home
-  HostName 192.168.1.8
+Host dns
+  HostName dns.local.jcdev.io
   User jaredconnor
   IdentityFile ~/.ssh/id_rsa
 
-Host opie.home
-  HostName 192.168.1.11
+Host main-nas
+  HostName main-nas.local.jcdev.io
   User jaredconnor
   IdentityFile ~/.ssh/id_rsa
 
-Host docker.home
-  HostName 192.168.1.5
+Host opie
+  HostName opie.local.jcdev.io
   User jaredconnor
   IdentityFile ~/.ssh/id_rsa
 
-Host draco.home
-  HostName 192.168.1.4
+Host prox1
+  HostName prox1.local.jcdev.io
   User jaredconnor
   IdentityFile ~/.ssh/id_rsa
 
-Host vps
-  HostName 24.199.117.6
+Host draco
+  HostName draco.local.jcdev.io
   User jaredconnor
   IdentityFile ~/.ssh/id_rsa
+
 
