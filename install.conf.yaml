@@ -75,7 +75,10 @@
     ~/.zshrc:
       path: ./shell/zsh/.zshrc
       force: true
-    ~/.oh-my-zsh: ./shell/zsh/oh-my-zsh
+    ~/.oh-my-zsh: ./shell/zsh/oh-my-zsh 
+    ~/.config/fish/:
+      glob: true
+      path: ./shell/fish/*
     ~/.asdfrc:
       path: ./tools/asdf/.asdfrc
     ~/.zgenom: ./shell/zsh/zgenom
