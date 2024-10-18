@@ -26,6 +26,11 @@ Host prox1
 Host draco
   HostName draco.local.jcdev.io
   User jaredconnor
+  IdentityFile ~/.ssh/id_rsa 
+
+Host docker 
+  HostName docker.local.jcdev.io
+  User jaredconnor
   IdentityFile ~/.ssh/id_rsa
 
 
