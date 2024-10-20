@@ -120,7 +120,12 @@
     ~/.prettierrc.js:
       path: ./languages/node/prettierrc.js
     ~/.config/karabiner/karabiner.json:
-      path: ./tools/karabiner/karabiner.json
+      path: ./tools/karabiner/karabiner.json 
+    ~/.config/sketchybar/:
+      glob: true
+      path: ./tools/sketchybar/*  
+    ~/.config/areospace/areospace.toml:
+      path: ./tools/areospace/areospace.toml
     ~/.hammerspoon:
       if: "[ `uname` = Darwin ]"
       path: ./tools/hammerspoon
