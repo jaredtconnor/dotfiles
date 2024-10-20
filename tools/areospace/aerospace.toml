@@ -1,5 +1,5 @@
 # AEROSPACE CONFIG
-start-at-login = true
+start-at-login = false 
 
 after-login-command = []
 
