@@ -10,6 +10,29 @@
     // ----------------------------------------------
     // Theme
     // ----------------------------------------------
+    "ssh_connections": [
+    {
+      "host": "draco",
+      "username": "jaredconnor",
+      "projects": [
+        {
+          "paths": [
+            "~/OverIndexSoftware"
+          ]
+        },
+        {
+          "paths": [
+            "~/OverIndexSoftware"
+          ]
+        },
+        {
+          "paths": [
+            "~/OverIndexSoftware"
+          ]
+        }
+      ]
+    }
+  ],
     "auto_update_extensions": {
         "html": false
     },
@@ -55,8 +78,8 @@
     // ----------------------------------------------
     "assistant": {
         "default_model": {
-            "provider": "zed.dev",
-            "model": "claude-3-5-sonnet-20240620"
+            "provider": "copilot_chat",
+            "model": "gpt-4o"
         },
         "version": "2",
         "provider": null
