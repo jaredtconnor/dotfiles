@@ -29,8 +29,18 @@
           "paths": [
             "~/OverIndexSoftware"
           ]
+        },
+        {
+          "paths": [
+            "~/OverIndexSoftware/charger-credit-manager"
+          ]
         }
       ]
+    },
+    {
+      "host": "draco",
+      "username": "jaredconnor",
+      "projects": []
     }
   ],
     "auto_update_extensions": {
