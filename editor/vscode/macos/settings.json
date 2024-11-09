@@ -261,7 +261,6 @@
     "shellcheck.disableVersionCheck": true,
     "workbench.welcomePage.walkthroughs.openOnInstall": false,
     "workbench.editor.historyBasedLanguageDetection": true,
-    "workbench.iconTheme": "vscode-icons",
     "errorLens.exclude": [
         "^Delete",
         "^MD",
@@ -674,5 +673,7 @@
         "markdown": false,
         "scminput": false
     },
-    "git.confirmSync": false
+    "git.confirmSync": false,
+    "workbench.iconTheme": "vscode-icons",
+    "workbench.colorTheme": "Tokyo Night Storm"
 }
