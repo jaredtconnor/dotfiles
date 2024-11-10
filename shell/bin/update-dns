@@ -1,0 +1,34 @@
+#!/bin/bash
+
+# Function to check if we can reach the local DNS server
+can_reach_local_dns() {
+    nc -z -w 1 10.0.10.3 53 2>/dev/null
+    return $?
+}
+
+# Function to enable local DNS resolution
+enable_local_dns() {
+    cp /etc/resolver/local.jcdev.io.backup /etc/resolver/local.jcdev.io 2>/dev/null
+    cp /etc/resolver/jcdev.io.backup /etc/resolver/jcdev.io 2>/dev/null
+}
+
+# Function to disable local DNS resolution
+disable_local_dns() {
+    if [ -f /etc/resolver/local.jcdev.io ]; then
+        mv /etc/resolver/local.jcdev.io /etc/resolver/local.jcdev.io.backup 2>/dev/null
+    fi
+    if [ -f /etc/resolver/jcdev.io ]; then
+        mv /etc/resolver/jcdev.io /etc/resolver/jcdev.io.backup 2>/dev/null
+    fi
+}
+
+# Check if we can reach local DNS
+if can_reach_local_dns; then
+    enable_local_dns
+else
+    disable_local_dns
+fi
+
+# Flush DNS cache
+dscacheutil -flushcache
+killall -HUP mDNSResponder
