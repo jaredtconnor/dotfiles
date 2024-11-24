@@ -675,5 +675,9 @@
     },
     "git.confirmSync": false,
     "workbench.iconTheme": "vscode-icons",
-    "workbench.colorTheme": "GitHub Dark Default"
+    "workbench.colorTheme": "GitHub Dark Default",
+    "remote.SSH.remotePlatform": {
+        "draco.local.jcdev.io": "linux"
+    },
+    "lldb.suppressUpdateNotifications": true
 }

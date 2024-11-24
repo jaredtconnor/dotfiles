@@ -22,20 +22,15 @@
         },
         {
           "paths": [
-            "~/OverIndexSoftware"
-          ]
-        },
-        {
-          "paths": [
-            "~/OverIndexSoftware"
-          ]
-        },
-        {
-          "paths": [
             "~/OverIndexSoftware/charger-credit-manager"
           ]
         }
       ]
+    },
+    {
+      "host": "draco",
+      "username": "jaredconnor",
+      "projects": []
     },
     {
       "host": "draco",
