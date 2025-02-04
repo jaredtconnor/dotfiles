@@ -131,7 +131,9 @@ fi
 
 export ASDF_DOWNLOAD_PATH=bin/install
 source /opt/homebrew/opt/asdf/libexec/asdf.sh
-source /opt/homebrew/share/zsh/site-functions
+source /opt/homebrew/share/zsh/site-functions 
+export ASDF_DIR=$HOME/.asdf
+export PATH=$PATH:$ASDF_DIR/bin
 
 # pnpm
 export PNPM_HOME="/Users/jaredconnor/Library/pnpm"
