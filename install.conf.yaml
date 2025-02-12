@@ -109,7 +109,10 @@
       path: ./terminal/wezterm/*
     ~/.config/kitty/:
       glob: true
-      path: ./terminal/kitty/*
+      path: ./terminal/kitty/* 
+    ~/.config/ghostty//:
+      glob: true
+      path: ./terminal/ghostty/*
     # ------------------------------------------------------------
     # tools
     # ------------------------------------------------------------
