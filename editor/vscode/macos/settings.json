@@ -679,5 +679,6 @@
     "remote.SSH.remotePlatform": {
         "draco.local.jcdev.io": "linux"
     },
-    "lldb.suppressUpdateNotifications": true
+    "lldb.suppressUpdateNotifications": true,
+    "editor.formatOnSave": true
 }
