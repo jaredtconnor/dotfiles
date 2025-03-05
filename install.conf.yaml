@@ -141,10 +141,6 @@
       if: "[ `uname` = Darwin ]"
       path: ./tools/espanso
       force: true 
-    ~/.config/areospace/areospace.toml:  
-      if: "[ `uname` = Darwin ]"
-      path: ./tools/areospace/areospace.toml
-      force: true
       
 - asdf:
     - plugin: nodejs
