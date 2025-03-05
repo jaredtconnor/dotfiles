@@ -51,4 +51,4 @@ fi
 
 "${BASEDIR}/${DOTBOT_DIR}/${DOTBOT_BIN}" -d "${BASEDIR}" \
   --plugin-dir dotbot-plugins/dotbot-asdf \
-  -c "${CONFIG}" "${@}"
+  -c "${CONFIG}" "${@}"   

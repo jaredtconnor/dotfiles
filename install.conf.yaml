@@ -141,48 +141,34 @@
       if: "[ `uname` = Darwin ]"
       path: ./tools/espanso
       force: true 
-      
 - asdf:
     - plugin: nodejs
       url: https://github.com/asdf-vm/asdf-nodejs
-      global: lts-iron
       versions:
-        - lts-carbon
-        - lts-dubnium
-        - lts-erbium
-        - lts-fermium
-        - lts-gallium
-        - lts-hydrogen
         - lts-iron
+        - lts-hydrogen
         - latest
-    - plugin: yarn
-      url: https://github.com/twuni/asdf-yarn
-      global: 1.22.19
-      versions:
-        - 1.22.19
+      default: lts-iron
     - plugin: golang
       url: https://github.com/kennyp/asdf-golang
-      global: latest
       versions:
         - latest
+      default: latest
     - plugin: python
       url: https://github.com/tuvistavie/asdf-python.git
-      global: latest
       versions:
         - latest
-    - plugin: pnpm
-      url: https://github.com/jonathanmorley/asdf-pnpm
-      global: latest
-      versions:
-        - latest
+        - 3.11.0
+      default: latest 
+      local: 3.11.0
     - plugin: deno
       url: https://github.com/asdf-community/asdf-deno.git
-      global: latest
       versions:
-        - latest 
+        - latest
+      parent:
+        version: latest
     - plugin: bun
       url: https://github.com/cometkim/asdf-bun
-      global: latest
       versions: 
         - latest
 - shell:
