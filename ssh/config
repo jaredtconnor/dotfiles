@@ -1,36 +1,44 @@
 Host mac-studio
     HostName 192.168.1.72
     User jaredconnor
-  IdentityFile ~/.ssh/id_rsa
+    IdentityFile ~/.ssh/id_rsa 
+    SetEnv TERM=xterm-256color
 
 Host dns
   HostName dns.local.jcdev.io
   User jaredconnor
   IdentityFile ~/.ssh/id_rsa
+  SetEnv TERM=xterm-256color
+
 
 Host main-nas
   HostName main-nas.local.jcdev.io
   User jaredconnor
   IdentityFile ~/.ssh/id_rsa
+  SetEnv TERM=xterm-256color
 
 Host opie
   HostName opie.local.jcdev.io
   User jaredconnor
   IdentityFile ~/.ssh/id_rsa
+  SetEnv TERM=xterm-256color
 
 Host prox1
   HostName prox1.local.jcdev.io
   User jaredconnor
   IdentityFile ~/.ssh/id_rsa
+  SetEnv TERM=xterm-256color
 
 Host draco
   HostName draco.local.jcdev.io
   User jaredconnor
   IdentityFile ~/.ssh/id_rsa 
+  SetEnv TERM=xterm-256color
 
 Host docker 
   HostName docker.local.jcdev.io
   User jaredconnor
   IdentityFile ~/.ssh/id_rsa
+  SetEnv TERM=xterm-256color
 
 
