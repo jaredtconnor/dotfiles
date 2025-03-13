@@ -170,7 +170,11 @@
     - plugin: bun
       url: https://github.com/cometkim/asdf-bun
       versions: 
-        - latest
+        - latest 
+    - plugin: direnv
+      url: https://github.com/asdf-community/asdf-direnv
+      versions: 
+        - latest 
 - shell:
     - command: ./tools/git/set-gitconfig.sh
       description: Configuring Git
