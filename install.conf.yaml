@@ -71,6 +71,9 @@
     # ------------------------------------------------------------
     ~/.secrets:
       path: ./env/.secrets
+      force: true 
+    ~/.sharecredentials:
+      path: ./env/.sharecredentials
       force: true
     ~/.zshrc:
       path: ./shell/zsh/.zshrc
