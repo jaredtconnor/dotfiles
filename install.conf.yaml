@@ -43,22 +43,22 @@
       if: "[ `uname` = Darwin ]"
       path: ./editor/vscode/snippets
       force: true 
-    # Cursor
-    ~/Library/Application Support/Cursor/User:
-      if: "[ `uname` = Darwin ]"
-      glob: true
-      path: ./editor/vscode/macos/*.json
-      force: true
-    ~/Library/Application Support/Cursor/User/snippets:
-      if: "[ `uname` = Darwin ]"
-      path: ./editor/vscode/snippets
-      force: true 
     # VS Code MacOS Insiders 
     ~/Library/Application Support/Code - Insiders/User:
       if: "[ `uname` = Darwin ]"
       glob: true
       path: ./editor/vscode/macos/*.json
       force: true
+    # Cursor MacOS
+    ~/Library/Application Support/Cursor/User:
+      if: "[ `uname` = Darwin ]"
+      glob: true
+      path: ./editor/cursor/macos/*.json
+      force: true
+    ~/Library/Application Support/Cursor/User/snippets:
+      if: "[ `uname` = Darwin ]"
+      path: ./editor/cursor/snippets
+      force: true 
     # Zed 
     ~/.config/zed/keymap.json:
       path: ./editor/zed/keymap.json
