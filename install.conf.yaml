@@ -144,6 +144,11 @@
       if: "[ `uname` = Darwin ]"
       path: ./tools/espanso
       force: true 
+    # ------------------------------------------------------------
+    # mcps
+    # ------------------------------------------------------------
+    ~/Library/Application Support/Claude/claude_desktop_config.json:
+      path: ./mcp/claude_desktop_config.json
 - asdf:
     - plugin: nodejs
       url: https://github.com/asdf-vm/asdf-nodejs
