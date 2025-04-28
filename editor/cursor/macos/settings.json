@@ -1246,5 +1246,6 @@
   "git.confirmSync": false,
   "typescript.updateImportsOnFileMove.enabled": "always",
   "go.toolsManagement.autoUpdate": true,
-  "javascript.updateImportsOnFileMove.enabled": "always"
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "python.createEnvironment.trigger": "off"
 }
