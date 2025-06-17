@@ -1247,5 +1247,16 @@
   "typescript.updateImportsOnFileMove.enabled": "always",
   "go.toolsManagement.autoUpdate": true,
   "javascript.updateImportsOnFileMove.enabled": "always",
-  "python.createEnvironment.trigger": "off"
+  "python.createEnvironment.trigger": "off",
+  "explorer.confirmDelete": false,
+  "amp.url": "https://ampcode.com/",
+  "vsicons.dontShowNewVersionMessage": true,
+  "amp.commands.allowlist": [
+    "cd",
+    "npm",
+    "go",
+    "chmod"
+  ],
+  "workbench.colorTheme": "GitHub Dark",
+  "terminal.integrated.enableMultiLinePasteWarning": false
 }
