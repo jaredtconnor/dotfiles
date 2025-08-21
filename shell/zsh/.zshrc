@@ -4,8 +4,17 @@ eval "$(starship init zsh)"
 #!/usr/bin/env bash
 # Get zgen
 source ~/.zgenom/zgenom.zsh
- 
-eval "$(/opt/homebrew/bin/brew shellenv)"
+
+# Homebrew setup - detect OS
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    # macOS
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    # Linux/WSL
+    if [[ -f "/home/linuxbrew/.linuxbrew/bin/brew" ]]; then
+        eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+    fi
+fi
 
 export DOTFILES="$HOME/.dotfiles"
 export GPG_TTY=$TTY # https://unix.stackexchange.com/a/608921
@@ -23,8 +32,13 @@ if ! zgenom saved; then
     zgenom ohmyzsh plugins/sudo
     zgenom ohmyzsh plugins/command-not-found
     zgenom ohmyzsh plugins/kubectl
-    zgenom ohmyzsh plugins/docker
-    zgenom ohmyzsh plugins/docker-compose
+    
+    # Only load docker plugins if docker is available
+    if command -v docker >/dev/null 2>&1; then
+        zgenom ohmyzsh plugins/docker
+        zgenom ohmyzsh plugins/docker-compose
+    fi
+    
     zgenom load jocelynmallon/zshmarks
     zgenom load denolfe/git-it-on.zsh
     zgenom load caarlos0/zsh-mkc
@@ -63,7 +77,6 @@ if ! zgenom saved; then
     # Generate init.sh
     zgenom save
 fi
-
 
 # History Options
 setopt append_history
@@ -115,33 +128,52 @@ if type fd > /dev/null 2>&1; then
 fi
 
 # FZF config and theme
-export FZF_DEFAULT_OPTS='--reverse --bind 'ctrl-l:cancel' --height=90% --pointer='▶''
-source $DOTFILES/shell/zsh/fzf-theme-dark-plus.sh
+export FZF_DEFAULT_OPTS='--reverse --bind ctrl-l:cancel --height=90% --pointer=▶'
+if [[ -f "$DOTFILES/shell/zsh/fzf-theme-dark-plus.sh" ]]; then
+    source $DOTFILES/shell/zsh/fzf-theme-dark-plus.sh
+fi
 export FZF_TMUX_HEIGHT=80%
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 export BAT_THEME='Visual Studio Dark+'
-
 export AWS_PAGER='bat -p'
 
-# Needed for Crystal on mac - openss + pkg-config
-if [ `uname` = Darwin ]; then
-  export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/opt/openssl/lib/pkgconfig
+# Needed for Crystal on mac - openssl + pkg-config
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/opt/openssl/lib/pkgconfig
 fi
 
+# ASDF Setup - OS Detection
 export ASDF_DOWNLOAD_PATH=bin/install
-source /opt/homebrew/opt/asdf/libexec/asdf.sh
-source /opt/homebrew/share/zsh/site-functions 
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    # macOS
+    if [[ -f "/opt/homebrew/opt/asdf/libexec/asdf.sh" ]]; then
+        source /opt/homebrew/opt/asdf/libexec/asdf.sh
+        source /opt/homebrew/share/zsh/site-functions
+    fi
+elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    # Linux/WSL - check if asdf exists
+    if [[ -f "/home/linuxbrew/.linuxbrew/opt/asdf/libexec/asdf.sh" ]]; then
+        source /home/linuxbrew/.linuxbrew/opt/asdf/libexec/asdf.sh
+    elif [[ -f "$HOME/.asdf/asdf.sh" ]]; then
+        source $HOME/.asdf/asdf.sh
+        source $HOME/.asdf/completions/asdf.bash
+    fi
+fi
+
 export ASDF_DIR=$HOME/.asdf
 export PATH=$PATH:$ASDF_DIR/bin
 
-# pnpm
-export PNPM_HOME="/Users/jaredconnor/Library/pnpm"
+# PNPM Setup - OS Detection
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    export PNPM_HOME="/Users/jaredconnor/Library/pnpm"
+elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    export PNPM_HOME="$HOME/.local/share/pnpm"
+fi
 case ":$PATH:" in
   *":$PNPM_HOME:"*) ;;
   *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
-# pnpm end
 
 # tabtab source for packages
 # uninstall by removing these lines
@@ -149,17 +181,19 @@ esac
 
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
-zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}  
 
-
-
-# Support for two Homebrew installations
-export PATH=/opt/homebrew/bin:/usr/local/bin:$PATH
-alias ibrew='arch -x86_64 /usr/lcoal/bin/brew'
+# Homebrew paths - OS Detection
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    export PATH=/opt/homebrew/bin:/usr/local/bin:$PATH
+    alias ibrew='arch -x86_64 /usr/local/bin/brew'
+elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    if [[ -d "/home/linuxbrew/.linuxbrew/bin" ]]; then
+        export PATH=/home/linuxbrew/.linuxbrew/bin:$PATH
+    fi
+fi
 
 if type brew &>/dev/null; then
   FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH
-
   autoload -Uz compinit
   compinit
 fi
@@ -167,29 +201,73 @@ fi
 ####################################### 
 # GO-Lang Setup
 ####################################### 
-
 export GOPATH=$HOME/go 
 export PATH=$PATH:$GOPATH/bin 
 
 ####################################### 
 # Deno setup
 ####################################### 
-export PATH="$DENO_INSTALL/bin:$PATH"
+if [[ -n "$DENO_INSTALL" ]]; then
+    export PATH="$DENO_INSTALL/bin:$PATH"
+elif [[ -d "$HOME/.deno" ]]; then
+    export DENO_INSTALL="$HOME/.deno"
+    export PATH="$DENO_INSTALL/bin:$PATH"
+fi
 
 bindkey -s ^a "nvims\n"
 
+# NVM Setup - OS Detection (FIXED TYPO: was .nvggm)
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
-# bun completions
-[ -s "/Users/jaredconnor/.bun/_bun" ] && source "/Users/jaredconnor/.bun/_bun"
-
-# bun
+# Bun setup - OS Detection
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    [ -s "/Users/jaredconnor/.bun/_bun" ] && source "/Users/jaredconnor/.bun/_bun"
+elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
+fi
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
-eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"/ 
+# Node setup - OS Detection  
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    export PATH="/opt/homebrew/opt/node/bin:$PATH"
+elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    # Use system node or homebrew if available
+    if [[ -d "/home/linuxbrew/.linuxbrew/opt/node/bin" ]]; then
+        export PATH="/home/linuxbrew/.linuxbrew/opt/node/bin:$PATH"
+    fi
+fi
 
-# node 
-export PATH="/opt/homebrew/opt/node/bin:$PATH"
+#######################################
+# Color Configuration for WSL/Linux
+#######################################
+export TERM="xterm-256color"
+
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    # Terminal settings
+    export COLORTERM=truecolor
+    
+    # WSL-specific color fix
+    if [[ -n "$WSL_DISTRO_NAME" ]]; then
+        export FORCE_COLOR=1
+    fi
+    
+    # Enable colors for common commands
+    alias ls='ls --color=auto'
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+    alias diff='diff --color=auto'
+    
+    # Set up LS_COLORS
+    if command -v dircolors >/dev/null 2>&1; then
+        eval "$(dircolors -b)"
+    fi
+fi
+
+# Zsh completion colors (for both OS)
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
+zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
