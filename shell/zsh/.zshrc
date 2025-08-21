@@ -24,6 +24,7 @@ export ZGEN_CUSTOM_COMPDUMP="~/.zcompdump-$(whoami).zwc"
 
 # Generate zgen init.sh if it doesn't exist
 if ! zgenom saved; then
+    echo "-- zgenom: Regenerating plugins..."
     zgenom ohmyzsh
 
     # Plugins
@@ -51,7 +52,6 @@ if ! zgenom saved; then
     zgenom load reegnz/jq-zsh-plugin
 
     zgenom ohmyzsh plugins/asdf
-
     zgenom load ntnyq/omz-plugin-pnpm
 
     zgenom load zsh-users/zsh-autosuggestions
@@ -72,10 +72,12 @@ if ! zgenom saved; then
     zgenom load djui/alias-tips
 
     # Completion-only repos
-    zgenom load zsh-users/zsh-completions src
+    zgenom load zsh-users/zsh-completions
 
     # Generate init.sh
+    echo "-- zgenom: Saving configuration..."
     zgenom save
+    echo "-- zgenom: Done!"
 fi
 
 # History Options
@@ -130,7 +132,7 @@ fi
 # FZF config and theme
 export FZF_DEFAULT_OPTS='--reverse --bind ctrl-l:cancel --height=90% --pointer=▶'
 if [[ -f "$DOTFILES/shell/zsh/fzf-theme-dark-plus.sh" ]]; then
-    source $DOTFILES/shell/zsh/fzf-theme-dark-plus.sh
+    source "$DOTFILES/shell/zsh/fzf-theme-dark-plus.sh"
 fi
 export FZF_TMUX_HEIGHT=80%
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
@@ -143,8 +145,16 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/opt/openssl/lib/pkgconfig
 fi
 
-# ASDF Setup - OS Detection
+# ASDF Setup - OS Detection (Updated for ASDF v0.16+)
 export ASDF_DOWNLOAD_PATH=bin/install
+
+# Set ASDF directories
+export ASDF_DIR="$HOME/.asdf"
+export ASDF_DATA_DIR="$HOME/.asdf"
+
+# Add ASDF shims to PATH (MUST be at the front for v0.16+)
+export PATH="$ASDF_DATA_DIR/shims:$PATH"
+
 if [[ "$OSTYPE" == "darwin"* ]]; then
     # macOS
     if [[ -f "/opt/homebrew/opt/asdf/libexec/asdf.sh" ]]; then
@@ -156,13 +166,18 @@ elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
     if [[ -f "/home/linuxbrew/.linuxbrew/opt/asdf/libexec/asdf.sh" ]]; then
         source /home/linuxbrew/.linuxbrew/opt/asdf/libexec/asdf.sh
     elif [[ -f "$HOME/.asdf/asdf.sh" ]]; then
-        source $HOME/.asdf/asdf.sh
-        source $HOME/.asdf/completions/asdf.bash
+        source "$HOME/.asdf/asdf.sh"
+        # Use zsh completions if available, fallback to bash
+        if [[ -f "$HOME/.asdf/completions/_asdf" ]]; then
+            fpath=(${ASDF_DIR}/completions $fpath)
+        else
+            source "$HOME/.asdf/completions/asdf.bash"
+        fi
     fi
 fi
 
-export ASDF_DIR=$HOME/.asdf
-export PATH=$PATH:$ASDF_DIR/bin
+# Ensure ASDF bin is also in PATH
+export PATH="$PATH:$ASDF_DIR/bin"
 
 # PNPM Setup - OS Detection
 if [[ "$OSTYPE" == "darwin"* ]]; then
@@ -216,11 +231,6 @@ fi
 
 bindkey -s ^a "nvims\n"
 
-# NVM Setup - OS Detection (FIXED TYPO: was .nvggm)
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
 # Bun setup - OS Detection
 if [[ "$OSTYPE" == "darwin"* ]]; then
     [ -s "/Users/jaredconnor/.bun/_bun" ] && source "/Users/jaredconnor/.bun/_bun"
@@ -271,3 +281,4 @@ fi
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
 zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
+
