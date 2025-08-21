@@ -1,30 +1,71 @@
 return {
   "epwalsh/obsidian.nvim",
   version = "*",
-  lazy = true,
+  lazy = false, 
+
   -- Load obsidian.nvim for markdown files in your vault:
   event = {
     "BufReadPre " .. vim.fn.expand("~") .. "/Notes/**.md",
-    "BufNewFile " .. vim.fn.expand("~") .. "/Notes/**.md",
-  },
+    "BufNewFile " .. vim.fn.expand("~") .. "/Notes/**.md", 
+
+    "BufReadPre " .. vim.fn.expand("~") .. "/personal-notes/**.md",
+    "BufNewFile " .. vim.fn.expand("~") .. "/personal-notes/**.md", 
+
+    "BufReadPre " .. vim.fn.expand("~") .. "/work-notes/**.md",
+    "BufNewFile " .. vim.fn.expand("~") .. "/work-notes/**.md",
+
+  }, 
+
   dependencies = {
     "nvim-lua/plenary.nvim",
-  },
+  }, 
+
   opts = {
     workspaces = {
       {
-        name = "Notes",
-        path = "/Users/jaredconnor/Notes/",
-      },
+        name = "PersonaNotes",
+        path = "$HOME/personal-notes",
+      }, 
+
+      { 
+        name="WorkNotes",
+        path = "$HOME/work-notes"
+
+      }
     },
     completion = {
       nvim_cmp = true,
       min_chars = 2,
     },
-    new_notes_location = "notes_subdir",
+    new_notes_location = "notes_subdir", 
+
+    mappings = {
+      -- Overrides the 'gf' mapping to work on markdown/wiki links within your vault.
+      ["gf"] = {
+        action = function()
+          return require("obsidian").util.gf_passthrough()
+        end,
+        opts = { noremap = false, expr = true, buffer = true },
+      },
+      -- Toggle check-boxes.
+      ["<leader>ch"] = {
+        action = function()
+          return require("obsidian").util.toggle_checkbox()
+        end,
+        opts = { buffer = true },
+      },
+      -- Smart action depending on context, either follow link or toggle checkbox.
+      ["<cr>"] = {
+        action = function()
+          return require("obsidian").util.smart_action()
+        end,
+        opts = { buffer = true, expr = true },
+      }, 
+    },
+
     ui = {
       enable = true,
-      update_debounce = 200,
+      update_debounce = 200, 
       -- Define how various check-boxes are displayed
       checkboxes = {
         -- NOTE: the 'char' value has to be a single character, and the highlight groups are defined below.
