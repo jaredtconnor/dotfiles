@@ -28,7 +28,6 @@ mason_lspconfig.setup({
 
     -- web dev stuff
     "astro",
-    "tsserver",
     "cssls",
     "html",
     "tailwindcss",
@@ -42,7 +41,7 @@ mason_lspconfig.setup({
 
     -- python
     "pyright",
-    "ruff_lsp",
+    "ruff",
 
     -- go
     "gopls",
