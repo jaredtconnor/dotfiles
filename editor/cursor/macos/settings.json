@@ -1278,6 +1278,48 @@
       "tool": "Bash",
       "action": "allow",
       "matches": {
+        "cmd": "rm -rf /tmp/macos-desktop-environment"
+      }
+    },
+    {
+      "tool": "Bash",
+      "action": "allow",
+      "matches": {
+        "cmd": "sketchybar --reload"
+      }
+    },
+    {
+      "tool": "Bash",
+      "action": "allow",
+      "matches": {
+        "cmd": "make link"
+      }
+    },
+    {
+      "tool": "Bash",
+      "action": "allow",
+      "matches": {
+        "cmd": "cp -R /tmp/macos-desktop-environment/aerospace/.config/aerospace/* /Users/jaredconnor/.dotfiles/tools/aerospace/"
+      }
+    },
+    {
+      "tool": "Bash",
+      "action": "allow",
+      "matches": {
+        "cmd": "cp -R /tmp/macos-desktop-environment/sketchybar/.config/sketchybar/* /Users/jaredconnor/.dotfiles/tools/sketchybar/"
+      }
+    },
+    {
+      "tool": "Bash",
+      "action": "allow",
+      "matches": {
+        "cmd": "git clone https://github.com/Cliffback/macos-desktop-environment.git /tmp/macos-desktop-environment"
+      }
+    },
+    {
+      "tool": "Bash",
+      "action": "allow",
+      "matches": {
         "cmd": "./scripts/check-ports.sh"
       }
     },

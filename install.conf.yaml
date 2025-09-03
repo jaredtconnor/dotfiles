@@ -130,8 +130,8 @@
     ~/.config/sketchybar/:
       glob: true
       path: ./tools/sketchybar/*  
-    ~/.config/areospace/areospace.toml:
-      path: ./tools/areospace/areospace.toml
+    ~/.config/aerospace/aerospace.toml:
+      path: ./tools/aerospace/aerospace.toml
     ~/.hammerspoon:
       if: "[ `uname` = Darwin ]"
       path: ./tools/hammerspoon
