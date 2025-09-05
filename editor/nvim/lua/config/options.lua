@@ -9,3 +9,7 @@ vim.opt.splitright = true    -- Open new split to the right
 
 -- Message display options
 vim.opt.shortmess:append("c")  -- Don't pass messages to |ins-completion-menu|
+
+-- Basic terminal settings
+vim.opt.termguicolors = true
+vim.opt.background = "dark"
