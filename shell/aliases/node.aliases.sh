@@ -26,3 +26,7 @@ alias cpjv='cat package.json | jq -r ".version"'
 # Reverse pnpm aliases set by pnpm plugin
 alias pi='pnpm install'
 alias pin='pnpm init'
+
+# Global package management aliases
+alias global-npm='npm'
+alias global-pnpm='pnpm'
