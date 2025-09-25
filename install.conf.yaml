@@ -82,8 +82,8 @@
     ~/.config/fish/:
       glob: true
       path: ./shell/fish/*
-    ~/.asdfrc:
-      path: ./tools/asdf/.asdfrc
+    ~/.config/mise/config.toml:
+      path: ./tools/mise/config.toml
     ~/.zgenom: ./shell/zsh/zgenom
     ~/.bashrc:
       path: ./shell/bash/.bashrc
@@ -153,40 +153,11 @@
     ~/.cursor/mcp.json: 
       path: ./mcp/claude_desktop_config.json
       force: true  
-- asdf:
-    - plugin: nodejs
-      url: https://github.com/asdf-vm/asdf-nodejs
-      versions:
-        - lts-iron
-        - lts-hydrogen
-        - latest
-      default: lts-iron
-    - plugin: golang
-      url: https://github.com/kennyp/asdf-golang
-      versions:
-        - latest
-      default: latest
-    - plugin: python
-      url: https://github.com/tuvistavie/asdf-python.git
-      versions:
-        - latest
-        - 3.11.0
-      default: latest 
-      local: 3.11.0
-    - plugin: deno
-      url: https://github.com/asdf-community/asdf-deno.git
-      versions:
-        - latest
-      parent:
-        version: latest
-    - plugin: bun
-      url: https://github.com/cometkim/asdf-bun
-      versions: 
-        - latest 
-    - plugin: direnv
-      url: https://github.com/asdf-community/asdf-direnv
-      versions: 
-        - latest 
+- shell:
+    - command: ./tools/mise/setup-mise.sh
+      description: Installing and configuring mise runtime versions
+      stdout: true
+      quiet: false
 - shell:
     - command: ./tools/git/set-gitconfig.sh
       description: Configuring Git

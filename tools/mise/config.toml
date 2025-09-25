@@ -1,0 +1,17 @@
+[settings]
+experimental = true
+jobs = 4
+plugin_autoupdate_last_check_duration = "7d"
+verbose = false
+
+[tools]
+# These tools will be installed and available globally
+go = "latest"
+node = ["lts-iron", "lts-hydrogen", "latest"] 
+python = ["latest", "3.11.0"]
+deno = "latest"
+bun = "latest"
+direnv = "latest"
+
+# No separate [env] or [defaults] section needed
+# The first version listed for each tool becomes the default

@@ -10,6 +10,12 @@ if (-Not (Get-Command git -ErrorAction SilentlyContinue)) {
     winget install --id Git.Git -e --source winget
 }
 
+# Install mise if not already installed
+if (-Not (Get-Command mise -ErrorAction SilentlyContinue)) {
+    Write-Host "mise not found. Installing mise..."
+    iwr https://mise.jdx.dev/install.ps1 -useb | iex
+}
+
 # Proceed with Dotbot installation
 $CONFIG = "install.conf.yaml"
 $DOTBOT_DIR = "dotbot"
@@ -33,7 +39,7 @@ if (-not $gitEmail) {
 
 # Run Dotbot setup
 $dotbotCommand = Join-Path $BASEDIR "$DOTBOT_DIR\$DOTBOT_BIN"
-& $dotbotCommand -d $BASEDIR --plugin-dir "dotbot-plugins/dotbot-asdf" -c $CONFIG
+& $dotbotCommand -d $BASEDIR -c $CONFIG
 
 Write-Host "Dotbot installation complete."
 

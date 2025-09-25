@@ -17,9 +17,11 @@ sudo update-locale LANG=en_US.UTF-8
 export LANG=en_US.UTF-8
 export LANGUAGE=en_US
 
-# Initialize ASDF for the script
-if [ -f "$HOME/.asdf/asdf.sh" ]; then
-  . "$HOME/.asdf/asdf.sh"
+# Initialize mise for the script if available
+if [ -f "$HOME/.local/bin/mise" ]; then
+  eval "$($HOME/.local/bin/mise activate bash)"
+elif command -v mise >/dev/null 2>&1; then
+  eval "$(mise activate bash)"
 fi
 
 # Ensure necessary packages are installed
@@ -55,6 +57,12 @@ sudo apt-get install -y \
   tk-dev
 # Add other Python build dependencies if needed
 
+# Install mise if not already installed
+if ! command -v mise >/dev/null 2>&1; then
+  echo "Installing mise..."
+  curl https://mise.jdx.dev/install.sh | sh
+fi
+
 # **End of Linux-Specific Setup**
 
 # Proceed with Dotbot installation
@@ -75,11 +83,8 @@ if ! git config --global user.email >/dev/null; then
   exit 1
 fi
 
-# Initialize ASDF within the script to ensure plugins are available
-if [ -f "$HOME/.asdf/asdf.sh" ]; then
-  . "$HOME/.asdf/asdf.sh"
-fi
+# Make sure mise is in the PATH
+export PATH="$HOME/.local/bin:$PATH"
 
 "${BASEDIR}/${DOTBOT_DIR}/${DOTBOT_BIN}" -d "${BASEDIR}" \
-  --plugin-dir dotbot-plugins/dotbot-asdf \
   -c "${CONFIG}" "${@}"

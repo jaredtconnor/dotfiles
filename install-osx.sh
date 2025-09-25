@@ -16,8 +16,14 @@ brew install \
   git \
   wget \
   curl \
-  unzip
+  unzip \
+  mise
 # Add other essential packages here
+
+# Initialize mise if available
+if command -v mise >/dev/null 2>&1; then
+  eval "$(mise activate bash)"
+fi
 
 # Set locale to prevent warnings (if necessary)
 export LANG=en_US.UTF-8
@@ -44,11 +50,5 @@ if ! git config --global user.email >/dev/null; then
   exit 1
 fi
 
-# Initialize ASDF within the script to ensure plugins are available
-if [ -f "$HOME/.asdf/asdf.sh" ]; then
-  . "$HOME/.asdf/asdf.sh"
-fi
-
 "${BASEDIR}/${DOTBOT_DIR}/${DOTBOT_BIN}" -d "${BASEDIR}" \
-  --plugin-dir dotbot-plugins/dotbot-asdf \
   -c "${CONFIG}" "${@}"   
