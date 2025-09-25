@@ -51,7 +51,6 @@ if ! zgenom saved; then
     zgenom load andrewferrier/fzf-z
     zgenom load reegnz/jq-zsh-plugin
 
-    zgenom ohmyzsh plugins/asdf
     zgenom load ntnyq/omz-plugin-pnpm
 
     zgenom load zsh-users/zsh-autosuggestions
@@ -145,40 +144,6 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/usr/local/opt/openssl/lib/pkgconfig
 fi
 
-# ASDF Setup - OS Detection (Updated for ASDF v0.16+)
-export ASDF_DOWNLOAD_PATH=bin/install
-
-# Set ASDF directories
-export ASDF_DIR="$HOME/.asdf"
-export ASDF_DATA_DIR="$HOME/.asdf"
-
-# Add ASDF shims to PATH (MUST be at the front for v0.16+)
-export PATH="$ASDF_DATA_DIR/shims:$PATH"
-
-if [[ "$OSTYPE" == "darwin"* ]]; then
-    # macOS
-    if [[ -f "/opt/homebrew/opt/asdf/libexec/asdf.sh" ]]; then
-        source /opt/homebrew/opt/asdf/libexec/asdf.sh
-        source /opt/homebrew/share/zsh/site-functions
-    fi
-elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
-    # Linux/WSL - check if asdf exists
-    if [[ -f "/home/linuxbrew/.linuxbrew/opt/asdf/libexec/asdf.sh" ]]; then
-        source /home/linuxbrew/.linuxbrew/opt/asdf/libexec/asdf.sh
-    elif [[ -f "$HOME/.asdf/asdf.sh" ]]; then
-        source "$HOME/.asdf/asdf.sh"
-        # Use zsh completions if available, fallback to bash
-        if [[ -f "$HOME/.asdf/completions/_asdf" ]]; then
-            fpath=(${ASDF_DIR}/completions $fpath)
-        else
-            source "$HOME/.asdf/completions/asdf.bash"
-        fi
-    fi
-fi
-
-# Ensure ASDF bin is also in PATH
-export PATH="$PATH:$ASDF_DIR/bin"
-
 # PNPM Setup - OS Detection
 if [[ "$OSTYPE" == "darwin"* ]]; then
     export PNPM_HOME="/Users/jaredconnor/Library/pnpm"
@@ -211,7 +176,10 @@ if type brew &>/dev/null; then
   FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH
   autoload -Uz compinit
   compinit
-fi
+fi 
+
+# mise setup
+eval "$(mise activate zsh)"
 
 ####################################### 
 # GO-Lang Setup
