@@ -1,20 +1,20 @@
-return { 
+return {
   "epwalsh/obsidian.nvim",
   version = "*",
-  lazy = false, 
+  lazy = false,
 
   -- Load obsidian.nvim for markdown files in your vault:
   event = {
     "BufReadPre " .. vim.fn.expand("~") .. "/Notes/**.md",
-    "BufNewFile " .. vim.fn.expand("~") .. "/Notes/**.md", 
+    "BufNewFile " .. vim.fn.expand("~") .. "/Notes/**.md",
 
     "BufReadPre " .. vim.fn.expand("~") .. "/personal-notes/**.md",
-    "BufNewFile " .. vim.fn.expand("~") .. "/personal-notes/**.md", 
+    "BufNewFile " .. vim.fn.expand("~") .. "/personal-notes/**.md",
 
     "BufReadPre " .. vim.fn.expand("~") .. "/work-notes/**.md",
     "BufNewFile " .. vim.fn.expand("~") .. "/work-notes/**.md",
 
-  }, 
+  },
 
   dependencies = {
     -- Required.
@@ -26,11 +26,11 @@ return {
     workspaces = {
       {
         name = "personal",
-        path = "~/Notes/",
+        path = "~/personal-notes/",
       },
       {
         name = "work",
-        path = "~/Work-Notes/",
+        path = "~/work-notes/",
       },
     },
 
