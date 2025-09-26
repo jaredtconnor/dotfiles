@@ -31,6 +31,7 @@ sudo apt-get install -y \
   curl \
   wget \
   git \
+  tmux \
   unzip \
   locales
 # Add other essential packages here
