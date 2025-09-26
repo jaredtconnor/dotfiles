@@ -9,8 +9,8 @@
       if: "[ `uname` = Darwin ]"
       description: Installing Homebrew and Essential Packages
       stdout: true
-    - description: Downloading NvChad editor to ~/.config/nvim/
-      command: git clone https://github.com/NvChad/starter ~/.config/nvim
+    - description: Downloading NvChad editor to ~/.config/nvchad-nvim
+      command: git clone https://github.com/NvChad/starter ~/.config/nvchad-nvim
       stdout: true
 - link:
     # ------------------------------------------------------------
@@ -95,6 +95,10 @@
       glob: true
       path: ./shell/functions/*
       relink: true
+    # Scripts linked separately (not auto-sourced)
+    ~/bin/dev-setup:
+      path: ./shell/scripts/dev-setup.sh
+      relink: true
     ~/.config/starship.toml:
       path: ./shell/starship.toml
       relink: true
@@ -165,6 +169,10 @@
       quiet: false
     - command: yarn config set prefix ~/.yarn
       description: Configuring yarn prefix
+      stdout: true
+      quiet: false
+    - command: ./tools/tmux/setup-tmux.sh
+      description: Setting up tmux plugins
       stdout: true
       quiet: false
 
