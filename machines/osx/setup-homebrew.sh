@@ -20,6 +20,7 @@ PACKAGES=(
   "fd"
   "jq"
   "ripgrep"
+  "tmux"
   "zsh"
 )
 
