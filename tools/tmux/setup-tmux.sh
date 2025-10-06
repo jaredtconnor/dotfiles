@@ -5,6 +5,7 @@
 set -e
 
 echo "Setting up tmux configuration and plugins..."
+echo "Using local submodules from tmux-plugins directory"
 
 # Create directory for tmux plugins if it doesn't exist
 mkdir -p ~/.tmux/plugins
@@ -18,25 +19,35 @@ else
   cd ~/.tmux/plugins/tpm && git pull origin master
 fi
 
-# Install/update other essential tmux plugins
+# Link our submodule tmux plugins to the tmux plugins directory
 declare -a TMUX_PLUGINS=(
-  "tmux-plugins/tmux-sensible"
-  "tmux-plugins/tmux-resurrect"
-  "tmux-plugins/tmux-continuum"
-  "christoomey/vim-tmux-navigator"
-  "wfxr/tmux-fzf-url"
+  "tmux-sensible"
+  "tmux-resurrect"
+  "tmux-continuum"
+  "vim-tmux-navigator"
+  "tmux-fzf-url"
 )
 
-for plugin in "${TMUX_PLUGINS[@]}"; do
-  plugin_name=$(echo "$plugin" | cut -d/ -f2)
+DOTFILES_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+
+for plugin_name in "${TMUX_PLUGINS[@]}"; do
   plugin_path=~/.tmux/plugins/$plugin_name
+  source_path="$DOTFILES_PATH/tmux-plugins/$plugin_name"
   
-  if [ ! -d "$plugin_path" ]; then
-    echo "Installing tmux plugin: $plugin_name..."
-    git clone https://github.com/$plugin $plugin_path
+  if [ -d "$source_path" ]; then
+    if [ -d "$plugin_path" ] && [ ! -L "$plugin_path" ]; then
+      echo "Removing existing non-symlink plugin: $plugin_name..."
+      rm -rf "$plugin_path"
+    fi
+    
+    if [ ! -L "$plugin_path" ]; then
+      echo "Creating symlink for tmux plugin: $plugin_name..."
+      ln -sf "$source_path" "$plugin_path"
+    else
+      echo "Symlink for tmux plugin already exists: $plugin_name"
+    fi
   else
-    echo "Updating tmux plugin: $plugin_name..."
-    cd "$plugin_path" && git pull origin master
+    echo "Warning: Source plugin not found at $source_path"
   fi
 done
 
