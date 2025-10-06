@@ -18,7 +18,7 @@ This repository contains my personal dotfiles configuration, designed to quickly
 | Shell Framework | [oh-my-zsh](https://github.com/robbyrussell/oh-my-zsh)                      | [config](./zsh/zshrc.zsh)              |
 | Version Manager | [mise](https://github.com/jdx/mise) (formerly rtx)                          | [config](./tools/mise/)                |
 | Terminal        | [Alacritty](https://alacritty.org/), [Kitty](https://sw.kovidgoyal.net/kitty/), [Wezterm](https://wezfurlong.org/wezterm/) | [config](./terminal/)                 |
-| Multiplexer     | [Tmux](https://github.com/tmux/tmux/wiki)                                   | [config](./tools/tmux/)                |
+| Multiplexer     | [Tmux](https://github.com/tmux/tmux/wiki) with [plugins](./tmux-plugins/)   | [config](./tools/tmux/)                |
 | Editor          | [NeoVim](https://neovim.io/), [LazyVim](https://github.com/LazyVim/LazyVim), [LunarVim](https://www.lunarvim.org/) | [config](./editor/)                   |
 | IDE             | [VS Code](https://code.visualstudio.com/), [Zed](https://zed.dev/)          | [config](./editor/vscode/), [config](./editor/zed/) |
 | Git             | [Git](https://git-scm.com/)                                                 | [config](./tools/git/)                 |
@@ -65,7 +65,12 @@ git clone git@github.com:jaredtconnor/dotfiles.git ~/.dotfiles --recursive
 cd ~/.dotfiles
 ```
 
-2. Run the installation:
+2. Initialize and update all submodules:
+```sh
+git submodule update --init --recursive
+```
+
+3. Run the installation:
 ```sh
 make install
 ```
@@ -102,9 +107,51 @@ This will:
 - `machines/`: Machine-specific configurations (Fedora, macOS)
 - `shell/`: Shell configurations, including aliases and functions
 - `terminal/`: Terminal emulator configurations
+- `tmux-plugins/`: Tmux plugin submodules
 - `tools/`: Configurations for various development tools
 - `mcp/`: Machine Context Protocol configurations for AI assistants
 - `ssh/`: SSH configuration
+
+## Submodules Management
+
+This repository uses Git submodules for various components, including Dotbot and Tmux plugins.
+
+### Available Submodules
+
+- **dotbot**: Core installation tool
+- **dotbot-plugins/dotbot-asdf**: ASDF plugin for Dotbot
+- **shell/zsh/oh-my-zsh**: Oh My Zsh framework
+- **shell/zsh/zgenom**: Zgenom plugin manager for Zsh
+- **tmux-plugins/tmux-continuum**: Continuous saving of tmux environment
+- **tmux-plugins/tmux-fzf-url**: Quick opening of URLs from tmux copy mode
+- **tmux-plugins/tmux-resurrect**: Persists tmux environment across system restarts
+- **tmux-plugins/tmux-sensible**: Basic tmux settings everyone can agree on
+- **tmux-plugins/vim-tmux-navigator**: Seamless navigation between tmux panes and vim splits
+
+### Initializing Submodules
+
+If you didn't clone with `--recursive`, initialize all submodules with:
+
+```sh
+git submodule update --init --recursive
+```
+
+### Updating Submodules
+
+To update all submodules to their latest versions:
+
+```sh
+git submodule update --remote --merge
+```
+
+### Adding a New Submodule
+
+To add a new submodule (example for a new tmux plugin):
+
+```sh
+git submodule add https://github.com/username/repository.git path/to/submodule
+git commit -m "Add new submodule"
+```
 
 ## Shell Aliases and Scripts
 
@@ -138,6 +185,18 @@ This configuration supports multiple terminal emulators:
 - **Kitty**: Fast, feature-rich terminal emulator (config in `terminal/kitty/`)
 - **Wezterm**: GPU-accelerated terminal with advanced features (config in `terminal/wezterm/`)
 - **Ghostty**: Modern terminal emulator (config in `terminal/ghostty/`)
+
+## Tmux Configuration
+
+The Tmux configuration includes several plugins for enhanced functionality:
+
+- **tmux-continuum**: Continuous saving of tmux environment
+- **tmux-resurrect**: Persists tmux environment across system restarts
+- **tmux-sensible**: Basic tmux settings everyone can agree on
+- **tmux-fzf-url**: Quick opening of URLs from tmux copy mode
+- **vim-tmux-navigator**: Seamless navigation between tmux panes and vim splits
+
+All plugins are managed as git submodules in the `tmux-plugins/` directory.
 
 ## Editor Configurations
 
