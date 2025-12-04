@@ -1272,7 +1272,7 @@
   "workbench.colorTheme": "GitHub Dark",
   "terminal.integrated.enableMultiLinePasteWarning": false,
   "lldb.suppressUpdateNotifications": true,
-  "amp.tab.enabled": true,
+  "amp.tab.enabled": false,
   "amp.permissions": [
     {
       "tool": "Bash",
@@ -1450,5 +1450,7 @@
       "action": "allow"
     }
   ],
-  "explorer.confirmDragAndDrop": false
+  "explorer.confirmDragAndDrop": false,
+  "claudeCode.useTerminal": true,
+  "git.openRepositoryInParentFolders": "never"
 }
