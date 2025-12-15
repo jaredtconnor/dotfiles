@@ -1,2 +1,7 @@
 env/.secrets 
 env/.sharecredentials
+
+# SSH and network config (contains internal IPs/hostnames)
+ssh/config
+ssh/hosts
+shell/scripts/share-ssh-keys.sh

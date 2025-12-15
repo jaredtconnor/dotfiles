@@ -1,0 +1,36 @@
+##
+# Host Database
+#
+# localhost is used to configure the loopback interface
+# when the system is booting.  Do not change this entry.
+##
+127.0.0.1       localhost
+255.255.255.255 broadcasthost
+::1             localhost
+
+# ===========================================
+# Homelab Network
+# ===========================================
+
+# Network Infrastructure (10.0.0.0/24)
+10.0.0.1        router router.local.example.com
+10.0.0.35       switch switch.local.example.com
+10.0.0.197      ap ap.local.example.com
+
+# Servers VLAN (10.0.10.0/24)
+10.0.10.3       pihole1 pihole1.local.example.com
+10.0.10.4       pihole2 pihole2.local.example.com
+10.0.10.5       hypervisor hypervisor.local.example.com
+10.0.10.6       docker docker.local.example.com
+10.0.10.7       homeassistant homeassistant.local.example.com
+10.0.10.8       compute compute.local.example.com
+
+# Storage VLAN (10.0.20.0/24)
+10.0.20.2       nas nas.local.example.com
+
+# IoT VLAN (10.0.30.0/24)
+10.0.30.2       iot-hub iot-hub.local.example.com
+
+# Trusted VLAN (10.0.40.0/24)
+10.0.40.3       workstation workstation.local.example.com
+10.0.40.5       laptop laptop.local.example.com
