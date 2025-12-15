@@ -3,81 +3,81 @@ Host *
     IdentityFile ~/.ssh/id_ed25519
     AddKeysToAgent yes
     UseKeychain yes
+    User eigyn
 
 # -------------------------------------------
 # Network Infrastructure (10.0.0.0/24)
 # -------------------------------------------
-Host canaveral
+Host router
     HostName 10.0.0.1
     User admin
-    # Cloud Gateway Max - main router/firewall
+    # Main router/firewall
 
 # -------------------------------------------
 # Servers VLAN (10.0.10.0/24)
 # -------------------------------------------
-Host voyager1
+# Pihole 1 - Primary DNS
+Host pihole1
+    HostName 10.0.10.3
+
+Host pihole1-root
     HostName 10.0.10.3
     User root
-    # Primary Pihole DNS (LXC CT 100)
 
-Host voyager2
+# Pihole 2 - Secondary DNS
+Host pihole2
+    HostName 10.0.10.4
+
+Host pihole2-root
     HostName 10.0.10.4
     User root
-    # Secondary Pihole DNS (LXC CT 101)
 
-Host pioneer
+# Proxmox hypervisor (bare metal)
+Host hypervisor
+    HostName 10.0.10.5
+
+Host hypervisor-root
     HostName 10.0.10.5
     User root
-    # Proxmox hypervisor (bare metal)
 
-Host discovery
+# Docker/Portainer host
+Host docker
+    HostName 10.0.10.6
+
+Host docker-root
     HostName 10.0.10.6
     User root
-    # Docker/Portainer (LXC/VM)
 
-Host hubble
+# Home Assistant (VM)
+Host homeassistant
+    HostName 10.0.10.7
+
+Host homeassistant-root
     HostName 10.0.10.7
     User root
-    # Home Assistant (VM)
 
-Host curiosity
+# Ubuntu compute workloads (VM)
+Host compute
     HostName 10.0.10.8
-    User jaredconnor
-    # Ubuntu compute workloads (VM 103)
 
-Host galileo
-    HostName 10.0.10.9
+Host compute-root
+    HostName 10.0.10.8
     User root
-    # Reserved - future expansion
-
-Host juno
-    HostName 10.0.10.10
-    User root
-    # Reserved - future expansion
 
 # -------------------------------------------
 # Storage VLAN (10.0.20.0/24)
 # -------------------------------------------
-Host skylab
+Host nas
     HostName 10.0.20.2
-    User jaredconnor
-    # Synology NAS DS920+
-
-Host mir
-    HostName 10.0.20.3
-    User root
-    # Backup Pihole (Docker on NAS)
+    # NAS device
 
 # -------------------------------------------
 # Trusted VLAN (10.0.40.0/24)
 # -------------------------------------------
-Host apollo
+Host workstation
     HostName 10.0.40.3
-    User jaredconnor
-    # Mac Studio - primary workstation
+    # Primary workstation
 
-Host perseverance
+Host laptop
     HostName 10.0.40.5
-    User jaredconnor
-    # MacBook - mobile workstation
-
+    # Mobile workstation

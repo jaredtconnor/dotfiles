@@ -95,10 +95,6 @@
       glob: true
       path: ./shell/functions/*
       relink: true
-    # Scripts linked separately (not auto-sourced)
-    ~/bin/dev-setup:
-      path: ./shell/scripts/dev-setup.sh
-      relink: true
     ~/.config/starship.toml:
       path: ./shell/starship.toml
       relink: true
@@ -149,14 +145,14 @@
       path: ./tools/espanso
       force: true 
     # ------------------------------------------------------------
-    # mcps
+    # scripts - non auto sourced
     # ------------------------------------------------------------
-    ~/Library/Application Support/Claude/claude_desktop_config.json:
-      path: ./mcp/claude_desktop_config.json
-      force: true  
-    ~/.cursor/mcp.json: 
-      path: ./mcp/claude_desktop_config.json
-      force: true  
+    ~/bin/dev-setup:
+      path: ./shell/scripts/dev-setup.sh
+      relink: true
+    ~/bin/share-ssh-keys:
+      path: ./shell/scripts/share-ssh-keys.sh
+      relink: true
 - shell:
     - command: ./tools/mise/setup-mise.sh
       description: Installing and configuring mise runtime versions
