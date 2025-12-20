@@ -1,4 +1,5 @@
 {
+  "editor.fontFamily": "Berkley Mono",
   "vim.showMarksInGutter": false,
   "vim.foldfix": true,
   "vim.surround": true,
@@ -1452,5 +1453,5 @@
   ],
   "explorer.confirmDragAndDrop": false,
   "claudeCode.useTerminal": true,
-  "git.openRepositoryInParentFolders": "never"
+  "git.openRepositoryInParentFolders": "never",
 }

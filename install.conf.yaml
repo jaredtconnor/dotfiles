@@ -113,7 +113,7 @@
     ~/.config/kitty/:
       glob: true
       path: ./terminal/kitty/* 
-    ~/.config/ghostty//:
+    ~/.config/ghostty/:
       glob: true
       path: ./terminal/ghostty/*
     # ------------------------------------------------------------

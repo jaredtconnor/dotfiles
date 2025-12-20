@@ -146,7 +146,7 @@ fi
 
 # PNPM Setup - OS Detection
 if [[ "$OSTYPE" == "darwin"* ]]; then
-    export PNPM_HOME="/Users/jaredconnor/Library/pnpm"
+    export PNPM_HOME="$HOME/Library/pnpm"
 elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
     export PNPM_HOME="$HOME/.local/share/pnpm"
 fi
@@ -199,12 +199,8 @@ fi
 
 bindkey -s ^a "nvims\n"
 
-# Bun setup - OS Detection
-if [[ "$OSTYPE" == "darwin"* ]]; then
-    [ -s "/Users/jaredconnor/.bun/_bun" ] && source "/Users/jaredconnor/.bun/_bun"
-elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
-    [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
-fi
+# Bun completions
+[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
