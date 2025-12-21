@@ -5,3 +5,4 @@ env/.sharecredentials
 ssh/config
 ssh/hosts
 shell/scripts/share-ssh-keys.sh
+ssh/config
