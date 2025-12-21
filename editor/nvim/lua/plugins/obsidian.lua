@@ -8,12 +8,8 @@ return {
     "BufReadPre " .. vim.fn.expand("~") .. "/Notes/**.md",
     "BufNewFile " .. vim.fn.expand("~") .. "/Notes/**.md",
 
-    "BufReadPre " .. vim.fn.expand("~") .. "/personal-notes/**.md",
-    "BufNewFile " .. vim.fn.expand("~") .. "/personal-notes/**.md",
-
     "BufReadPre " .. vim.fn.expand("~") .. "/work-notes/**.md",
     "BufNewFile " .. vim.fn.expand("~") .. "/work-notes/**.md",
-
   },
 
   dependencies = {
