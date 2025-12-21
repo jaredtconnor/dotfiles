@@ -1,5 +1,5 @@
 ## Color and Appearance (Enhanced Acrylic)
-font-family = JetBrains Mono Nerd Font
+font-family = Berkley Mono
 font-size = 12
 theme = tokyonight
 shell-integration-features = no-cursor,sudo,no-title
