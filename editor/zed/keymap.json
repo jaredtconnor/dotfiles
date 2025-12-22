@@ -4,8 +4,8 @@
         "bindings": {
             // put key-bindings here if you want them to work in normal & visual mode
             // Git
-            "space g h d": "editor::ToggleHunkDiff",
-            "space g h r": "editor::RevertSelectedHunks",
+            //"space g h d": "editor::ToggleHunkDiff",
+            //"space g h r": "editor::RevertSelectedHunks",
             // Toggle inlay hints
             "space t i": "editor::ToggleInlayHints"
         }
@@ -16,22 +16,10 @@
             // put key-bindings here if you want them to work only in normal mode
             // Window movement bindings
             // Ctrl jklk to move between panes
-            "ctrl-h": [
-                "workspace::ActivatePaneInDirection",
-                "Left"
-            ],
-            "ctrl-l": [
-                "workspace::ActivatePaneInDirection",
-                "Right"
-            ],
-            "ctrl-k": [
-                "workspace::ActivatePaneInDirection",
-                "Up"
-            ],
-            "ctrl-j": [
-                "workspace::ActivatePaneInDirection",
-                "Down"
-            ],
+            "ctrl-h": "workspace::ActivatePaneLeft",
+            "ctrl-l": "workspace::ActivatePaneRight",
+            "ctrl-k": "workspace::ActivatePaneUp",
+            "ctrl-j": "workspace::ActivatePaneDown",
             // LSP
             "g d": "editor::GoToDefinition",
             "g D": "editor::GoToDefinitionSplit",
@@ -41,17 +29,17 @@
             "g T": "editor::GoToTypeDefinitionSplit",
             "g r": "editor::FindAllReferences",
             "] d": "editor::GoToDiagnostic",
-            "[ d": "editor::GoToPrevDiagnostic",
+            "[ d": "editor::GoToPreviousDiagnostic",
             // Git prev/next hunk
             "] h": "editor::GoToHunk",
-            "[ h": "editor::GoToPrevHunk",
+            "[ h": "editor::GoToPreviousHunk",
             // Symbol search
             "s s": "outline::Toggle",
             "s S": "project_symbols::Toggle",
             // Project diagnostic
             "space x x": "diagnostics::Deploy",
             // Switch between buffers
-            "shift-h": "pane::ActivatePrevItem",
+            "shift-h": "pane::ActivatePreviousItem",
             "shift-l": "pane::ActivateNextItem",
             // Close active panel
             "shift-q": "pane::CloseActiveItem",
@@ -126,22 +114,10 @@
         // Dock for files
         "context": "Dock",
         "bindings": {
-            "ctrl-h": [
-                "workspace::ActivatePaneInDirection",
-                "Left"
-            ],
-            "ctrl-l": [
-                "workspace::ActivatePaneInDirection",
-                "Right"
-            ],
-            "ctrl-k": [
-                "workspace::ActivatePaneInDirection",
-                "Up"
-            ],
-            "ctrl-j": [
-                "workspace::ActivatePaneInDirection",
-                "Down"
-            ]
+            "ctrl-h": "workspace::ActivatePaneLeft",
+            "ctrl-l": "workspace::ActivatePaneRight",
+            "ctrl-k": "workspace::ActivatePaneUp",
+            "ctrl-j": "workspace::ActivatePaneDown"
         }
     }
 ]
