@@ -10,44 +10,39 @@
     // ----------------------------------------------
     // Theme
     // ----------------------------------------------
-    "agent": {
+    /* Duplicated key auto-commented: "agent": {
         "default_profile": "ask",
         "model_parameters": []
-    },
+    }, */
     "ssh_connections": [
-    {
-      "host": "draco",
-      "username": "jaredconnor",
-      "projects": [
         {
-          "paths": [
-            "~/OverIndexSoftware"
-          ]
+            "host": "skylab",
+            "username": "jaredconnor",
+            "args": [],
+            "projects": [
+                {
+                    "paths": [
+                        "/home/eigyn/homelab"
+                    ]
+                },
+                {
+                    "paths": [
+                        "/volume1/docker/homelab/./"
+                    ]
+                }
+            ]
         },
         {
-          "paths": [
-            "~/OverIndexSoftware/charger-credit-manager"
-          ]
+            "host": "discovery",
+            "args": [],
+            "projects": []
         }
-      ]
-    },
-    {
-      "host": "draco",
-      "username": "jaredconnor",
-      "projects": []
-    },
-    {
-      "host": "draco",
-      "username": "jaredconnor",
-      "projects": []
-    }
-  ],
+    ],
     "auto_update_extensions": {
         "html": false
     },
     "language_models": {
         "openai": {
-            "version": "1",
             "api_url": "http://localhost:11434/v1"
         }
     },
@@ -58,7 +53,7 @@
     // ----------------------------------------------
     "buffer_font_size": 12,
     "ui_font_size": 14,
-    "relative_line_numbers": true,
+    "relative_line_numbers": "enabled",
     "cursor_blink": true,
     "scrollbar": {
         "show": "system",
@@ -85,12 +80,12 @@
     // ----------------------------------------------
     // Coding
     // ----------------------------------------------
-    "assistant": {
+    "agent": {
+        "default_profile": "ask",
         "default_model": {
-            "provider": "copilot_chat",
-            "model": "gpt-4o"
+            "provider": "anthropic",
+            "model": "claude-opus-4-5-latest"
         },
-        "version": "2",
         "provider": null
     },
     // ----------------------------------------------
