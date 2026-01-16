@@ -179,7 +179,10 @@ if type brew &>/dev/null; then
 fi 
 
 # mise setup
-eval "$(mise activate zsh)"
+eval "$(mise activate zsh)" 
+
+# 1password Setup
+eval "$(op completion zsh)"; compdef _op op
 
 ####################################### 
 # GO-Lang Setup

@@ -30,7 +30,8 @@ HOSTS=(
     "eigyn@10.0.10.8"
     "root@10.0.10.8"
     
-    # Add more hosts here
+    # Add more hosts here 
+    #
 )
 
 echo -e "${GREEN}=== SSH Key Setup and Distribution ===${NC}\n"

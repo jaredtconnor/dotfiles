@@ -32,6 +32,14 @@
     },
     "when": "vim.mode == 'Normal' && (editorTextFocus || !inputFocus) && !sideBarFocus"
   },
+  { 
+   > "key": "ctrl--", 
+    "command": "workbench.action.navigateBack"
+  },
+  { 
+    "key": "ctrl-+", 
+    "command": "workbench.action.navigateForward"
+  }
   {
     "key": "space e",
     "command": "runCommands",
