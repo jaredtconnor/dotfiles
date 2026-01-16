@@ -42,7 +42,15 @@
       ]
     },
     "when": "sideBarFocus && !inputFocus"
+  }, 
+  { 
+   > "key": "ctrl--", 
+    "command": "workbench.action.navigateBack"
   },
+  { 
+    "key": "ctrl-+", 
+    "command": "workbench.action.navigateForward"
+  }
   {
     "key": "space e",
     "when": "vim.mode == 'Normal' && editorTextFocus && foldersViewVisible",
