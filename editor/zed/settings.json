@@ -36,6 +36,23 @@
             "host": "discovery",
             "args": [],
             "projects": []
+        },
+        {
+            "host": "apollo",
+            "username": "jaredconnor",
+            "args": [],
+            "projects": [
+                {
+                    "paths": [
+                        "/Users/jaredconnor/Projects"
+                    ]
+                },
+                {
+                    "paths": [
+                        "/Users/jaredconnor/projects/Beancount/./"
+                    ]
+                }
+            ]
         }
     ],
     "auto_update_extensions": {
@@ -47,7 +64,7 @@
         }
     },
     "theme": "Tokyo Night",
-    "buffer_font_family": "JetBrains Mono",
+    "buffer_font_family": "Berkeley Mono",
     // ----------------------------------------------
     // Appearance
     // ----------------------------------------------
