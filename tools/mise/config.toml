@@ -8,10 +8,11 @@ verbose = false
 # These tools will be installed and available globally
 go = "latest"
 node = ["lts-iron", "lts-hydrogen", "latest"] 
-python = ["latest", "3.11.0"]
+python = "latest"
 deno = "latest"
 bun = "latest"
 direnv = "latest"
+rust = "latest"
 
 # No separate [env] or [defaults] section needed
 # The first version listed for each tool becomes the default
