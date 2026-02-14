@@ -153,6 +153,9 @@
     ~/bin/share-ssh-keys:
       path: ./shell/scripts/share-ssh-keys.sh
       relink: true
+    ~/bin/clear-icon-cache:
+      path: ./shell/scripts/clear-icon-cache.sh
+      relink: true
 - shell:
     - command: ./tools/mise/setup-mise.sh
       description: Installing and configuring mise runtime versions
