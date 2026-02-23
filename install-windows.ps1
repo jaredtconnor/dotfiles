@@ -1,45 +1,31 @@
-# PowerShell Setup Script
-
-# Stop execution on error
-Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
-# Check if Git is installed, and install if necessary using winget (Windows package manager)
+$CONFIG = "install-windows.conf.yaml"
+$DOTBOT_DIR = "dotbot"
+$DOTBOT_BIN = "bin/dotbot"
+$BASEDIR = $PSScriptRoot
+
+Set-Location $BASEDIR
+
+# Check if Git is installed
 if (-Not (Get-Command git -ErrorAction SilentlyContinue)) {
     Write-Host "Git not found. Installing Git..."
     winget install --id Git.Git -e --source winget
 }
 
-# Install mise if not already installed
-if (-Not (Get-Command mise -ErrorAction SilentlyContinue)) {
-    Write-Host "mise not found. Installing mise..."
-    iwr https://mise.jdx.dev/install.ps1 -useb | iex
-}
-
-# Proceed with Dotbot installation
-$CONFIG = "install.conf.yaml"
-$DOTBOT_DIR = "dotbot"
-$DOTBOT_BIN = "tools/hg-subrepo/install.ps1"
-$BASEDIR = Split-Path -Parent $MyInvocation.MyCommand.Path
-
-# Change directory to the script's base directory
-Set-Location $BASEDIR
-
 # Update Git submodules for Dotbot
 git -C $DOTBOT_DIR submodule sync --quiet --recursive
 git submodule update --init --recursive $DOTBOT_DIR
 
-# Ensure Git user email is set
-$gitEmail = git config --global user.email
-if (-not $gitEmail) {
-    Write-Host "Git user email not set. Please configure it using the following command:"
-    Write-Host 'git config --global user.email "youremail@example.com"'
-    exit 1
+# Check for Python
+foreach ($PYTHON in ('python', 'python3')) {
+    if (& { $ErrorActionPreference = "SilentlyContinue"
+            ![string]::IsNullOrEmpty((&$PYTHON -V))
+            $ErrorActionPreference = "Stop" }) {
+
+        &$PYTHON (Join-Path $BASEDIR -ChildPath $DOTBOT_DIR | Join-Path -ChildPath $DOTBOT_BIN) `
+            -d $BASEDIR -c $CONFIG $Args
+        return
+    }
 }
-
-# Run Dotbot setup
-$dotbotCommand = Join-Path $BASEDIR "$DOTBOT_DIR\$DOTBOT_BIN"
-& $dotbotCommand -d $BASEDIR -c $CONFIG
-
-Write-Host "Dotbot installation complete."
-
+Write-Error "Error: Cannot find Python. Install Python 3.8+ and ensure it's on your PATH."

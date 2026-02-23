@@ -1,4 +1,5 @@
-env/.secrets 
+env/.secrets
+env/.secrets.ps1
 env/.sharecredentials
 
 # SSH and network config (contains internal IPs/hostnames)
