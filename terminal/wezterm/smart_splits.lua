@@ -1,17 +1,10 @@
--- Smart splits module for WezTerm
--- Provides vim-like pane navigation and resizing with nvim integration
-
 local wezterm = require('wezterm')
 local act = wezterm.action
 local module = {}
 
--- ============================================================================
--- CONFIGURATION
--- ============================================================================
-
 local direction_keys = {
   h = 'Left',
-  j = 'Down', 
+  j = 'Down',
   k = 'Up',
   l = 'Right',
 }
@@ -23,25 +16,13 @@ local resize_keys = {
   l = '<',
 }
 
--- ============================================================================
--- UTILITY FUNCTIONS
--- ============================================================================
-
 local function is_vim(pane)
-  -- Check if the current pane is running nvim with smart-splits integration
-  -- This assumes smart-splits has been installed on the nvim side
-  local user_vars = pane:get_user_vars()
-  return user_vars.IS_NVIM == 'true'
+  return pane:get_user_vars().IS_NVIM == 'true'
 end
-
--- ============================================================================
--- PANE OPERATIONS
--- ============================================================================
 
 local function resize(key)
   return wezterm.action_callback(function(window, pane)
     if is_vim(pane) then
-      -- Send vim smart-splits resize commands
       window:perform_action(
         wezterm.action.Multiple {
           act.SendKey { key = 'w', mods = 'CTRL' },
@@ -50,7 +31,6 @@ local function resize(key)
         pane
       )
     else
-      -- Use WezTerm's native pane resizing
       window:perform_action({
         AdjustPaneSize = { direction_keys[key], 3 }
       }, pane)
@@ -61,7 +41,6 @@ end
 local function move(key)
   return wezterm.action_callback(function(window, pane)
     if is_vim(pane) then
-      -- Send vim smart-splits navigation commands
       window:perform_action(
         wezterm.action.Multiple {
           act.SendKey { key = 'w', mods = 'CTRL' },
@@ -70,7 +49,6 @@ local function move(key)
         pane
       )
     else
-      -- Use WezTerm's native pane navigation
       window:perform_action({
         ActivatePaneDirection = direction_keys[key]
       }, pane)
@@ -78,14 +56,8 @@ local function move(key)
   end)
 end
 
--- ============================================================================
--- CONFIGURATION APPLICATION
--- ============================================================================
-
 function module.apply_to_config(config)
-  -- Navigation keys
   local keys = {
-    -- Vim-style pane navigation
     {
       key = 'j',
       mods = 'LEADER',
@@ -106,8 +78,6 @@ function module.apply_to_config(config)
       mods = 'LEADER',
       action = move('l'),
     },
-    
-    -- Resize mode activation
     {
       key = 'r',
       mods = 'LEADER',
@@ -117,20 +87,16 @@ function module.apply_to_config(config)
         one_shot = false,
       },
     },
-    
-    -- Pane splitting (matching tmux | and -)
     {
-      key = '|',
+      key = 'v',
       mods = 'LEADER',
       action = act.SplitVertical { domain = 'CurrentPaneDomain' },
     },
     {
-      key = '-',
+      key = 's',
       mods = 'LEADER',
       action = act.SplitHorizontal { domain = 'CurrentPaneDomain' },
     },
-    
-    -- Close current pane
     {
       key = 'x',
       mods = 'LEADER',
@@ -138,7 +104,6 @@ function module.apply_to_config(config)
     },
   }
 
-  -- Add keys to config
   if not config.keys then
     config.keys = {}
   end
@@ -146,7 +111,6 @@ function module.apply_to_config(config)
     table.insert(config.keys, k)
   end
 
-  -- Add resize key table
   if not config.key_tables then
     config.key_tables = {}
   end
@@ -167,7 +131,6 @@ function module.apply_to_config(config)
       key = 'l',
       action = resize('l'),
     },
-    -- Exit resize mode
     {
       key = 'Escape',
       action = act.PopKeyTable,

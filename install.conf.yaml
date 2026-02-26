@@ -123,6 +123,10 @@
       path: ./tools/tmux/.tmux.conf
     ~/.gitconfig:
       path: ./tools/git/.gitconfig
+    ~/.gitconfig-work:
+      path: ./tools/git/.gitconfig-work
+    ~/.gitconfig-personal:
+      path: ./tools/git/.gitconfig-personal
     ~/.prettierrc.js:
       path: ./languages/node/prettierrc.js
     ~/.config/karabiner/karabiner.json:
