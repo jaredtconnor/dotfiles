@@ -197,7 +197,6 @@
     "files.watcherExclude": {
         "**/node_modules/**": false
     },
-
     "gitHistory.showEditorTitleMenuBarIcons": false,
     "gitlens.menus": false,
     "javascript.preferences.quoteStyle": "single",
@@ -211,12 +210,10 @@
         ],
         "smartStep": true
     },
-
     // Git Decorators
     "scm.diffDecorationsGutterPattern": {
         "modified": false
     },
-
     "scssFormatter.singleQuote": true,
     "terminal.integrated.fontFamily": "'JetBrainsMono Nerd Font', 'RobotoMono Nerd Font', Menlo, Monaco, 'Courier New', monospace",
     "terminal.integrated.fontSize": 11,
@@ -258,7 +255,6 @@
             "editorSuggestWidget.selectedBackground": "#01395e",
         },
     },
-
     // Remove unnecessary extension notifications and telemetry
     "telemetry.telemetryLevel": "error",
     "extensions.ignoreRecommendations": true,
@@ -682,4 +678,6 @@
     "tailwind-fold.foldedTextBackgroundColor": "#2F2F2F",
     "tailwind-fold.autoFold": false,
     "tailwind-fold.showTailwindImage": false,
+    "workbench.colorTheme": "One Dark Pro Darker",
+    "git.confirmSync": false,
 }
