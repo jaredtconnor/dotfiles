@@ -62,6 +62,12 @@
     ~/.gitconfig:
       path: ./tools/git/.gitconfig
       force: true
+    ~/.gitconfig-work:
+      path: ./tools/git/.gitconfig-work
+      force: true
+    ~/.gitconfig-personal:
+      path: ./tools/git/.gitconfig-personal
+      force: true
     ~/.prettierrc.js:
       path: ./languages/node/prettierrc.js
     ~/.config/mise/config.toml:

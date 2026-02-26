@@ -3,7 +3,14 @@
 
 [user]
 	name = Jared Connor
-	email = jaredconnor@fastmail.com
+
+# Work identity (C:/Git/ repos)
+[includeIf "gitdir:C:/Git/"]
+	path = ~/.gitconfig-work
+
+# Personal identity (C:/personal/ repos)
+[includeIf "gitdir:C:/personal/"]
+	path = ~/.gitconfig-personal
 
 [core]
 	filemode = false
