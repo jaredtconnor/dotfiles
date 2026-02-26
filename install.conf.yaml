@@ -16,12 +16,19 @@
     # ------------------------------------------------------------
     # editor
     # ------------------------------------------------------------
+    # Neovim (Unix)
     ~/.config/nvim:
+      if: "python3 -c \"import sys;exit(sys.platform=='win32')\""
       create: true
       glob: true
       path: ./editor/nvim
       force: false
-    # LazVim
+    # Neovim (Windows)
+    ~/AppData/Local/nvim:
+      if: "ver"
+      path: ./editor/nvim
+      force: true
+    # LazyVim
     ~/.config/LazyVim/:
       create: true
       glob: true
@@ -42,8 +49,8 @@
     ~/Library/Application Support/Code/User/snippets:
       if: "[ `uname` = Darwin ]"
       path: ./editor/vscode/snippets
-      force: true 
-    # VS Code MacOS Insiders 
+      force: true
+    # VS Code MacOS Insiders
     ~/Library/Application Support/Code - Insiders/User:
       if: "[ `uname` = Darwin ]"
       glob: true
@@ -58,8 +65,17 @@
     ~/Library/Application Support/Cursor/User/snippets:
       if: "[ `uname` = Darwin ]"
       path: ./editor/cursor/snippets
-      force: true 
-    # Zed 
+      force: true
+    # Cursor Windows
+    ~/AppData/Roaming/Cursor/User/keybindings.json:
+      if: "ver"
+      path: ./editor/cursor/linux/keybindings.json
+      force: true
+    ~/AppData/Roaming/Cursor/User/settings.json:
+      if: "ver"
+      path: ./editor/cursor/linux/settings.json
+      force: true
+    # Zed
     ~/.config/zed/keymap.json:
       path: ./editor/zed/keymap.json
       force: false
@@ -70,15 +86,22 @@
     # shell
     # ------------------------------------------------------------
     ~/.secrets:
+      if: "test -f env/.secrets"
       path: ./env/.secrets
-      force: true 
+      force: true
+    ~/.secrets.ps1:
+      if: "ver"
+      path: ./env/.secrets.ps1
+      force: true
+      ignore-missing: true
     ~/.sharecredentials:
+      if: "test -f env/.sharecredentials"
       path: ./env/.sharecredentials
       force: true
     ~/.zshrc:
       path: ./shell/zsh/.zshrc
       force: true
-    ~/.oh-my-zsh: ./shell/zsh/oh-my-zsh 
+    ~/.oh-my-zsh: ./shell/zsh/oh-my-zsh
     ~/.config/fish/:
       glob: true
       path: ./shell/fish/*
@@ -91,6 +114,15 @@
     ~/.bash_profile:
       path: ./shell/bash/.bash_profile
       force: true
+    # PowerShell / Oh-My-Posh (Windows)
+    ~/.config/powershell/user_profile.ps1:
+      if: "ver"
+      path: ./shell/powershell/user_profile.ps1
+      force: true
+    ~/.config/powershell/jconnor.omp.json:
+      if: "ver"
+      path: ./shell/powershell/jconnor.omp.json
+      force: true
     ~/bin:
       glob: true
       path: ./shell/functions/*
@@ -99,8 +131,9 @@
       path: ./shell/starship.toml
       relink: true
     ~/.ssh/config:
+      if: "test -f ssh/config"
       path: ./ssh/config
-      relink: true
+      force: true
     # ------------------------------------------------------------
     # terminal
     # ------------------------------------------------------------
@@ -112,10 +145,16 @@
       path: ./terminal/wezterm/*
     ~/.config/kitty/:
       glob: true
-      path: ./terminal/kitty/* 
+      path: ./terminal/kitty/*
+    # Ghostty (Unix)
     ~/.config/ghostty/:
+      if: "python3 -c \"import sys;exit(sys.platform=='win32')\""
       glob: true
       path: ./terminal/ghostty/*
+    # Ghostty (Windows)
+    ~/AppData/Roaming/ghostty/config:
+      if: "ver"
+      path: ./terminal/ghostty/config
     # ------------------------------------------------------------
     # tools
     # ------------------------------------------------------------
@@ -125,15 +164,17 @@
       path: ./tools/git/.gitconfig
     ~/.gitconfig-work:
       path: ./tools/git/.gitconfig-work
+      force: true
     ~/.gitconfig-personal:
       path: ./tools/git/.gitconfig-personal
+      force: true
     ~/.prettierrc.js:
       path: ./languages/node/prettierrc.js
     ~/.config/karabiner/karabiner.json:
-      path: ./tools/karabiner/karabiner.json 
+      path: ./tools/karabiner/karabiner.json
     ~/.config/sketchybar/:
       glob: true
-      path: ./tools/sketchybar/*  
+      path: ./tools/sketchybar/*
     ~/.config/aerospace/aerospace.toml:
       path: ./tools/aerospace/aerospace.toml
     ~/.hammerspoon:
@@ -147,7 +188,7 @@
     ~/Library/Application Support/espanso:
       if: "[ `uname` = Darwin ]"
       path: ./tools/espanso
-      force: true 
+      force: true
     # ------------------------------------------------------------
     # scripts - non auto sourced
     # ------------------------------------------------------------
@@ -155,6 +196,7 @@
       path: ./shell/scripts/dev-setup.sh
       relink: true
     ~/bin/share-ssh-keys:
+      if: "test -f shell/scripts/share-ssh-keys.sh"
       path: ./shell/scripts/share-ssh-keys.sh
       relink: true
     ~/bin/clear-icon-cache:
@@ -162,19 +204,23 @@
       relink: true
 - shell:
     - command: ./tools/mise/setup-mise.sh
+      if: "python3 -c \"import sys;exit(sys.platform=='win32')\""
       description: Installing and configuring mise runtime versions
       stdout: true
       quiet: false
 - shell:
     - command: ./tools/git/set-gitconfig.sh
+      if: "python3 -c \"import sys;exit(sys.platform=='win32')\""
       description: Configuring Git
       stdout: true
       quiet: false
     - command: yarn config set prefix ~/.yarn
+      if: "python3 -c \"import sys;exit(sys.platform=='win32')\""
       description: Configuring yarn prefix
       stdout: true
       quiet: false
     - command: ./tools/tmux/setup-tmux.sh
+      if: "python3 -c \"import sys;exit(sys.platform=='win32')\""
       description: Setting up tmux plugins
       stdout: true
       quiet: false
