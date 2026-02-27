@@ -105,9 +105,12 @@
     ~/.config/fish/:
       glob: true
       path: ./shell/fish/*
+      force: true
     ~/.config/mise/config.toml:
       path: ./tools/mise/config.toml
-    ~/.zgenom: ./shell/zsh/zgenom
+    ~/.zgenom:
+      path: ./shell/zsh/zgenom
+      force: true
     ~/.bashrc:
       path: ./shell/bash/.bashrc
       force: true
