@@ -60,13 +60,6 @@ if ! zgenom saved; then
     zgenom load zsh-users/zsh-syntax-highlighting
     zgenom load zsh-users/zsh-history-substring-search
 
-    # Set keystrokes for substring searching
-    zmodload zsh/terminfo
-    bindkey "$terminfo[kcuu1]" history-substring-search-up
-    bindkey "$terminfo[kcud1]" history-substring-search-down
-    bindkey "^k" history-substring-search-up
-    bindkey "^j" history-substring-search-down
-
     # Warn you when you run a command that you've got an alias for
     zgenom load djui/alias-tips
 
@@ -78,6 +71,13 @@ if ! zgenom saved; then
     zgenom save
     echo "-- zgenom: Done!"
 fi
+
+# Set keystrokes for history-substring-search (must be after zgenom loads the plugin)
+zmodload zsh/terminfo
+bindkey "$terminfo[kcuu1]" history-substring-search-up
+bindkey "$terminfo[kcud1]" history-substring-search-down
+bindkey "^k" history-substring-search-up
+bindkey "^j" history-substring-search-down
 
 # History Options
 setopt append_history
@@ -220,7 +220,10 @@ fi
 #######################################
 # Color Configuration for WSL/Linux
 #######################################
-export TERM="xterm-256color"
+# Only override TERM when not in a terminal that sets its own (e.g. Ghostty)
+if [[ "$TERM_PROGRAM" != "ghostty" ]]; then
+    export TERM="xterm-256color"
+fi
 
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     # Terminal settings
