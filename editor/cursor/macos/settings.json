@@ -1270,7 +1270,7 @@
     "rm",
     "kill"
   ],
-  "workbench.colorTheme": "GitHub Dark",
+  "workbench.colorTheme": "Tokyo Night",
   "terminal.integrated.enableMultiLinePasteWarning": false,
   "lldb.suppressUpdateNotifications": true,
   "amp.tab.enabled": false,
