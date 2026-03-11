@@ -1,5 +1,9 @@
-PATH="/usr/local/bin:$PATH"  
+PATH="/usr/local/bin:$PATH"
 
-eval "$(/opt/homebrew/bin/brew shellenv)"
+if [ -x /opt/homebrew/bin/brew ]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
 
-. "$HOME/.cargo/env"
+if [ -f "$HOME/.cargo/env" ]; then
+  . "$HOME/.cargo/env"
+fi

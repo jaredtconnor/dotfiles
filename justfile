@@ -80,3 +80,68 @@ vscode-install:
 # Save current extensions to extensions.txt
 vscode-save:
     code --list-extensions > {{justfile_directory()}}/editor/vscode/extensions.txt
+
+# --- AI Tooling ---
+
+# List all shared skills
+[unix]
+skills:
+    @ls -1 tools/ai/skills/
+
+[windows]
+skills:
+    @Get-ChildItem tools\ai\skills -Directory -Name
+
+# List all shared agents
+[unix]
+agents:
+    @find tools/ai/agents -name '*.md' | sort
+
+[windows]
+agents:
+    @Get-ChildItem tools\ai\agents -Recurse -Filter '*.md' -Name | Sort-Object
+
+# List claude commands
+[unix]
+commands:
+    @ls -1 tools/ai/claude/commands/
+
+[windows]
+commands:
+    @Get-ChildItem tools\ai\claude\commands -Name
+
+# --- Submodules ---
+
+# Update all submodules to latest
+submodule-update:
+    git submodule update --remote --merge
+
+# --- Pre-commit ---
+
+# Install pre-commit hooks
+pre-commit-install:
+    pre-commit install
+    pre-commit install --hook-type commit-msg
+
+# Run all pre-commit hooks
+pre-commit-run:
+    pre-commit run --all-files
+
+# --- Utilities ---
+
+# Show what dotbot would link (dry run)
+[unix]
+link-check:
+    #!/usr/bin/env bash
+    set -e
+    BASEDIR="{{justfile_directory()}}"
+    cd "$BASEDIR"
+    git -C dotbot submodule sync --quiet --recursive
+    git submodule update --init --recursive dotbot
+    "$BASEDIR/dotbot/bin/dotbot" -d "$BASEDIR" -c install.conf.yaml --only link -v
+
+[windows]
+link-check:
+    git -C dotbot submodule sync --quiet --recursive
+    git submodule update --init --recursive dotbot
+    python dotbot/bin/dotbot -d "{{justfile_directory()}}" -c install.conf.yaml --only link -v
