@@ -7,7 +7,7 @@ verbose = false
 [tools]
 # These tools will be installed and available globally
 go = "latest"
-node = ["lts-iron", "lts-hydrogen", "latest"] 
+node = "24"
 python = "latest"
 deno = "latest"
 bun = "latest"

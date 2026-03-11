@@ -6,4 +6,9 @@ env/.sharecredentials
 ssh/config
 ssh/hosts
 shell/scripts/share-ssh-keys.sh
-ssh/config
+
+# Cursor local state
+.cursor/hooks/state/
+
+# Stray home-directory symlinks
+~/

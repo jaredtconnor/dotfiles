@@ -1654,6 +1654,10 @@
     ],
     "vim.insertModeKeyBindings": [],
     "editor.lineNumbers": "relative"
+  },
+  {
+    "key": "ctrl+alt+s",
+    "command": "workbench.action.toggleUnifiedSidebarFromKeyboard",
+    "when": "cursor.agentIdeUnification.enabled == true && !isAuxiliaryWindowFocusedContext"
   }
 ]
-

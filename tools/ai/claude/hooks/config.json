@@ -1,0 +1,61 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "description": "Always start with tech-lead-orchestrator",
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/tech-lead-check.sh \"$CLAUDE_PROMPT\"",
+            "timeout": 5000
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "description": "Always enforce best practices after any tool usage",
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/enforce-best-practices.sh \"$CLAUDE_TOOL_NAME\"",
+            "timeout": 5000
+          }
+        ]
+      },
+      {
+        "description": "Always run memory sync after any tool usage",
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/memory-sync.sh",
+            "timeout": 5000
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "description": "Initialize session with tech-lead orchestration",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '🚀 Session started: tech-lead-orchestrator, best practices, and memory sync active'",
+            "timeout": 1000
+          }
+        ]
+      }
+    ]
+  },
+  "settings": {
+    "enforceOrchestration": true,
+    "autoCompoundEngineering": true,
+    "memoryBankAutoSync": true,
+    "tddEnforcement": false,
+    "alwaysTechLead": true,
+    "techLeadThreshold": "all"
+  }
+}

@@ -193,6 +193,31 @@
       path: ./tools/espanso
       force: true
     # ------------------------------------------------------------
+    # AI - Shared (skills + agents → both Cursor and Claude Code)
+    # ------------------------------------------------------------
+    ~/.claude/skills:
+      path: ./tools/ai/skills
+      force: true
+    ~/.claude/agents:
+      path: ./tools/ai/agents
+      force: true
+    ~/.cursor/skills:
+      path: ./tools/ai/skills
+      force: true
+    ~/.cursor/agents:
+      path: ./tools/ai/agents
+      force: true
+    # AI - Claude Code specific config
+    ~/.claude/:
+      path: ./tools/ai/claude/*
+      glob: true
+      force: true
+    # AI - Cursor specific config
+    ~/.cursor/rules/:
+      path: ./tools/ai/cursor/rules/*
+      glob: true
+      create: true
+    # ------------------------------------------------------------
     # scripts - non auto sourced
     # ------------------------------------------------------------
     ~/bin/dev-setup:
