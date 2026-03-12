@@ -12,3 +12,7 @@ shell/scripts/share-ssh-keys.sh
 
 # Stray home-directory symlinks
 ~/
+
+# Dolt database files (added by bd init)
+.dolt/
+*.db
