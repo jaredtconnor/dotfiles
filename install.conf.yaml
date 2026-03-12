@@ -193,24 +193,17 @@
       path: ./tools/espanso
       force: true
     # ------------------------------------------------------------
-    # AI - Shared (skills + agents → both Cursor and Claude Code)
+    # AI - Claude Code (plugin handles skills/agents/commands/hooks)
     # ------------------------------------------------------------
-    ~/.claude/skills:
-      path: ./tools/ai/skills
+    ~/.claude/settings.json:
+      path: ./tools/ai/claude/settings.json
       force: true
-    ~/.claude/agents:
-      path: ./tools/ai/agents
-      force: true
+    # AI - Cursor (symlinks to plugin dirs for cross-tool sharing)
     ~/.cursor/skills:
-      path: ./tools/ai/skills
+      path: ./tools/ai/plugins/personal/skills
       force: true
     ~/.cursor/agents:
-      path: ./tools/ai/agents
-      force: true
-    # AI - Claude Code specific config
-    ~/.claude/:
-      path: ./tools/ai/claude/*
-      glob: true
+      path: ./tools/ai/plugins/personal/agents
       force: true
     # AI - Cursor specific config
     ~/.cursor/rules/:

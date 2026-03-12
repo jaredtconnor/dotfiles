@@ -1,0 +1,9 @@
+{
+  "name": "personal",
+  "source": "./tools/ai/plugins/personal",
+  "description": "Personal development workflow tools, orchestration, and language specialists",
+  "version": "1.0.0",
+  "author": {
+    "name": "Jared Connor"
+  }
+}
