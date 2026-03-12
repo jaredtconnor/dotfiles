@@ -1,13 +1,30 @@
 {
   "cleanupPeriodDays": 30,
+  "enabledPlugins": {
+    "adlc@AgenticEngineeringAcademy": true,
+    "flywheel@AgenticEngineeringAcademy": true,
+    "foundations@AgenticEngineeringAcademy": true,
+    "skill-creator@claude-plugins-official": true,
+    "worktrees@AgenticEngineeringAcademy": true,
+    "personal@local": true
+  },
   "env": {
     "BASH_DEFAULT_TIMEOUT_MS": "120000",
     "BASH_MAX_OUTPUT_LENGTH": "20000",
     "CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR": "1",
-    "PYTHONPATH": ".",
-    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
+    "PYTHONPATH": "."
+  },
+  "extraKnownMarketplaces": {
+    "AgenticEngineeringAcademy": {
+      "source": {
+        "repo": "HgGenAIHive/AgenticEngineeringAcademy",
+        "source": "github"
+      }
+    }
   },
   "includeCoAuthoredBy": true,
+  "model": "opus",
   "permissions": {
     "allow": [
       "Bash",
@@ -27,99 +44,14 @@
       "Bash(git:*)",
       "Bash(./tests/e2e/run_e2e_test.sh:*)"
     ],
+    "defaultMode": "acceptEdits",
     "deny": [
       "Bash(rm -rf /*)",
       "Bash(rm -rf /home)"
-    ],
-    "defaultMode": "acceptEdits"
-  },
-  "model": "opus",
-  "hooks": {
-    "UserPromptSubmit": [
-      {
-        "matcher": ".*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "/c/Users/JaredConnor/.claude/hooks/tech-lead-check.sh",
-            "timeout": 5000
-          }
-        ]
-      }
-    ],
-    "PostToolUse": [
-      {
-        "matcher": "Write|Edit|MultiEdit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "/c/Users/JaredConnor/.claude/hooks/enforce-best-practices.sh",
-            "timeout": 5000
-          }
-        ]
-      },
-      {
-        "matcher": "Write|Edit|MultiEdit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "/c/Users/JaredConnor/.claude/hooks/memory-sync.sh",
-            "timeout": 5000
-          }
-        ]
-      },
-      {
-        "matcher": "Write|Edit|MultiEdit|Task",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "/c/Users/JaredConnor/.claude/hooks/compound-engineering.sh",
-            "timeout": 5000
-          }
-        ]
-      }
-    ],
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "echo '🚀 Session started: tech-lead-orchestrator, best practices, and memory sync active'",
-            "timeout": 1000
-          }
-        ]
-      }
-    ],
-    "PreToolUse": [
-      {
-        "matcher": "Write|Edit|MultiEdit|Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "/c/Users/JaredConnor/.claude/hooks/tech-lead-check.sh",
-            "timeout": 5000
-          }
-        ]
-      }
     ]
   },
   "statusLine": {
-    "type": "command",
-    "command": "bash /c/Users/JaredConnor/.claude/statusline-command.sh"
-  },
-  "enabledPlugins": {
-    "adlc@AgenticEngineeringAcademy": true,
-    "flywheel@AgenticEngineeringAcademy": true,
-    "foundations@AgenticEngineeringAcademy": true,
-    "worktrees@AgenticEngineeringAcademy": true,
-    "skill-creator@claude-plugins-official": true
-  },
-  "extraKnownMarketplaces": {
-    "AgenticEngineeringAcademy": {
-      "source": {
-        "source": "github",
-        "repo": "HgGenAIHive/AgenticEngineeringAcademy"
-      }
-    }
+    "command": "bash /c/Users/JaredConnor/.claude/statusline-command.sh",
+    "type": "command"
   }
 }
