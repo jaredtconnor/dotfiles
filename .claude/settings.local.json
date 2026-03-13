@@ -1,7 +1,12 @@
 {
   "permissions": {
     "allow": [
-      "Bash(just link:*)"
+      "Bash(just link:*)",
+      "WebSearch",
+      "WebFetch(domain:github.com)"
+    ],
+    "additionalDirectories": [
+      "C:\\git\\adlc"
     ]
   }
 }
