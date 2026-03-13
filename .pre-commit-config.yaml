@@ -14,11 +14,15 @@ repos:
       - id: check-yaml
         args: [--allow-multiple-documents]
       - id: check-json
-        exclude: '(keybindings|settings)\.json$'
+        exclude: '(keybindings|settings|snippets/typescript|zed/keymap)\.json$'
       - id: check-toml
+        exclude: '\.template\.toml$'
       - id: end-of-file-fixer
       - id: trailing-whitespace
         args: [--markdown-linebreak-ext=md]
+      - id: mixed-line-ending
+        args: [--fix=lf]
+      - id: check-executables-have-shebangs
       - id: check-merge-conflict
       - id: detect-private-key
       - id: check-symlinks
