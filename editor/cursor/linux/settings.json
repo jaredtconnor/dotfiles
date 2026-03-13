@@ -680,4 +680,5 @@
     "workbench.colorTheme": "One Dark Pro",
     "git.confirmSync": false,
     "claudeCode.preferredLocation": "panel",
+    "editor.accessibilitySupport": "on",
 }
