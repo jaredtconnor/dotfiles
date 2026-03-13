@@ -171,6 +171,9 @@
     ~/.gitconfig-personal:
       path: ./tools/git/.gitconfig-personal
       force: true
+    ~/.config/git/githooks:
+      path: ./tools/git/githooks
+      force: true
     ~/.prettierrc.js:
       path: ./languages/node/prettierrc.js
     ~/.config/karabiner/karabiner.json:
