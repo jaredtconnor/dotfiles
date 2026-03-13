@@ -3,7 +3,7 @@
 
 [user]
 	name = Jared Connor
-	email = jared.connor@empyreansolutions.com
+	email = jaredconnor@fastmail.com
 
 [includeIf "gitdir:~/conductor/"]
 	path = ~/.dotfiles/tools/git/.gitconfig-work

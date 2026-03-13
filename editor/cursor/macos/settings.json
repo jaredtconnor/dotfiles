@@ -1270,7 +1270,7 @@
     "rm",
     "kill"
   ],
-  "workbench.colorTheme": "Tokyo Night",
+  "workbench.colorTheme": "One Dark Pro",
   "terminal.integrated.enableMultiLinePasteWarning": false,
   "lldb.suppressUpdateNotifications": true,
   "amp.tab.enabled": false,
