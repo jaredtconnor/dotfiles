@@ -33,26 +33,13 @@
     ],
     "defaultMode": "acceptEdits"
   },
-  "model": "opus",
   "statusLine": {
     "type": "command",
     "command": "bash /c/Users/JaredConnor/.claude/statusline-command.sh"
   },
   "enabledPlugins": {
-    "adlc@AgenticEngineeringAcademy": true,
-    "flywheel@AgenticEngineeringAcademy": true,
-    "foundations@AgenticEngineeringAcademy": true,
     "skill-creator@claude-plugins-official": true,
-    "worktrees@AgenticEngineeringAcademy": true,
     "personal@local": true
-  },
-  "extraKnownMarketplaces": {
-    "AgenticEngineeringAcademy": {
-      "source": {
-        "source": "github",
-        "repo": "HgGenAIHive/AgenticEngineeringAcademy"
-      }
-    }
   },
   "voiceEnabled": false
 }
