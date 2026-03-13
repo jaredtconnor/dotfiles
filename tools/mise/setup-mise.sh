@@ -16,7 +16,7 @@ if ! command -v mise >/dev/null 2>&1; then
   else
     curl https://mise.jdx.dev/install.sh | sh
   fi
-  
+
   # Add mise to PATH for the current script
   if [[ -f "$HOME/.local/bin/mise" ]]; then
     export PATH="$HOME/.local/bin:$PATH"

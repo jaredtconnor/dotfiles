@@ -36,7 +36,7 @@ return {
         sidebars = "transparent",
         floats = "transparent",
       },
-      sidebars = { 
+      sidebars = {
         "qf", "help", "vista_kind", "terminal", "packer",
         "snacks_layout_box", -- Critical for snacks.nvim explorer transparency
         "NvimTree", "NeoTree", "BufferLine", "TelescopePrompt",

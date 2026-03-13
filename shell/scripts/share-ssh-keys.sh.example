@@ -17,19 +17,19 @@ HOSTS=(
     # Pihole 1 - Primary DNS
     "eigyn@10.0.10.3"
     "root@10.0.10.3"
-    
+
     # Pihole 2 - Secondary DNS
     "eigyn@10.0.10.4"
     "root@10.0.10.4"
-    
+
     # Hypervisor - Proxmox
     "eigyn@10.0.10.5"
     "root@10.0.10.5"
-    
+
     # Compute - Ubuntu VM
     "eigyn@10.0.10.8"
     "root@10.0.10.8"
-    
+
     # Add more hosts here
     "jaredconnor@10.0.40.5"
 )
@@ -63,9 +63,9 @@ if [ ! -f "$KEY_PATH" ]; then
     echo -e "${YELLOW}Generating new SSH key...${NC}"
     read -p "Enter email for key comment (or press enter for default): " email
     email="${email:-$(whoami)@$(hostname)}"
-    
+
     ssh-keygen -t ed25519 -C "$email" -f "$KEY_PATH"
-    
+
     if [ $? -eq 0 ]; then
         echo -e "${GREEN}✓ SSH key generated successfully${NC}"
     else
@@ -97,17 +97,17 @@ echo -e "${GREEN}=== Distributing key to hosts ===${NC}\n"
 
 for host in "${HOSTS[@]}"; do
     echo -e "${YELLOW}Copying key to $host...${NC}"
-    
+
     # Check if host is reachable
     host_ip=$(echo "$host" | cut -d'@' -f2)
     if ! ping -c 1 -W 2 "$host_ip" > /dev/null 2>&1; then
         echo -e "${RED}✗ Host $host_ip is not reachable, skipping${NC}\n"
         continue
     fi
-    
+
     # Copy the key
     ssh-copy-id -i "${KEY_PATH}.pub" "$host"
-    
+
     if [ $? -eq 0 ]; then
         echo -e "${GREEN}✓ Key copied to $host${NC}\n"
     else

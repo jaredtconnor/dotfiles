@@ -33,13 +33,13 @@ DOTFILES_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 for plugin_name in "${TMUX_PLUGINS[@]}"; do
   plugin_path=~/.tmux/plugins/$plugin_name
   source_path="$DOTFILES_PATH/tmux-plugins/$plugin_name"
-  
+
   if [ -d "$source_path" ]; then
     if [ -d "$plugin_path" ] && [ ! -L "$plugin_path" ]; then
       echo "Removing existing non-symlink plugin: $plugin_name..."
       rm -rf "$plugin_path"
     fi
-    
+
     if [ ! -L "$plugin_path" ]; then
       echo "Creating symlink for tmux plugin: $plugin_name..."
       ln -sf "$source_path" "$plugin_path"

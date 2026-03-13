@@ -7,4 +7,3 @@ map("n", "<S-l>", "<cmd>BufferLineCycleNext<CR> ", { desc = "goto prev tab" })
 map("n", "<leader>tt", "<cmd>TransparentToggle<CR>", { desc = "toggle transparency" })
 map("n", "<leader>te", "<cmd>TransparentEnable<CR>", { desc = "enable transparency" })
 map("n", "<leader>td", "<cmd>TransparentDisable<CR>", { desc = "disable transparency" })
-

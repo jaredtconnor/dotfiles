@@ -37,7 +37,7 @@ fi
 # Generate key if it doesn't exist
 if [ ! -f "$KEY_PATH" ]; then
     echo -e "${YELLOW}Generating new SSH key...${NC}"
-    
+
     # Get email from git config or prompt
     email=$(git config user.email 2>/dev/null || echo "")
     if [ -z "$email" ]; then
@@ -47,9 +47,9 @@ if [ ! -f "$KEY_PATH" ]; then
         read -p "Press enter to use this email, or type a different one: " custom_email
         email="${custom_email:-$email}"
     fi
-    
+
     ssh-keygen -t ed25519 -C "$email" -f "$KEY_PATH"
-    
+
     if [ $? -eq 0 ]; then
         echo -e "${GREEN}✓ SSH key generated successfully${NC}"
     else
@@ -101,4 +101,3 @@ echo -e "3. Paste your public key (already copied to clipboard if on macOS)"
 echo -e "4. Give it a title and click 'Add SSH key'"
 echo -e "\n${YELLOW}Test your connection:${NC}"
 echo -e "  ssh -T git@github.com\n"
-

@@ -33,7 +33,7 @@ print_error() {
 create_dir() {
     local dir_path="$1"
     local description="$2"
-    
+
     if [ ! -d "$dir_path" ]; then
         mkdir -p "$dir_path"
         print_success "Created: $dir_path"
@@ -50,7 +50,7 @@ create_dir() {
 create_readme() {
     local dir_path="$1"
     local content="$2"
-    
+
     if [ ! -f "$dir_path/README.md" ]; then
         echo "$content" > "$dir_path/README.md"
         print_success "Created README: $dir_path/README.md"
@@ -121,7 +121,7 @@ create_readme "projects" "# Projects Directory
 This directory contains your main development projects, organized by category:
 
 - **personal/**: Personal side projects and hobby code
-- **work/**: Work-related projects and repositories  
+- **work/**: Work-related projects and repositories
 - **client/**: Client projects (if applicable)
 - **archived/**: Completed or paused projects for reference
 
@@ -139,7 +139,7 @@ Feel free to create and delete folders here as needed.
 
 - **forks/**: Forked repositories for testing and contributing
 - **tutorials/**: Code from tutorials and learning exercises
-- **proof-of-concept/**: Quick proof-of-concept implementations  
+- **proof-of-concept/**: Quick proof-of-concept implementations
 - **temp/**: Temporary downloads and quick tests
 
 ## Guidelines

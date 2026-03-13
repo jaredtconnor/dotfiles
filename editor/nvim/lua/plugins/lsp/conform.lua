@@ -17,7 +17,7 @@ local prettier_ft = {
   "javascript",
   "less",
   "markdown",
-  "scss", 
+  "scss",
   "svelte",
   "typescript",
   "typescriptreact",

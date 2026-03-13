@@ -29,4 +29,3 @@ done
 for sid in "${!changes_on[@]}"; do
   sketchybar --set space.$sid drawing=on
 done
-

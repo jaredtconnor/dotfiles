@@ -51,4 +51,4 @@ if ! git config --global user.email >/dev/null; then
 fi
 
 "${BASEDIR}/${DOTBOT_DIR}/${DOTBOT_BIN}" -d "${BASEDIR}" \
-  -c "${CONFIG}" "${@}"   
+  -c "${CONFIG}" "${@}"

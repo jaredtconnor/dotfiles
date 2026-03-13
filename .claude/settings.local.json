@@ -3,7 +3,8 @@
     "allow": [
       "Bash(just link:*)",
       "WebSearch",
-      "WebFetch(domain:github.com)"
+      "WebFetch(domain:github.com)",
+      "Bash(prek run:*)"
     ],
     "additionalDirectories": [
       "C:\\git\\adlc"

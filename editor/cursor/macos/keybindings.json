@@ -42,13 +42,13 @@
       ]
     },
     "when": "sideBarFocus && !inputFocus"
-  }, 
-  { 
-   > "key": "ctrl--", 
+  },
+  {
+   > "key": "ctrl--",
     "command": "workbench.action.navigateBack"
   },
-  { 
-    "key": "ctrl-+", 
+  {
+    "key": "ctrl-+",
     "command": "workbench.action.navigateForward"
   }
   {

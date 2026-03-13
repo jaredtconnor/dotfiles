@@ -1,4 +1,4 @@
-# source $DOTFILES/shell/zsh/p10k.zsh 
+# source $DOTFILES/shell/zsh/p10k.zsh
 eval "$(starship init zsh)"
 
 #!/usr/bin/env bash
@@ -33,13 +33,13 @@ if ! zgenom saved; then
     zgenom ohmyzsh plugins/sudo
     zgenom ohmyzsh plugins/command-not-found
     zgenom ohmyzsh plugins/kubectl
-    
+
     # Only load docker plugins if docker is available
     if command -v docker >/dev/null 2>&1; then
         zgenom ohmyzsh plugins/docker
         zgenom ohmyzsh plugins/docker-compose
     fi
-    
+
     zgenom load jocelynmallon/zshmarks
     zgenom load denolfe/git-it-on.zsh
     zgenom load caarlos0/zsh-mkc
@@ -54,9 +54,9 @@ if ! zgenom saved; then
     zgenom load ntnyq/omz-plugin-pnpm
 
     zgenom load zsh-users/zsh-autosuggestions
-    zgenom load zsh-users/zsh-completions 
+    zgenom load zsh-users/zsh-completions
 
-    # These 2 must be in this order 
+    # These 2 must be in this order
     zgenom load zsh-users/zsh-syntax-highlighting
     zgenom load zsh-users/zsh-history-substring-search
 
@@ -92,7 +92,7 @@ setopt hist_verify
 setopt inc_append_history
 
 # Share history across all your terminal windows
-setopt sharehistory 
+setopt sharehistory
 #setopt noclobber
 
 # set some more options
@@ -101,8 +101,8 @@ setopt pushd_ignore_dups
 # Increase history size
 HISTSIZE=1000000000
 SAVEHIST=$HISTSIZE
-HISTFILE=~/.zsh_history 
-HISDUP=erase 
+HISTFILE=~/.zsh_history
+HISDUP=erase
 export HISTIGNORE="ls:cd:cd -:pwd:exit:date:* --help"
 
 # Return time on long running processes
@@ -176,23 +176,23 @@ if type brew &>/dev/null; then
   FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH
   autoload -Uz compinit
   compinit
-fi 
+fi
 
 # mise setup
-eval "$(mise activate zsh)" 
+eval "$(mise activate zsh)"
 
 # 1password Setup
 eval "$(op completion zsh)"; compdef _op op
 
-####################################### 
+#######################################
 # GO-Lang Setup
-####################################### 
-export GOPATH=$HOME/go 
-export PATH=$PATH:$GOPATH/bin 
+#######################################
+export GOPATH=$HOME/go
+export PATH=$PATH:$GOPATH/bin
 
-####################################### 
+#######################################
 # Deno setup
-####################################### 
+#######################################
 if [[ -n "$DENO_INSTALL" ]]; then
     export PATH="$DENO_INSTALL/bin:$PATH"
 elif [[ -d "$HOME/.deno" ]]; then
@@ -207,7 +207,7 @@ bindkey -s ^a "nvims\n"
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
-# Node setup - OS Detection  
+# Node setup - OS Detection
 if [[ "$OSTYPE" == "darwin"* ]]; then
     export PATH="/opt/homebrew/opt/node/bin:$PATH"
 elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
@@ -228,19 +228,19 @@ fi
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     # Terminal settings
     export COLORTERM=truecolor
-    
+
     # WSL-specific color fix
     if [[ -n "$WSL_DISTRO_NAME" ]]; then
         export FORCE_COLOR=1
     fi
-    
+
     # Enable colors for common commands
     alias ls='ls --color=auto'
     alias grep='grep --color=auto'
     alias fgrep='fgrep --color=auto'
     alias egrep='egrep --color=auto'
     alias diff='diff --color=auto'
-    
+
     # Set up LS_COLORS
     if command -v dircolors >/dev/null 2>&1; then
         eval "$(dircolors -b)"

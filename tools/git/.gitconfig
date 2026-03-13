@@ -13,7 +13,7 @@
 	autocrlf = false
   eol = lf
 	whitespace = cr-at-eol
-   
+
 [safe]
 	directory = *
 

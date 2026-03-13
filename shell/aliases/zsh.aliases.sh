@@ -24,9 +24,9 @@ alias .2='cd ../..'
 alias .3='cd ../../..'
 alias .4='cd ../../../..'
 alias .5='cd ../../../../..'
-alias ~='cd ~/' 
+alias ~='cd ~/'
 
-# Notes 
+# Notes
 alias notes='cd ~/personal-notes'
 alias worknotes='cd ~/work-notes'
 
@@ -55,7 +55,7 @@ alias jwt_from_clip="pbpaste | jwt decode -j - | jq -r '.payload'"
 alias jqkeys="jq -r 'select(objects)|=[.] | map( paths(scalars) ) | map( map(select(numbers)=\"[]\") | join(\".\")) | unique | .[]' | sed 's/.\[\]/[]/g' | xargs printf -- '.%s\n'"
 
 # Nvim aliases
-alias nvim-chad="NVIM_APPNAME=NvChad nvim" 
+alias nvim-chad="NVIM_APPNAME=NvChad nvim"
 
 
 #######################################
@@ -98,7 +98,7 @@ case $OS in
 'Linux')
     # Linux/WSL specific aliases
     alias ls='ls --color=auto -p'
-    
+
     # APT package management
     alias sagi='sudo apt-get install'
     alias sai='sudo apt install'
@@ -109,13 +109,13 @@ case $OS in
     alias sagrp='sudo apt-get remove --purge'
     alias sacs='apt-cache search'
     alias sacs='apt-cache show'
-    
+
     # Clipboard aliases (requires xclip)
     if type xclip >/dev/null 2>&1; then
         alias pbcopy='xclip -selection c'
         alias pbpaste='xclip -selection clipboard -o'
     fi
-    
+
     # Systemctl shortcuts
     if type systemctl >/dev/null 2>&1; then
         alias senable='sudo systemctl enable'
@@ -126,31 +126,31 @@ case $OS in
         alias sdisable='sudo systemctl disable'
         alias sreload='sudo systemctl reload'
     fi
-    
+
     # WSL-specific aliases
     if [[ -n "$WSL_DISTRO_NAME" ]]; then
         # Open Windows Explorer in current directory
         alias open='explorer.exe .'
         alias explorer='explorer.exe'
-        
+
         # Access Windows drives easily
         alias cdc='cd /mnt/c'
         alias cdd='cd /mnt/d'
         alias cde='cd /mnt/e'
-        
+
         # Windows utilities
         alias cmd='cmd.exe'
         alias powershell='powershell.exe'
         alias pwsh='pwsh.exe'
     fi
     ;;
-    
+
 'Darwin')
     # macOS specific aliases
-    
+
     # Karabiner restart (keyboard management)
     alias rk="launchctl stop org.pqrs.karabiner.karabiner_console_user_server;sleep 2;launchctl start org.pqrs.karabiner.karabiner_console_user_server"
-    
+
     # Homebrew shortcuts
     alias bi='brew install'
     alias bs='brew search'
@@ -159,41 +159,41 @@ case $OS in
     alias binfo='brew info'
     alias blist='brew list'
     alias boutdated='brew outdated'
-    
+
     # macOS system aliases
     alias flushdns='sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder'
     alias showfiles='defaults write com.apple.finder AppleShowAllFiles YES; killall Finder /System/Library/CoreServices/Finder.app'
     alias hidefiles='defaults write com.apple.finder AppleShowAllFiles NO; killall Finder /System/Library/CoreServices/Finder.app'
-    
+
     # Notification alias
     if type terminal-notifier >/dev/null 2>&1; then
         alias notify="terminal-notifier -title 'ZSH' -sound funk -message"
     fi
-    
+
     # Flux restart
     alias reflux='osascript -e "tell application \"Flux\" to quit" && open -a Flux'
-    
+
     # Kitty SSH
     if type kitten >/dev/null 2>&1; then
         alias s="kitten ssh"
     fi
-    
+
     # Quick Look
     alias ql='qlmanage -p'
-    
+
     # Lock screen
     alias lock='/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resources/CGSession -suspend'
-    
+
     # Get macOS version
     alias version='sw_vers'
-    
+
     # Cleanup
     alias cleanup="find . -type f -name '*.DS_Store' -ls -delete"
-    
+
     # Empty Trash
     alias emptytrash="sudo rm -rfv /Volumes/*/.Trashes; sudo rm -rfv ~/.Trash; sudo rm -rfv /private/var/log/asl/*.asl; sqlite3 ~/Library/Preferences/com.apple.LaunchServices.QuarantineEventsV* 'delete from LSQuarantineEvent'"
     ;;
-    
+
 *)
     # Other Unix systems - minimal aliases
     echo "Unknown OS: $OS - using minimal aliases"

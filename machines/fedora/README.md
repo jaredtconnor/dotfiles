@@ -54,7 +54,7 @@ Dialog must be installed for the menu system to work and as such the script will
 - ## Install Oh-My-ZSH with StarShip Prompt
   - **Installs Oh-My-Zsh** - [A ZSH configuration management framework](https://ohmyz.sh/)
   - **Installs the Starship prompt for ZSH** - [A popular cross-shell highly customisable prompt](https://starship.rs/)
-  
+
 - ## Install Extras
   ### Installs the following theme
     - **gnome-shell-theme-flat-remix** - [Flat Remix Gnome Theme](https://drasite.com/flat-remix-gnome)
@@ -75,4 +75,3 @@ Dialog must be installed for the menu system to work and as such the script will
     - **gstreamer plugins**
   ### Install Nvidia
     - **Installs the akmod-nvidia driver from the RPMFusion repo's**
-

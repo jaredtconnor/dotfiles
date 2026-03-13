@@ -19,7 +19,7 @@ mouse-hide-while-typing = true
 mouse-scroll-multiplier = 2
 
 # Window behavior
-window-padding-balance = true 
+window-padding-balance = true
 window-save-state = always
 # other
 copy-on-select = clipboard
