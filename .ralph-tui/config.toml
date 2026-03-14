@@ -1,0 +1,5 @@
+agent = "claude"
+tracker = "beads"
+maxIterations = 10
+iterationDelay = 1000
+autoCommit = false

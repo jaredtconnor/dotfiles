@@ -16,3 +16,6 @@ shell/scripts/share-ssh-keys.sh
 # Dolt database files (added by bd init)
 .dolt/
 *.db
+
+# Ralph TUI runtime output
+.ralph-output/
