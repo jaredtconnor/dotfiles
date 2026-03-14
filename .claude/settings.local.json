@@ -5,7 +5,9 @@
       "WebSearch",
       "WebFetch(domain:github.com)",
       "Bash(prek run:*)",
-      "WebFetch(domain:ralph-tui.com)"
+      "WebFetch(domain:ralph-tui.com)",
+      "WebFetch(domain:manual.raycast.com)",
+      "WebFetch(domain:developers.raycast.com)"
     ],
     "additionalDirectories": [
       "C:\\git\\adlc"
