@@ -19,3 +19,6 @@ shell/scripts/share-ssh-keys.sh
 
 # Ralph TUI runtime output
 .ralph-output/
+
+# Beads runtime files
+.beads/
