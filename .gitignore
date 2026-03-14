@@ -22,3 +22,14 @@ shell/scripts/share-ssh-keys.sh
 
 # Beads runtime files
 .beads/
+
+# gstack (cloned per-machine into ~/.claude/skills/gstack, not tracked here)
+tools/ai/skills/gstack/
+tools/ai/skills/browse
+tools/ai/skills/plan-ceo-review
+tools/ai/skills/plan-eng-review
+tools/ai/skills/qa
+tools/ai/skills/retro
+tools/ai/skills/review
+tools/ai/skills/setup-browser-cookies
+tools/ai/skills/ship
