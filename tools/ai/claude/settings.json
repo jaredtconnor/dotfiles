@@ -35,11 +35,11 @@
   },
   "statusLine": {
     "type": "command",
-    "command": "bash /c/Users/JaredConnor/.claude/statusline-command.sh"
+    "command": "bunx -y ccstatusline@latest",
+    "padding": 0
   },
   "enabledPlugins": {
-    "skill-creator@claude-plugins-official": true,
-    "personal@local": true
+    "skill-creator@claude-plugins-official": true
   },
   "voiceEnabled": false
 }

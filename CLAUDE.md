@@ -31,6 +31,7 @@ just link        # Symlinks only (no package installs)
 - `install.conf.yaml` is the main Dotbot config; Windows has a separate `install-windows.conf.yaml`
 - The `dotbot` submodule must be initialized before running install; other submodules are optional per platform
 - Global git `commit-msg` hook at `tools/git/githooks/commit-msg` auto-strips AI co-author trailers
+- AI skills, agents, commands, and hooks live in `tools/ai/` and are symlinked into `~/.claude/` and `~/.cursor/` via Dotbot
 
 ## Directory Layout
 
@@ -99,22 +100,21 @@ Platform-conditional example:
 
 ## AI Tooling (tools/ai/)
 
-Skills and agents are **shared between Cursor and Claude Code** via directory-level symlinks. Both `~/.cursor/skills` and `~/.claude/skills` point to the same `tools/ai/plugins/personal/skills/` directory. Same for agents.
+Skills, agents, commands, and hooks are **shared between Cursor and Claude Code** via directory-level symlinks managed by Dotbot. Both `~/.cursor/skills` and `~/.claude/skills` point to `tools/ai/skills/`. Same for agents.
 
 ```
 tools/ai/
-  plugins/personal/
-    skills/      Shared skills (SKILL.md format) -> ~/.cursor/skills AND ~/.claude/skills
-    agents/      Shared agents (.md with YAML frontmatter) -> ~/.cursor/agents AND ~/.claude/agents
-    hooks/       Shell hooks triggered by Claude Code events (defined in hooks.json)
-    commands/    Entry points invoked via /command-name
+  skills/        Shared skills (SKILL.md format) -> ~/.cursor/skills AND ~/.claude/skills
+  agents/        Shared agents (.md with YAML frontmatter) -> ~/.cursor/agents AND ~/.claude/agents
+  commands/      Entry points invoked via /command-name -> ~/.claude/commands
+  hooks/         Shell hooks triggered by Claude Code events (registered in .claude/settings.local.json)
   claude/        Claude Code-specific: settings.json
   cursor/        Cursor-specific: rules/ (.mdc files)
 ```
 
 ### Creating a New Skill
 
-Create `tools/ai/plugins/personal/skills/<skill-name>/SKILL.md` with YAML frontmatter. It appears in both tools immediately.
+Create `tools/ai/skills/<skill-name>/SKILL.md` with YAML frontmatter. It appears in both tools immediately.
 
 ```yaml
 ---
@@ -128,7 +128,7 @@ Instructions here...
 
 ### Creating a New Agent
 
-Create `tools/ai/plugins/personal/agents/<category>/<agent-name>.md`. Agent categories: core, orchestration, languages, specialists.
+Create `tools/ai/agents/<category>/<agent-name>.md`. Agent categories: core, orchestration, languages, specialists.
 
 ```yaml
 ---
@@ -141,7 +141,7 @@ System prompt here...
 
 ### Claude Code Hooks
 
-Defined in `tools/ai/plugins/personal/hooks/hooks.json`. Active hooks:
+Defined in `.claude/settings.local.json` under the `hooks` key. Hook scripts live in `tools/ai/hooks/`. Active hooks:
 - `tech-lead-check.sh` - runs on prompt submit and before tool use
 - `enforce-best-practices.sh` - runs after file writes
 - `memory-sync.sh` - runs after file writes
@@ -231,7 +231,7 @@ When ending a work session, complete ALL steps below. Work is NOT complete until
 4. **PUSH TO REMOTE**:
    ```bash
    git pull --rebase
-   bd dolt push
+   bd sync
    git push
    git status  # MUST show "up to date with origin"
    ```
@@ -239,4 +239,4 @@ When ending a work session, complete ALL steps below. Work is NOT complete until
 6. **Verify** - All changes committed AND pushed
 7. **Hand off** - Provide context for next session
 
-Work is NOT complete until `git push` succeeds. Never stop before pushing.
+Work is NOT complete until `git push` succeeds. Never stop before pushing. Never say "ready to push when you are" -- YOU must push. If push fails, resolve and retry until it succeeds.
