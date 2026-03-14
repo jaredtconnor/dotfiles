@@ -4,7 +4,8 @@
       "Bash(just link:*)",
       "WebSearch",
       "WebFetch(domain:github.com)",
-      "Bash(prek run:*)"
+      "Bash(prek run:*)",
+      "WebFetch(domain:ralph-tui.com)"
     ],
     "additionalDirectories": [
       "C:\\git\\adlc"
