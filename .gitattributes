@@ -1,3 +1,29 @@
+# Force LF line endings for all text files
+* text=auto eol=lf
+
+# Shell scripts — always LF
+*.sh text eol=lf
+*.zsh text eol=lf
+*.bash text eol=lf
+*.fish text eol=lf
+.zshrc text eol=lf
+.bashrc text eol=lf
+.bash_profile text eol=lf
+
+# Config files — always LF
+*.conf text eol=lf
+*.toml text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+*.json text eol=lf
+*.lua text eol=lf
+
+# Windows-specific files — keep CRLF
+*.ps1 text eol=crlf
+*.psm1 text eol=crlf
+*.psd1 text eol=crlf
+*.cmd text eol=crlf
+*.bat text eol=crlf
 
 # Use bd merge for beads JSONL files
 .beads/issues.jsonl merge=beads
