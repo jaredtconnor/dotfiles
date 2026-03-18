@@ -8,11 +8,24 @@
 [includeIf "gitdir:~/conductor/"]
 	path = ~/.dotfiles/tools/git/.gitconfig-work
 
+[includeIf "gitdir:C:/Git/"]
+	path = ~/.dotfiles/tools/git/.gitconfig-work
+
+[includeIf "gitdir:C:/development/"]
+	path = ~/.dotfiles/tools/git/.gitconfig-work
+
+[includeIf "gitdir:/mnt/c/Git/"]
+	path = ~/.dotfiles/tools/git/.gitconfig-work
+
+[includeIf "gitdir:/mnt/c/development/"]
+	path = ~/.dotfiles/tools/git/.gitconfig-work
+
 [core]
 	filemode = false
 	autocrlf = input
   eol = lf
 	whitespace = cr-at-eol
+	hooksPath = ~/.config/git/githooks
 
 [safe]
 	directory = *

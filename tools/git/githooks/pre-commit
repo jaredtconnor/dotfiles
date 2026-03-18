@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# Git pre-commit hook: Reject commits to personal dotfiles with work email
+set -e
+
+# Only enforce in the dotfiles repo
+REPO_ROOT=$(git rev-parse --show-toplevel 2>/dev/null)
+if [[ "$(basename "$REPO_ROOT")" != ".dotfiles" ]]; then
+    exit 0
+fi
+
+EXPECTED_EMAIL="jaredconnor@fastmail.com"
+EMAIL=$(git config user.email)
+
+if [[ "$EMAIL" != "$EXPECTED_EMAIL" ]]; then
+    echo "ERROR: Committing with wrong email ($EMAIL)."
+    echo "Expected: $EXPECTED_EMAIL"
+    echo "This is a personal dotfiles repo -- work email is not allowed."
+    exit 1
+fi
+
+exit 0
