@@ -38,29 +38,29 @@
     ~/.config/Code/User:
       if: "[[ `uname` = Linux ]]"
       glob: true
-      path: ./editor/vscode/linux/*.json
+      path: ./editor/vscode/*.json
       force: true
-    # VS Code MacOS
+    # VS Code macOS
     ~/Library/Application Support/Code/User:
       if: "[ `uname` = Darwin ]"
       glob: true
-      path: ./editor/vscode/macos/*.json
+      path: ./editor/vscode/*.json
       force: true
     ~/Library/Application Support/Code/User/snippets:
       if: "[ `uname` = Darwin ]"
       path: ./editor/vscode/snippets
       force: true
-    # VS Code MacOS Insiders
+    # VS Code macOS Insiders
     ~/Library/Application Support/Code - Insiders/User:
       if: "[ `uname` = Darwin ]"
       glob: true
-      path: ./editor/vscode/macos/*.json
+      path: ./editor/vscode/*.json
       force: true
-    # Cursor MacOS
+    # Cursor macOS
     ~/Library/Application Support/Cursor/User:
       if: "[ `uname` = Darwin ]"
       glob: true
-      path: ./editor/cursor/macos/*.json
+      path: ./editor/vscode/*.json
       force: true
     ~/Library/Application Support/Cursor/User/snippets:
       if: "[ `uname` = Darwin ]"
@@ -69,11 +69,11 @@
     # Cursor Windows
     ~/AppData/Roaming/Cursor/User/keybindings.json:
       if: "ver"
-      path: ./editor/cursor/linux/keybindings.json
+      path: ./editor/vscode/keybindings.json
       force: true
     ~/AppData/Roaming/Cursor/User/settings.json:
       if: "ver"
-      path: ./editor/cursor/linux/settings.json
+      path: ./editor/vscode/settings.json
       force: true
     # Zed
     ~/.config/zed/keymap.json:
