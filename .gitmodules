@@ -26,3 +26,6 @@
 [submodule "tmux-plugins/vim-tmux-navigator"]
 	path = tmux-plugins/vim-tmux-navigator
 	url = https://github.com/christoomey/vim-tmux-navigator.git
+[submodule "tools/ai"]
+	path = tools/ai
+	url = git@github.com:jaredtconnor/skills.git
