@@ -18,6 +18,7 @@ fi
 
 export DOTFILES="$HOME/.dotfiles"
 export GPG_TTY=$TTY # https://unix.stackexchange.com/a/608921
+source "$HOME/.dotfiles/tools/zoxide/zoxide-env.zsh"
 
 # Override compdump name: https://github.com/jandamm/zgenom/discussions/121
 export ZGEN_CUSTOM_COMPDUMP="~/.zcompdump-$(whoami).zwc"
