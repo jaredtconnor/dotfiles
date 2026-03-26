@@ -51,7 +51,7 @@ for plugin_name in "${TMUX_PLUGINS[@]}"; do
   fi
 done
 
-# Initialize tmux plugins
+# Install remaining TPM plugins (catppuccin, tmux-nerd-font-window-name, etc.)
 echo "Installing tmux plugins via TPM..."
 ~/.tmux/plugins/tpm/bin/install_plugins
 

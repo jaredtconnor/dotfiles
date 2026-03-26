@@ -163,6 +163,10 @@
     # ------------------------------------------------------------
     ~/.tmux.conf:
       path: ./tools/tmux/.tmux.conf
+    ~/.config/sesh/sesh.toml:
+      path: ./tools/sesh/sesh.toml
+    ~/.gitmux.conf:
+      path: ./tools/gitmux/.gitmux.conf
     ~/.gitconfig:
       path: ./tools/git/.gitconfig
     ~/.gitconfig-work:
