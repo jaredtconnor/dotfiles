@@ -104,11 +104,40 @@ agents:
 # List claude commands
 [unix]
 commands:
-    @ls -1 tools/ai/claude/commands/
+    @ls -1 tools/ai/commands/
 
 [windows]
 commands:
-    @Get-ChildItem tools\ai\claude\commands -Name
+    @Get-ChildItem tools\ai\commands -Name
+
+# Verify AI tooling symlinks are healthy
+[unix]
+ai-status:
+    #!/usr/bin/env bash
+    set -e
+    ok="\033[32m✓\033[0m"
+    fail="\033[31m✗\033[0m"
+    check() {
+        if [ -L "$1" ] && [ -e "$1" ]; then
+            printf "$ok %s -> %s\n" "$1" "$(readlink "$1")"
+        elif [ -L "$1" ]; then
+            printf "$fail %s -> %s (broken)\n" "$1" "$(readlink "$1")"
+        else
+            printf "$fail %s (missing)\n" "$1"
+        fi
+    }
+    echo "Claude Code:"
+    check ~/.claude/skills
+    check ~/.claude/agents
+    check ~/.claude/commands
+    check ~/.claude/settings.json
+    echo ""
+    echo "Cursor:"
+    check ~/.cursor/skills
+    check ~/.cursor/agents
+    echo ""
+    echo "Shared:"
+    check ~/.config/ccstatusline/settings.json
 
 # --- Submodules ---
 
