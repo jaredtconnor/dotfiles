@@ -2,26 +2,37 @@
     Rendered to ~/.ssh/config with 0600 perms (private_ prefix).
 
     Identity model (mirrors the git config approach):
-      - On personal machines: github.com uses the personal Ed25519 key.
+      - On personal machines: github.com uses the personal key.
         github.com-personal is available as an explicit alias for repos
         whose remote URLs already use it (e.g. chezmoi externals).
-      - On work (Emp-JConnor): github.com uses the work Ed25519 key.
+      - On work machines: github.com uses the work key.
         github.com-personal is how you reach personal repos from the
         work machine without touching the default github.com identity.
+
+    Key paths are configurable via chezmoi.toml data:
+      personal_ssh_key  -- defaults to id_ed25519
+      work_ssh_key      -- defaults to id_ed25519_work
 
     UseKeychain is macOS-only (Apple Keychain integration for passphrases).
 
     Homelab hosts are always present on every machine -- they are on your
     private network and harmless to have in the config even on work.
-    If you ever want to gate them off work, wrap the block in:
-        {{ `{{ if not .work }}...{{ end }}` }}
 */}}
+
+{{- $personalKey := "id_ed25519" -}}
+{{- $workKey := "id_ed25519_work" -}}
+{{- if (index . "personal_ssh_key") -}}
+  {{- $personalKey = .personal_ssh_key -}}
+{{- end -}}
+{{- if (index . "work_ssh_key") -}}
+  {{- $workKey = .work_ssh_key -}}
+{{- end -}}
 
 # ============================================================
 # Default settings
 # ============================================================
 Host *
-    IdentityFile ~/.ssh/id_ed25519
+    IdentityFile ~/.ssh/{{ $personalKey }}
     AddKeysToAgent yes
 {{- if eq .chezmoi.os "darwin" }}
     UseKeychain yes
@@ -36,15 +47,14 @@ Host *
 Host github.com
     HostName github.com
     User git
-    IdentityFile ~/.ssh/id_ed25519_work
+    IdentityFile ~/.ssh/{{ $workKey }}
     IdentitiesOnly yes
 
 # Explicit personal alias -- use for personal repos on work machine
-# (clone URLs: git@github.com-personal:user/repo.git)
 Host github.com-personal
     HostName github.com
     User git
-    IdentityFile ~/.ssh/id_ed25519
+    IdentityFile ~/.ssh/{{ $personalKey }}
     IdentitiesOnly yes
 
 {{- else }}
@@ -53,7 +63,7 @@ Host github.com-personal
 Host github.com
     HostName github.com
     User git
-    IdentityFile ~/.ssh/id_ed25519
+    IdentityFile ~/.ssh/{{ $personalKey }}
     IdentitiesOnly yes
 
 # Alias kept so remote URLs that reference github.com-personal
@@ -61,7 +71,7 @@ Host github.com
 Host github.com-personal
     HostName github.com
     User git
-    IdentityFile ~/.ssh/id_ed25519
+    IdentityFile ~/.ssh/{{ $personalKey }}
     IdentitiesOnly yes
 
 {{- end }}
