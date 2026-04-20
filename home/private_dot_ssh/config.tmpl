@@ -31,8 +31,11 @@
 # ============================================================
 # Default settings
 # ============================================================
+# Note: no default IdentityFile -- github.com and github.com-personal
+# declare their keys explicitly below. Setting IdentityFile here would
+# leak into every Host match (it's additive) and cause the wrong key
+# to be offered first to github.com.
 Host *
-    IdentityFile ~/.ssh/{{ $personalKey }}
     AddKeysToAgent yes
 {{- if eq .chezmoi.os "darwin" }}
     UseKeychain yes
