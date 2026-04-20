@@ -1,0 +1,13 @@
+{{- if eq .chezmoi.os "windows" -}}
+# Create junction from AppData\Local\nvim -> .config\nvim so Windows neovim
+# finds the config that chezmoi manages at the XDG-style path.
+$target = Join-Path $env:USERPROFILE ".config\nvim"
+$link = Join-Path $env:LOCALAPPDATA "nvim"
+
+if (Test-Path $target) {
+    if (-not (Test-Path $link)) {
+        cmd /c mklink /J $link $target
+        Write-Host "Created nvim junction: $link -> $target"
+    }
+}
+{{- end }}
