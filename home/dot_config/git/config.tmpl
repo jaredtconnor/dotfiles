@@ -1,0 +1,218 @@
+{{/*
+    Single source of git config. Hostname-gated via .work (set in
+    ~/.config/chezmoi/chezmoi.toml by `chezmoi init`).
+
+    Identity: on Emp-JConnor, renders work email + useConfigOnly = true.
+    Everywhere else, renders personal email. No includeIf blocks needed.
+
+    Aliases: union of the old .gitconfig, gitconfig_shared, and
+    set-gitconfig.sh. Duplicates resolved in favour of gitconfig_shared
+    (the more refined version).
+*/}}
+
+[user]
+    name = Jared Connor
+{{- if .work }}
+    email = jared.connor@empyreansolutions.com
+    useConfigOnly = true
+{{- else }}
+    email = jaredconnor@fastmail.com
+{{- end }}
+
+[init]
+    defaultBranch = main
+
+[core]
+    excludesfile = ~/.config/git/ignore
+    hooksPath = ~/.config/git/githooks
+    filemode = false
+    autocrlf = input
+    eol = lf
+    whitespace = cr-at-eol
+
+[color]
+    ui = auto
+
+[safe]
+    directory = *
+
+[commit]
+    verbose = true
+
+[push]
+    default = current
+    autoSetupRemote = true
+    followTags = true
+
+[pull]
+    rebase = true
+    ff = only
+
+[fetch]
+    prune = true
+
+[rebase]
+    autoStash = true
+
+[status]
+    short = true
+    branch = true
+    showUntrackedFiles = all
+
+[branch]
+    autoSetupMerge = true
+
+[credential]
+    helper = cache
+
+[pack]
+    windowMemory = 32m
+
+[diff]
+    noprefix = true
+    renames = true
+    colorMoved = default
+    tool = vscode
+
+[difftool "vscode"]
+    cmd = code --wait --diff $LOCAL $REMOTE
+
+[merge]
+    tool = vscode
+
+[mergetool]
+    keepBackup = false
+
+[mergetool "vscode"]
+    cmd = code --wait --merge $REMOTE $LOCAL $BASE $MERGED
+
+[grep]
+    lineNumber = true
+    patternType = extended
+
+[rerere]
+    enabled = true
+
+# ---------------------------------------------------------------------
+# Delta (pager / diff highlighter)
+# ---------------------------------------------------------------------
+[pager]
+    diff = delta
+    log = delta
+    reflog = delta
+    show = delta
+
+[delta]
+    plus-style = "syntax #012800"
+    plus-emph-style = "syntax #1B421A"
+    minus-style = "syntax #340001"
+    minus-emph-style = "syntax #4E1A1B"
+    file-decoration-style = blue box
+    hunk-header-style = omit
+    navigate = true
+    syntax-theme = "Visual Studio Dark+"
+    line-numbers = true
+
+[interactive]
+    diffFilter = delta --color-only
+
+[filter "lfs"]
+    required = true
+    clean = git-lfs clean -- %f
+    smudge = git-lfs smudge -- %f
+    process = git-lfs filter-process
+
+# ---------------------------------------------------------------------
+# Aliases — merged from .gitconfig, gitconfig_shared, set-gitconfig.sh
+# ---------------------------------------------------------------------
+[alias]
+    # --- status / info ---
+    st = status
+    stu = status -uno
+    shorty = status --short --branch
+    last = log -1 HEAD
+    unp = log origin/master..HEAD
+    current-branch = rev-parse --abbrev-ref HEAD
+    root-dir = rev-parse --show-toplevel
+    me = !git config --get-regexp user
+    aliases = !git config --get-regexp '^alias\\.' | sed 's/alias\\.\\([^ ]*\\) \\(.*\\)/\\1\\\\t => \\2/'
+
+    # --- staging / unstaging ---
+    unstage = reset -q HEAD --
+    discard = checkout --
+    uncommit = reset --mixed HEAD~
+    add-tracked-files = add -u
+    untracked = ls-files . --exclude-standard --others
+    ignored = ls-files . --ignored --exclude-standard --others
+
+    # --- commit helpers ---
+    amend = commit --amend
+    fix = commit --amend
+    editlast = commit --amend -m
+    wip = !git add --all && git commit -m 'wip'
+    recommit = !files=$(git diff --name-only --cached) && git reset --soft HEAD~1 && git add -u ${files} && git commit -m \"$(git log --format=%B --reverse HEAD..HEAD@{1})\"
+    ai = !aicommits
+
+    # --- reset / clean ---
+    undolast = reset HEAD~1
+    revertlast = revert HEAD
+    nevermind = !git reset --hard HEAD && git clean -d -f
+
+    # --- branch / merge ---
+    branches = branch -a --sort=-authordate
+    branch = branch --sort=-authordate
+    branch-activity = for-each-ref --format='%(authordate) %(refname)' --sort=-committerdate refs/heads refs/remotes
+    merged = "!f () { git branch --merged | grep -v \"$(basename \"$(git symbolic-ref --short refs/remotes/origin/HEAD)\")\" | grep -v '*' | sed 's/^..//'; };f"
+    merc = merge --no-ff
+    safe-checkout = "!git stash push -m \"co backup\"; git stash apply; git checkout \"$@\""
+    switch-dotfiles = !git switch -c $(git branch --show-current | cut -d "." -f 1)"."$(($(git branch --show-current | cut -d "." -f 2) + 1))
+
+    # --- push / pull / sync ---
+    pom = push origin master
+    please = push --force-with-lease
+    push-f = push --force-with-lease
+    refresh = fetch --prune
+    update = !git pull --rebase origin "$(basename "$(git symbolic-ref --short refs/remotes/origin/HEAD)")" && git log -1 --oneline
+    subup = submodule update --remote --merge
+    sync = !zsh -ic git-sync
+    add-upstream = !zsh -ic add-upstream
+    trav = !zsh -ic git-trav
+
+    # --- PR helpers ---
+    pr = "!f() { git fetch -fu ${2:-$(git remote |grep ^upstream || echo origin)} refs/pull/$1/head:pr/$1 && git checkout pr/$1; }; f"
+    pr-clean = "!git for-each-ref refs/heads/pr/* --format=\"%(refname)\" | while read ref ; do branch=${ref#refs/heads/} ; git branch -D $branch ; done"
+
+    # --- diff / inspection ---
+    precommit = diff --cached --diff-algorithm=minimal -w
+    unmerged = diff --name-only --diff-filter=U
+    wdiff = diff --word-diff=color --unified=1
+    remember = !git diff $(git branch-root)
+    find = !git ls-files | grep -i
+
+    # --- stash variants ---
+    stsh = stash --keep-index
+    staash = stash --include-untracked
+    staaash = stash --all
+    stashes = stash list
+
+    # --- log / graph ---
+    l = log --oneline --graph --decorate --all
+    l1 = log --graph --abbrev-commit --decorate --date=relative --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(blue)<%an>%Creset%C(yellow)%d%Creset' --all
+    l2 = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''          %C(white)%s%C(reset) %C(dim white)- %an%C(reset)' --all
+    l3 = log --format='%C(bold cyan)%h%Creset %s %Cgreen(%cr) %C(blue)<%an>%Creset%C(yellow)%d%Creset'
+    hist = log --pretty=format:'%h %ad | %s%d [%an]' --graph --date=short
+    logline = log --oneline --stat --branches
+    ll = log --pretty=format:\"%C(yellow)%h%Cred%d\\\\ %Creset%s%Cblue\\\\ [%cn]\" --decorate --numstat
+    graph = log --graph -10 --branches --remotes --tags  --format=format:'%Cgreen%h %Creset• %<(75,trunc)%s (%cN, %cr) %Cred%d' --date-order
+    tree = log --graph --all --format=format:\"%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(bold white)? %an%C(reset)%C(bold yellow)%d%C(reset)\" --abbrev-commit --date=relative
+    authors = shortlog -s -n -e --all --no-merges
+
+    # --- fzf-powered staging ---
+    fzau = !git ls-files -m --exclude-standard | fzf -m --print0 --preview-window down,90% --preview \"git diff $@ -- {-1} | delta\" | xargs -0 -o -t git add -p
+    fza = !git ls-files -m -o --exclude-standard | fzf -m --print0 --preview-window down,90% --preview \"git diff $@ -- {-1} | delta\" | xargs -0 -o -t git add -p
+
+    # --- misc ---
+    tags = tag
+    remotes = remote -v
+    it = !git init && git commit -m "root" --allow-empty
+    git = !exec git

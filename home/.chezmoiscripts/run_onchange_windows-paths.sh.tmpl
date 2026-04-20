@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+{{/*
+    Places files at Windows-specific target paths by copying from the
+    canonical Unix XDG location that chezmoi already materialized.
+    Runs only when the script's content hash changes (run_onchange_).
+    No-op on non-Windows; the template guard renders an empty script there.
+
+    Add entries here for any config that needs a Windows-specific target path.
+*/}}
+
+set -euo pipefail
+
+{{ if eq .chezmoi.os "windows" -}}
+# Neovim
+if [[ -d "$HOME/.config/nvim" ]]; then
+    mkdir -p "$HOME/AppData/Local/nvim"
+    cp -R "$HOME/.config/nvim/." "$HOME/AppData/Local/nvim/"
+fi
+
+# Ghostty
+if [[ -f "$HOME/.config/ghostty/config" ]]; then
+    mkdir -p "$HOME/AppData/Roaming/ghostty"
+    cp "$HOME/.config/ghostty/config" "$HOME/AppData/Roaming/ghostty/config"
+fi
+
+echo "Windows path mirroring complete"
+{{- else -}}
+exit 0
+{{- end }}

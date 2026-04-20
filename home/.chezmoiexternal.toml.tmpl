@@ -1,0 +1,70 @@
+{{/*
+    External clones. Replaces the git submodules used by dotbot.
+    All refresh weekly except NvChad (monthly — rarely changes).
+*/}}
+
+# -----------------------------------------------------------------------------
+# ZSH frameworks
+# -----------------------------------------------------------------------------
+[".oh-my-zsh"]
+    type = "git-repo"
+    url = "https://github.com/ohmyzsh/ohmyzsh.git"
+    refreshPeriod = "168h"
+
+[".zgenom"]
+    type = "git-repo"
+    url = "https://github.com/jandamm/zgenom.git"
+    refreshPeriod = "168h"
+
+# -----------------------------------------------------------------------------
+# Tmux plugins
+# -----------------------------------------------------------------------------
+[".tmux/plugins/tmux-sensible"]
+    type = "git-repo"
+    url = "https://github.com/tmux-plugins/tmux-sensible.git"
+    refreshPeriod = "168h"
+
+[".tmux/plugins/tmux-resurrect"]
+    type = "git-repo"
+    url = "https://github.com/tmux-plugins/tmux-resurrect.git"
+    refreshPeriod = "168h"
+
+[".tmux/plugins/tmux-continuum"]
+    type = "git-repo"
+    url = "https://github.com/tmux-plugins/tmux-continuum.git"
+    refreshPeriod = "168h"
+
+[".tmux/plugins/tmux-fzf-url"]
+    type = "git-repo"
+    url = "https://github.com/wfxr/tmux-fzf-url.git"
+    refreshPeriod = "168h"
+
+[".tmux/plugins/vim-tmux-navigator"]
+    type = "git-repo"
+    url = "https://github.com/christoomey/vim-tmux-navigator.git"
+    refreshPeriod = "168h"
+
+# -----------------------------------------------------------------------------
+# Editor scaffolding
+# -----------------------------------------------------------------------------
+[".config/nvchad-nvim"]
+    type = "git-repo"
+    url = "https://github.com/NvChad/starter.git"
+    refreshPeriod = "720h"
+
+# -----------------------------------------------------------------------------
+# AI skills / agents — personal repo always, work repo only on work hostname.
+# Cloned to staging paths; run_after_symlink-ai-mirror.sh flat-links into
+# ~/.claude and ~/.cursor.
+# -----------------------------------------------------------------------------
+[".local/share/chezmoi-skills-personal"]
+    type = "git-repo"
+    url = "git@github.com-personal:jaredtconnor/skills-personal.git"
+    refreshPeriod = "168h"
+
+{{ if .work -}}
+[".local/share/chezmoi-skills-work"]
+    type = "git-repo"
+    url = "git@github.com:jaredtconnor/skills-work.git"
+    refreshPeriod = "168h"
+{{- end }}

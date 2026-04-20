@@ -1,0 +1,39 @@
+{{/*
+    Ignore rules are target paths (e.g. .config/foo, not dot_config/foo).
+    Templates evaluated at every `chezmoi apply`.
+*/}}
+
+{{- if ne .chezmoi.os "darwin" }}
+# macOS-only tools (karabiner dropped from scope per migration decision)
+.hammerspoon
+.config/sketchybar
+.config/aerospace
+.config/raycast
+.config/espanso
+Library
+{{- end }}
+
+{{- if ne .chezmoi.os "windows" }}
+# Windows-only
+.config/powershell
+AppData
+{{- end }}
+
+{{- if ne .chezmoi.os "linux" }}
+# Linux-only (VS Code on Linux uses ~/.config/Code/ instead of ~/Library)
+.config/Code
+{{- end }}
+
+# Editor variants not currently used
+.config/lunarvim
+
+{{/*
+    Skills and agents arrive via chezmoi-external into
+    ~/.local/share/chezmoi-skills-personal and (on work) -work.
+    The run_after_symlink-ai-mirror.sh script flat-links them into
+    ~/.claude and ~/.cursor. No source-tree gating needed here.
+
+    Claude commands, hooks, ccstatusline, and claude/settings.json
+    live directly under home/dot_claude/ and home/dot_config/ccstatusline/
+    in this repo (per AI split Option 2).
+*/}}

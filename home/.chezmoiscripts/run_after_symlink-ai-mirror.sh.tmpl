@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+{{/*
+    Flat-symlinks skills and agents from cloned external repos into
+    ~/.claude and ~/.cursor. Runs after every `chezmoi apply` (no
+    _once_/_onchange_ prefix) so newly-pulled skills are picked up.
+*/}}
+
+set -euo pipefail
+
+CLAUDE_SKILLS="$HOME/.claude/skills"
+CLAUDE_AGENTS="$HOME/.claude/agents"
+CURSOR_SKILLS="$HOME/.cursor/skills"
+CURSOR_AGENTS="$HOME/.cursor/agents"
+
+mkdir -p "$CLAUDE_SKILLS" "$CLAUDE_AGENTS" "$CURSOR_SKILLS" "$CURSOR_AGENTS"
+
+# $1 = staging repo root (contains skills/ and/or agents/ subdirs)
+link_from() {
+    local root="$1"
+    [ -d "$root" ] || { echo "skip: $root not present"; return 0; }
+
+    if [ -d "$root/skills" ]; then
+        for skill in "$root/skills"/*/; do
+            [ -d "$skill" ] || continue
+            local name
+            name=$(basename "$skill")
+            ln -sfn "${skill%/}" "$CLAUDE_SKILLS/$name"
+            ln -sfn "${skill%/}" "$CURSOR_SKILLS/$name"
+        done
+    fi
+
+    if [ -d "$root/agents" ]; then
+        for agent in "$root/agents"/*/; do
+            [ -d "$agent" ] || continue
+            local name
+            name=$(basename "$agent")
+            ln -sfn "${agent%/}" "$CLAUDE_AGENTS/$name"
+            ln -sfn "${agent%/}" "$CURSOR_AGENTS/$name"
+        done
+    fi
+}
+
+link_from "$HOME/.local/share/chezmoi-skills-personal"
+
+{{ if .work -}}
+link_from "$HOME/.local/share/chezmoi-skills-work"
+{{- end }}
+
+echo "AI skills/agents mirror refreshed"

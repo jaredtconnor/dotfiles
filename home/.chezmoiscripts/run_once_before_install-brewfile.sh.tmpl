@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+{{/*
+    One-shot Homebrew bundle install. Only runs once (run_once_ prefix).
+    Runs before other scripts (before_ prefix) so tools are available
+    for subsequent setup steps.
+    No-op on non-darwin.
+*/}}
+
+{{ if eq .chezmoi.os "darwin" -}}
+set -euo pipefail
+
+if ! command -v brew &>/dev/null; then
+    echo "Homebrew not found -- installing..."
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
+
+BREWFILE="$HOME/.config/homebrew/Brewfile"
+
+if [[ -f "$BREWFILE" ]]; then
+    echo "Running brew bundle from $BREWFILE..."
+    brew bundle --file="$BREWFILE" --no-lock
+    echo "brew bundle complete"
+else
+    echo "Warning: Brewfile not found at $BREWFILE -- skipping"
+fi
+{{- else -}}
+exit 0
+{{- end }}

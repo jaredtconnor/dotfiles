@@ -1,0 +1,18 @@
+{{/*
+    Rendered to ~/.env with 0600 permissions (`private_` prefix).
+    Sourced by shell rc files. Zero-valued exports today; replace with
+    1Password `op` reads once the secrets migration happens. Example:
+
+        export FOO="{{ `{{ (onepasswordRead "op://Personal/Foo/credential") }}` }}"
+
+    TODO(secrets-migration): fill these in against the Personal vault.
+*/}}
+
+export ANTHROPIC_API_KEY=""
+export ANTHROPIC_OAUTH_TOKEN=""
+export OPENAI_API_KEY=""
+
+{{ if .work -}}
+# Work secrets — populate against the Work vault once migrated.
+# export EMPYREAN_VPN_TOKEN=""
+{{- end }}

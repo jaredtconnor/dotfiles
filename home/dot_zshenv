@@ -1,0 +1,2 @@
+# Cargo env — loaded in every shell (login, interactive, script).
+[[ -f "$HOME/.cargo/env" ]] && . "$HOME/.cargo/env"

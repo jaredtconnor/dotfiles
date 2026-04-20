@@ -1,0 +1,153 @@
+{{/*
+    Rendered to ~/.ssh/config with 0600 perms (private_ prefix).
+
+    Identity model (mirrors the git config approach):
+      - On personal machines: github.com uses the personal Ed25519 key.
+        github.com-personal is available as an explicit alias for repos
+        whose remote URLs already use it (e.g. chezmoi externals).
+      - On work (Emp-JConnor): github.com uses the work Ed25519 key.
+        github.com-personal is how you reach personal repos from the
+        work machine without touching the default github.com identity.
+
+    UseKeychain is macOS-only (Apple Keychain integration for passphrases).
+
+    Homelab hosts are always present on every machine -- they are on your
+    private network and harmless to have in the config even on work.
+    If you ever want to gate them off work, wrap the block in:
+        {{ `{{ if not .work }}...{{ end }}` }}
+*/}}
+
+# ============================================================
+# Default settings
+# ============================================================
+Host *
+    IdentityFile ~/.ssh/id_ed25519
+    AddKeysToAgent yes
+{{- if eq .chezmoi.os "darwin" }}
+    UseKeychain yes
+{{- end }}
+
+# ============================================================
+# GitHub identities
+# ============================================================
+{{- if .work }}
+
+# Work machine: default github.com uses work key
+Host github.com
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/id_ed25519_work
+    IdentitiesOnly yes
+
+# Explicit personal alias -- use for personal repos on work machine
+# (clone URLs: git@github.com-personal:user/repo.git)
+Host github.com-personal
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/id_ed25519
+    IdentitiesOnly yes
+
+{{- else }}
+
+# Personal machine: default github.com uses personal key
+Host github.com
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/id_ed25519
+    IdentitiesOnly yes
+
+# Alias kept so remote URLs that reference github.com-personal
+# (e.g. chezmoi externals) resolve correctly on personal machines too
+Host github.com-personal
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/id_ed25519
+    IdentitiesOnly yes
+
+{{- end }}
+
+# ============================================================
+# Homelab -- Network Infrastructure (10.0.0.0/24)
+# ============================================================
+Host canaveral
+    HostName 10.0.0.1
+    User admin
+    # Cloud Gateway Max - main router/firewall
+
+# ============================================================
+# Homelab -- Servers VLAN (10.0.10.0/24)
+# ============================================================
+Host voyager1
+    HostName 10.0.10.3
+    User eigyn
+    # Primary Pihole DNS (LXC CT 100)
+
+Host voyager2
+    HostName 10.0.10.4
+    User eigyn
+    # Secondary Pihole DNS (LXC CT 101)
+
+Host pioneer
+    HostName 10.0.10.5
+    User eigyn
+    # Proxmox hypervisor (bare metal)
+
+Host discovery
+    HostName 10.0.10.6
+    User eigyn
+    # Docker/Portainer (LXC/VM)
+
+Host hubble
+    HostName 10.0.10.7
+    User root
+    # Home Assistant (VM)
+
+Host curiosity
+    HostName 10.0.10.8
+    User eigyn
+    # Ubuntu compute workloads (VM 103)
+
+Host galileo
+    HostName 10.0.10.9
+    User root
+    # Reserved - future expansion
+
+Host juno
+    HostName 10.0.10.10
+    User root
+    # Reserved - future expansion
+
+# ============================================================
+# Homelab -- Storage VLAN (10.0.20.0/24)
+# ============================================================
+Host skylab
+    HostName 10.0.20.2
+    User jaredconnor
+    # Synology NAS DS920+
+
+Host mir
+    HostName 10.0.20.3
+    User root
+    # Backup Pihole (Docker on NAS)
+
+# ============================================================
+# Homelab -- Trusted VLAN (10.0.40.0/24)
+# ============================================================
+Host apollo
+    HostName 10.0.40.5
+    User jaredconnor
+    # Mac Studio - primary workstation
+
+Host perseverance
+    HostName 10.0.40.6
+    User jaredconnor
+    # MacBook - mobile workstation
+
+{{- if .work }}
+
+# ============================================================
+# Work-specific hosts (Empyrean VPN bastions, etc.)
+# ============================================================
+# Add work bastion hosts here. Only materializes on Emp-JConnor.
+
+{{- end }}
