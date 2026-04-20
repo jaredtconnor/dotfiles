@@ -14,7 +14,7 @@ chezmoi diff    # review first
 chezmoi apply
 ```
 
-On `Emp-JConnor` (work laptop), chezmoi auto-detects the hostname and sets `work = true`. On any other machine, it defaults to personal.
+On a work machine, set `work = true` in `~/.config/chezmoi/chezmoi.toml`. On any other machine, it defaults to personal.
 
 ## What's Managed
 
@@ -38,7 +38,7 @@ On `Emp-JConnor` (work laptop), chezmoi auto-detects the hostname and sets `work
 
 ```toml
 [data]
-    work = false   # true on Emp-JConnor, false everywhere else
+    work = false   # set to true on work machines
 ```
 
 Templates use `.work` to switch git identity, SSH keys, secrets, and which external repos to pull.
@@ -124,7 +124,7 @@ cd $(chezmoi source-path)
 |---|---|---|
 | `apollo` (Mac Studio) | `false` | Personal primary |
 | `perseverance` (MacBook) | `false` | Personal mobile |
-| `Emp-JConnor` | `true` (auto) | Work laptop -- gets work external |
+| Work laptop | `true` | Gets work skills external |
 | Linux VMs | `false` | Dev/homelab |
 | Windows gaming box | `false` | Add last |
 
@@ -152,8 +152,8 @@ sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply jaredtconnor/dotfiles
 
 Prerequisite repos (already created):
 - [`jaredtconnor/skills-personal`](https://github.com/jaredtconnor/skills-personal) -- AI skills and agents
-- [`jaredtconnor/skills-work`](https://github.com/jaredtconnor/skills-work) -- Work-specific skills (Emp-JConnor only)
+- Work skills repo is managed separately via work GitHub account
 
 ## Migration History
 
-Migrated from [dotfiles-legacy](https://github.com/jaredtconnor/dotfiles-legacy) (dotbot, archived). The old repo used symlinks and git submodules; this repo uses chezmoi templates and externals.
+Migrated from a previous dotbot-based setup. The old repo used symlinks and git submodules; this repo uses chezmoi templates and externals.
