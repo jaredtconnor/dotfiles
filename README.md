@@ -136,9 +136,24 @@ cd $(chezmoi source-path)
 4. **Karabiner excluded.** Managed manually outside chezmoi due to its TypeScript build pipeline.
 5. **Secrets deferred.** `.env` has zero-valued exports. 1Password `op` reads are a follow-up.
 
-## Prerequisites for New Machine Setup
+## New Machine Setup
 
-1. `skills-personal.git` repo exists on GitHub with `skills/` and `agents/` top-level dirs.
-2. `skills-work.git` repo exists on GitHub (can be empty with README).
-3. SSH alias `github.com-personal` in `~/.ssh/config` points at your personal key.
-4. `op` CLI installed and signed in (for future 1Password secrets integration).
+Just SSH access to GitHub and chezmoi installed. Everything else is bootstrapped:
+
+```bash
+# One-liner: install chezmoi + clone + apply
+sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply jaredtconnor/dotfiles
+
+# chezmoi will prompt for work = true/false on first init.
+# Externals (oh-my-zsh, tmux plugins, skills repos) clone automatically.
+# Homebrew installs via run_once script on macOS.
+# mise installs tool versions via run_once script.
+```
+
+Prerequisite repos (already created):
+- [`jaredtconnor/skills-personal`](https://github.com/jaredtconnor/skills-personal) -- AI skills and agents
+- [`jaredtconnor/skills-work`](https://github.com/jaredtconnor/skills-work) -- Work-specific skills (Emp-JConnor only)
+
+## Migration History
+
+Migrated from [dotfiles-legacy](https://github.com/jaredtconnor/dotfiles-legacy) (dotbot, archived). The old repo used symlinks and git submodules; this repo uses chezmoi templates and externals.
