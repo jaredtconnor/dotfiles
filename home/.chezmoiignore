@@ -19,6 +19,14 @@ Library
 AppData
 {{- end }}
 
+{{- if eq .chezmoi.os "windows" }}
+# Bash scripts cannot execute on Windows
+.chezmoiscripts/install-brewfile.sh
+.chezmoiscripts/mise-setup.sh
+.chezmoiscripts/symlink-ai-mirror.sh
+.chezmoiscripts/windows-paths.sh
+{{- end }}
+
 {{- if ne .chezmoi.os "linux" }}
 # Linux-only (VS Code on Linux uses ~/.config/Code/ instead of ~/Library)
 .config/Code
