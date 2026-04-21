@@ -3,9 +3,9 @@ experimental = true
 jobs = 4
 plugin_autoupdate_last_check_duration = "7d"
 verbose = false
-
+{{ if eq .chezmoi.os "linux" }}python.compile = true
+{{ end }}
 [tools]
-# These tools will be installed and available globally
 go = "latest"
 node = "24"
 python = "latest"
@@ -13,6 +13,3 @@ deno = "latest"
 bun = "latest"
 direnv = "latest"
 rust = "latest"
-
-# No separate [env] or [defaults] section needed
-# The first version listed for each tool becomes the default
