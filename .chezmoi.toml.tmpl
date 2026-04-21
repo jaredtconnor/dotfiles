@@ -1,0 +1,16 @@
+{{- $work := false -}}
+{{- if (env "CHEZMOI_WORK") -}}
+{{-   $work = true -}}
+{{- else if eq .chezmoi.hostname "Emp-JConnor" -}}
+{{-   $work = true -}}
+{{- else if hasKey . "work" -}}
+{{-   $work = .work -}}
+{{- else -}}
+{{-   $work = promptBoolOnce . "work" "Is this a work machine" -}}
+{{- end -}}
+
+[data]
+    work = {{ $work }}
+    personal_email = "jaredconnor@fastmail.com"
+    work_email = "jared.connor@empyreansolutions.com"
+    work_hostname = "Emp-JConnor"

@@ -1,0 +1,106 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(just link:*)",
+      "WebSearch",
+      "WebFetch(domain:github.com)",
+      "Bash(prek run:*)",
+      "WebFetch(domain:ralph-tui.com)",
+      "WebFetch(domain:manual.raycast.com)",
+      "WebFetch(domain:developers.raycast.com)"
+    ]{{ if .work }},
+    "additionalDirectories": [
+      "C:\\git\\adlc"
+    ]{{ end }}
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo 'Session started: tech-lead-orchestrator, best practices, and memory sync active'",
+            "timeout": 1
+          }
+        ]
+      },
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bd prime"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash $HOME/.claude/hooks/tech-lead-check.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash $HOME/.claude/hooks/tech-lead-check.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bd prime"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash $HOME/.claude/hooks/enforce-best-practices.sh",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash $HOME/.claude/hooks/memory-sync.sh",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit|MultiEdit|Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash $HOME/.claude/hooks/compound-engineering.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}
