@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+#
+# Bootstrap dotfiles on macOS or Linux.
+# Idempotent -- safe to re-run at any time.
+#
 set -euo pipefail
 
 REPO="jaredtconnor/.dotfiles"
@@ -33,7 +37,7 @@ if [[ "$OS" == "windows" ]]; then
 fi
 
 # ---------------------------------------------------------------------------
-# 1. Install prerequisites
+# 1. Install prerequisites (skips what's already present)
 # ---------------------------------------------------------------------------
 info "Detected OS: $OS"
 
@@ -43,16 +47,26 @@ if [[ "$OS" == "darwin" ]]; then
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
         eval "$(/opt/homebrew/bin/brew shellenv 2>/dev/null || /usr/local/bin/brew shellenv)"
     fi
-    info "Installing essentials via Homebrew..."
-    brew install git curl chezmoi 2>/dev/null || true
+
+    BREW_NEEDED=()
+    command_exists git     || BREW_NEEDED+=(git)
+    command_exists curl    || BREW_NEEDED+=(curl)
+    command_exists chezmoi || BREW_NEEDED+=(chezmoi)
+
+    if [[ ${#BREW_NEEDED[@]} -gt 0 ]]; then
+        info "Installing via Homebrew: ${BREW_NEEDED[*]}"
+        brew install "${BREW_NEEDED[@]}"
+    fi
 
 elif [[ "$OS" == "linux" ]]; then
-    info "Installing essentials via apt..."
-    sudo apt-get update -qq
-    sudo apt-get install -y -qq \
-        build-essential curl wget git tmux unzip locales \
-        libssl-dev zlib1g-dev libncurses5-dev libreadline-dev \
-        libsqlite3-dev libbz2-dev libffi-dev liblzma-dev tk-dev
+    if ! command_exists git || ! command_exists curl || ! dpkg -s build-essential &>/dev/null; then
+        info "Installing essentials via apt..."
+        sudo apt-get update -qq
+        sudo apt-get install -y -qq \
+            build-essential curl wget git tmux unzip locales \
+            libssl-dev zlib1g-dev libncurses5-dev libreadline-dev \
+            libsqlite3-dev libbz2-dev libffi-dev liblzma-dev tk-dev
+    fi
 
     sudo locale-gen en_US.UTF-8 2>/dev/null || true
     sudo update-locale LANG=en_US.UTF-8 2>/dev/null || true
@@ -69,64 +83,48 @@ if ! command_exists chezmoi; then
     fail "chezmoi installation failed"
 fi
 
-info "chezmoi $(chezmoi --version | head -1)"
+info "chezmoi $(chezmoi --version 2>&1 | awk '{print $3}')"
 
 # ---------------------------------------------------------------------------
-# 2. Remove conflicting Dotbot symlinks
+# 2. Remove conflicting Dotbot symlinks (only on first migration)
 # ---------------------------------------------------------------------------
 remove_dotbot_symlink() {
     local target="$1"
     if [[ -L "$target" ]]; then
         local link_dest
         link_dest="$(readlink "$target" 2>/dev/null || true)"
-        if [[ "$link_dest" == */.dotfiles/* || "$link_dest" == */dotfiles/* ]]; then
-            info "Removing Dotbot symlink: $target -> $link_dest"
-            rm -f "$target"
-        fi
+        case "$link_dest" in
+            */.dotfiles-legacy-*|*/.dotfiles/dotbot/*|*/.dotfiles/shell/*|*/.dotfiles/tools/*|*/.dotfiles/editor/*|*/.dotfiles/terminal/*|*/.dotfiles/env/*|*/.dotfiles/ssh/*|*/.dotfiles/languages/*)
+                info "Removing Dotbot symlink: $target -> $link_dest"
+                rm -f "$target"
+                ;;
+        esac
     fi
 }
 
-remove_dotbot_dir_symlink() {
-    local target="$1"
-    if [[ -L "$target" ]]; then
-        local link_dest
-        link_dest="$(readlink "$target" 2>/dev/null || true)"
-        if [[ "$link_dest" == */.dotfiles/* || "$link_dest" == */dotfiles/* ]]; then
-            info "Removing Dotbot symlink: $target -> $link_dest"
-            rm -f "$target"
-        fi
-    fi
+is_dotbot_repo() {
+    [[ -f "$DOTFILES_DIR/install.conf.yaml" ]] || [[ -d "$DOTFILES_DIR/dotbot" ]]
 }
 
-if [[ -f "$HOME/.dotfiles/install.conf.yaml" ]] || [[ -d "$HOME/.dotfiles/dotbot" ]]; then
+if is_dotbot_repo; then
     info "Dotbot installation detected -- removing conflicting symlinks..."
 
-    # Shell
-    for f in .zshrc .bashrc .bash_profile .secrets .secrets.ps1 .sharecredentials; do
+    for f in .zshrc .bashrc .bash_profile .secrets .secrets.ps1 .sharecredentials \
+             .gitconfig .gitconfig-work .gitconfig-personal \
+             .tmux.conf .gitmux.conf .prettierrc.js .asdfrc; do
         remove_dotbot_symlink "$HOME/$f"
     done
 
-    # ZSH frameworks (these become chezmoi externals)
-    remove_dotbot_dir_symlink "$HOME/.oh-my-zsh"
-    remove_dotbot_dir_symlink "$HOME/.zgenom"
-
-    # Git
-    for f in .gitconfig .gitconfig-work .gitconfig-personal; do
-        remove_dotbot_symlink "$HOME/$f"
-    done
-
-    # Tools
-    for f in .tmux.conf .gitmux.conf .prettierrc.js; do
-        remove_dotbot_symlink "$HOME/$f"
-    done
-
-    # SSH
+    remove_dotbot_symlink "$HOME/.oh-my-zsh"
+    remove_dotbot_symlink "$HOME/.zgenom"
     remove_dotbot_symlink "$HOME/.ssh/config"
+    remove_dotbot_symlink "$HOME/.hammerspoon"
+    remove_dotbot_symlink "$HOME/Library/Application Support/com.colliderli.iina/input_conf/YouTube.conf"
+    remove_dotbot_symlink "$HOME/Library/Application Support/espanso"
 
-    # AI tooling
     for d in .claude .cursor; do
         if [[ -L "$HOME/$d" ]]; then
-            remove_dotbot_dir_symlink "$HOME/$d"
+            remove_dotbot_symlink "$HOME/$d"
         elif [[ -d "$HOME/$d" ]]; then
             for item in "$HOME/$d"/*; do
                 [[ -L "$item" ]] && remove_dotbot_symlink "$item"
@@ -134,42 +132,35 @@ if [[ -f "$HOME/.dotfiles/install.conf.yaml" ]] || [[ -d "$HOME/.dotfiles/dotbot
         fi
     done
 
-    # ~/.config entries
     for d in nvim LazyVim fish mise starship.toml sesh alacritty wezterm kitty ghostty \
              sketchybar aerospace karabiner raycast/scripts powershell git/githooks \
              Code/User ccstatusline zed; do
-        target="$HOME/.config/$d"
-        if [[ -L "$target" ]]; then
-            remove_dotbot_dir_symlink "$target"
-        fi
+        [[ -L "$HOME/.config/$d" ]] && remove_dotbot_symlink "$HOME/.config/$d"
     done
 
-    # macOS-specific
-    remove_dotbot_dir_symlink "$HOME/.hammerspoon"
-    remove_dotbot_symlink "$HOME/Library/Application Support/com.colliderli.iina/input_conf/YouTube.conf"
-    remove_dotbot_dir_symlink "$HOME/Library/Application Support/espanso"
-
-    # ~/bin scripts
     if [[ -d "$HOME/bin" ]]; then
         for item in "$HOME/bin"/*; do
             [[ -L "$item" ]] && remove_dotbot_symlink "$item"
         done
     fi
 
-    # Rename old Dotbot repo out of the way
-    if [[ -f "$HOME/.dotfiles/install.conf.yaml" ]]; then
-        BACKUP_DIR="$HOME/.dotfiles-legacy-$(date +%Y%m%d)"
+    BACKUP_DIR="$HOME/.dotfiles-legacy-$(date +%Y%m%d)"
+    if [[ -d "$BACKUP_DIR" ]]; then
+        warn "Backup already exists at $BACKUP_DIR -- skipping move"
+    else
         info "Moving old Dotbot repo to $BACKUP_DIR"
-        mv "$HOME/.dotfiles" "$BACKUP_DIR"
+        mv "$DOTFILES_DIR" "$BACKUP_DIR"
     fi
 fi
 
 # ---------------------------------------------------------------------------
-# 3. Clone and apply chezmoi
+# 3. Clone (or update) and apply chezmoi
 # ---------------------------------------------------------------------------
-if [[ -d "$DOTFILES_DIR/.git" ]] && ! [[ -f "$DOTFILES_DIR/install.conf.yaml" ]]; then
-    info "Chezmoi repo already at $DOTFILES_DIR -- updating..."
-    git -C "$DOTFILES_DIR" pull --ff-only origin main 2>/dev/null || true
+if [[ -d "$DOTFILES_DIR/.git" ]]; then
+    if [[ -f "$DOTFILES_DIR/.chezmoiroot" ]]; then
+        info "Chezmoi repo already at $DOTFILES_DIR -- pulling latest..."
+        git -C "$DOTFILES_DIR" pull --ff-only origin main 2>/dev/null || true
+    fi
 else
     info "Cloning $REPO to $DOTFILES_DIR..."
     git clone "git@github.com:${REPO}.git" "$DOTFILES_DIR" 2>/dev/null \
