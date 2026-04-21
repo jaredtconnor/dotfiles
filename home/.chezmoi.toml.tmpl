@@ -9,6 +9,9 @@
 {{-   $work = promptBoolOnce . "work" "Is this a work machine" -}}
 {{- end -}}
 
+[chezmoi]
+    sourceDir = {{ joinPath .chezmoi.homeDir ".dotfiles" "home" | quote }}
+
 [data]
     work = {{ $work }}
     personal_email = "jaredconnor@fastmail.com"

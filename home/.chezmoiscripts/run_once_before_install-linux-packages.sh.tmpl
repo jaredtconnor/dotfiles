@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+{{/*
+    One-shot Linux package bootstrap. Only runs once (run_once_ prefix).
+    Runs before other scripts (before_ prefix) so build tools are available
+    for mise, tmux plugin compilation, etc.
+    No-op on non-Linux.
+*/}}
+
+{{ if eq .chezmoi.os "linux" -}}
+set -euo pipefail
+
+echo "Installing Linux essential packages..."
+
+sudo apt-get update -qq
+sudo apt-get install -y -qq \
+    build-essential \
+    curl \
+    wget \
+    git \
+    tmux \
+    unzip \
+    locales \
+    libssl-dev \
+    zlib1g-dev \
+    libncurses5-dev \
+    libreadline-dev \
+    libsqlite3-dev \
+    libbz2-dev \
+    libffi-dev \
+    liblzma-dev \
+    tk-dev
+
+sudo locale-gen en_US.UTF-8 || true
+sudo update-locale LANG=en_US.UTF-8 || true
+
+if ! command -v mise &>/dev/null; then
+    echo "Installing mise..."
+    curl https://mise.jdx.dev/install.sh | sh
+fi
+
+echo "Linux package bootstrap complete"
+{{- else -}}
+exit 0
+{{- end }}

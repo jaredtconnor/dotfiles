@@ -12,4 +12,4 @@
 # Documentation:
 # @raycast.description Opens the dotfiles GitHub repo in the default browser
 
-open "https://github.com/jaredtconnor/dotfiles"
+open "https://github.com/jaredtconnor/.dotfiles"

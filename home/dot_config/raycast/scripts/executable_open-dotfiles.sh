@@ -12,7 +12,7 @@
 # Documentation:
 # @raycast.description Opens dotfiles repo in Cursor, VS Code, or Finder
 
-DOTFILES_DIR="$(chezmoi source-path 2>/dev/null || echo "$HOME/.local/share/chezmoi")"
+DOTFILES_DIR="$(chezmoi source-path 2>/dev/null || echo "$HOME/.dotfiles")"
 
 if command -v cursor &>/dev/null; then
   cursor "$DOTFILES_DIR"

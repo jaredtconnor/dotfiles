@@ -12,7 +12,7 @@ alias rl='source ~/.zshrc; echo ".zshrc reloaded"'
 alias regen='zgenom reset;source ~/.zshrc'
 
 # Main directories
-alias .f='cd $(chezmoi source-path 2>/dev/null || echo ~/.local/share/chezmoi)'
+alias .f='cd $(chezmoi source-path 2>/dev/null || echo ~/.dotfiles)'
 alias .d='cd ~/dev'
 
 # Easier navigation

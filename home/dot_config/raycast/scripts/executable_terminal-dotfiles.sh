@@ -12,7 +12,7 @@
 # Documentation:
 # @raycast.description Opens a new terminal window at the chezmoi source directory
 
-DOTFILES_DIR="$(chezmoi source-path 2>/dev/null || echo "$HOME/.local/share/chezmoi")"
+DOTFILES_DIR="$(chezmoi source-path 2>/dev/null || echo "$HOME/.dotfiles")"
 
 if open -Ra "Ghostty" 2>/dev/null; then
   open -a "Ghostty" "$DOTFILES_DIR"

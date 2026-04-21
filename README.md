@@ -1,20 +1,25 @@
-# Dotfiles
+# .dotfiles
 
 Cross-platform dotfiles managed by [chezmoi](https://www.chezmoi.io/). One repo for personal and work machines -- a single `work` boolean gates everything.
 
 ## Quick Start
 
 ```bash
-# Install chezmoi and apply (personal machine)
-sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply jaredtconnor/dotfiles
+# Fresh machine (macOS/Linux) -- one-liner:
+curl -fsSL https://raw.githubusercontent.com/jaredtconnor/.dotfiles/main/install.sh | bash
 
-# Or if chezmoi is already installed
-chezmoi init git@github.com:jaredtconnor/dotfiles.git
-chezmoi diff    # review first
-chezmoi apply
+# Or clone first, then run:
+git clone git@github.com:jaredtconnor/.dotfiles.git ~/.dotfiles
+cd ~/.dotfiles && ./install.sh
+
+# Windows (PowerShell as admin):
+git clone git@github.com:jaredtconnor/.dotfiles.git $HOME\.dotfiles
+cd $HOME\.dotfiles; .\install.ps1
 ```
 
-On a work machine, set `work = true` in `~/.config/chezmoi/chezmoi.toml`. On any other machine, it defaults to personal.
+The bootstrap script handles everything: installs chezmoi, removes any conflicting Dotbot symlinks from a previous setup, clones the repo to `~/.dotfiles`, and runs `chezmoi init --apply`.
+
+On first run, chezmoi prompts for `work = true/false`. On work machines (`Emp-JConnor` hostname), it auto-detects.
 
 ## What's Managed
 
@@ -32,11 +37,32 @@ On a work machine, set `work = true` in `~/.config/chezmoi/chezmoi.toml`. On any
 
 ## How It Works
 
+### Bootstrap Flow
+
+```
+install.sh / install.ps1
+  ├── Detect OS (macOS / Linux / Windows)
+  ├── Install prerequisites (Homebrew / apt / winget)
+  ├── Install chezmoi
+  ├── Detect & remove old Dotbot symlinks (if migrating)
+  ├── Clone repo to ~/.dotfiles
+  └── chezmoi init --apply --source ~/.dotfiles
+        ├── run_once: Brewfile (macOS) / Linux packages
+        ├── run_once: mise install
+        ├── Externals: oh-my-zsh, zgenom, tmux plugins, skills repos
+        ├── Templates: git config, SSH, .env, chezmoi.toml
+        ├── Managed files: shell, editors, terminals, tools
+        └── run_after: AI skills mirror symlinks
+```
+
 ### Hostname-Gated Identity
 
 `~/.config/chezmoi/chezmoi.toml` is written once at `chezmoi init` time:
 
 ```toml
+[chezmoi]
+    sourceDir = "/Users/you/.dotfiles/home"
+
 [data]
     work = false   # set to true on work machines
 ```
@@ -47,19 +73,23 @@ Templates use `.work` to switch git identity, SSH keys, secrets, and which exter
 
 ```
 .chezmoiroot -> home/
+install.sh                              # cross-platform bootstrap (macOS/Linux)
+install.ps1                             # Windows PowerShell bootstrap
 home/
-  .chezmoiexternal.toml.tmpl     # git clones replacing old submodules
-  .chezmoiignore                 # OS-gated paths (macOS/Windows/Linux)
-  .chezmoiscripts/               # one-shot + post-apply scripts
-  private_dot_env.tmpl           # -> ~/.env (0600 perms)
-  private_dot_ssh/config.tmpl    # -> ~/.ssh/config (0600 perms)
-  dot_config/git/config.tmpl     # -> ~/.config/git/config
-  dot_zshrc                      # -> ~/.zshrc
-  dot_config/zsh/                # aliases/, paths/, functions/
-  dot_config/nvim/               # neovim config
-  dot_config/LazyVim/            # lazyvim config
-  dot_claude/                    # claude commands, hooks, settings
-  dot_cursor/rules/              # cursor AI rules
+  .chezmoi.toml.tmpl                    # generates chezmoi config on init
+  .chezmoiexternal.toml.tmpl            # git clones replacing old submodules
+  .chezmoiignore                        # OS-gated paths (macOS/Windows/Linux)
+  .chezmoiscripts/                      # one-shot + post-apply scripts
+  private_dot_env.tmpl                  # -> ~/.env (0600 perms)
+  private_dot_ssh/config.tmpl           # -> ~/.ssh/config (0600 perms)
+  dot_config/git/config.tmpl            # -> ~/.config/git/config
+  dot_zshrc                             # -> ~/.zshrc
+  dot_config/zsh/                       # aliases/, paths/, functions/
+  dot_config/nvim/                      # neovim config
+  dot_config/LazyVim/                   # lazyvim config
+  dot_claude/                           # claude commands, hooks, settings
+  dot_cursor/rules/                     # cursor AI rules
+  Library/                              # macOS app configs (espanso, IINA, VS Code)
   ...
 ```
 
@@ -115,7 +145,7 @@ chezmoi git commit -m "update zshrc"
 chezmoi git push
 
 # or work in the source directory directly
-cd $(chezmoi source-path)
+cd ~/.dotfiles
 ```
 
 ## Machine Inventory
@@ -135,18 +165,20 @@ cd $(chezmoi source-path)
 3. **VS Code as difftool/mergetool.** Git uses `code --wait --diff` and `code --wait --merge`. Delta handles terminal diffs with the Visual Studio Dark+ theme.
 4. **Karabiner excluded.** Managed manually outside chezmoi due to its TypeScript build pipeline.
 5. **Secrets deferred.** `.env` has zero-valued exports. 1Password `op` reads are a follow-up.
+6. **Repo at `~/.dotfiles`.** The chezmoi source dir is `~/.dotfiles/home` (set via `.chezmoi.toml.tmpl`). This keeps the repo at a well-known, easy-to-remember path.
 
 ## New Machine Setup
 
-Just SSH access to GitHub and chezmoi installed. Everything else is bootstrapped:
+Just SSH access to GitHub and the bootstrap script. Everything else is automated:
 
 ```bash
-# One-liner: install chezmoi + clone + apply
-sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply jaredtconnor/dotfiles
+# One-liner: install everything and apply
+curl -fsSL https://raw.githubusercontent.com/jaredtconnor/.dotfiles/main/install.sh | bash
 
 # chezmoi will prompt for work = true/false on first init.
 # Externals (oh-my-zsh, tmux plugins, skills repos) clone automatically.
 # Homebrew installs via run_once script on macOS.
+# Linux packages install via run_once script.
 # mise installs tool versions via run_once script.
 ```
 
@@ -156,4 +188,4 @@ Prerequisite repos (already created):
 
 ## Migration History
 
-Migrated from a previous dotbot-based setup. The old repo used symlinks and git submodules; this repo uses chezmoi templates and externals.
+Migrated from a previous dotbot-based setup. The old repo used symlinks and git submodules; this repo uses chezmoi templates and externals. The `install.sh` bootstrap handles the cutover automatically by detecting and removing Dotbot symlinks before applying chezmoi.

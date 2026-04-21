@@ -9,7 +9,7 @@ preview_command = "eza --all --git --icons --color=always {}"
 
 [[session]]
 name = "dotfiles"
-path = "~/.local/share/chezmoi"
+path = "~/.dotfiles"
 startup_command = "nvim"
 
 [[wildcard]]
