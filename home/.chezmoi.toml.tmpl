@@ -9,8 +9,7 @@
 {{-   $work = promptBoolOnce . "work" "Is this a work machine" -}}
 {{- end -}}
 
-[chezmoi]
-    sourceDir = {{ joinPath .chezmoi.homeDir ".dotfiles" "home" | quote }}
+sourceDir = {{ joinPath .chezmoi.homeDir ".dotfiles" | quote }}
 
 [data]
     work = {{ $work }}
