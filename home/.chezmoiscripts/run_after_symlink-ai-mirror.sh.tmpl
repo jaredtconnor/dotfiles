@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 {{/*
     Flat-symlinks skills and agents from cloned external repos into
-    ~/.claude and ~/.cursor. Runs after every `chezmoi apply` (no
-    _once_/_onchange_ prefix) so newly-pulled skills are picked up.
+    ~/.claude and ~/.cursor. Runs after every `chezmoi apply` but only
+    touches the filesystem when symlinks are missing or stale.
 */}}
 
 set -euo pipefail
@@ -14,18 +14,28 @@ CURSOR_AGENTS="$HOME/.cursor/agents"
 
 mkdir -p "$CLAUDE_SKILLS" "$CLAUDE_AGENTS" "$CURSOR_SKILLS" "$CURSOR_AGENTS"
 
-# $1 = staging repo root (contains skills/ and/or agents/ subdirs)
+CHANGED=0
+
+ensure_link() {
+    local target="$1" link_path="$2"
+    if [[ -L "$link_path" ]] && [[ "$(readlink "$link_path")" == "$target" ]]; then
+        return
+    fi
+    ln -sfn "$target" "$link_path"
+    CHANGED=1
+}
+
 link_from() {
     local root="$1"
-    [ -d "$root" ] || { echo "skip: $root not present"; return 0; }
+    [ -d "$root" ] || return 0
 
     if [ -d "$root/skills" ]; then
         for skill in "$root/skills"/*/; do
             [ -d "$skill" ] || continue
             local name
             name=$(basename "$skill")
-            ln -sfn "${skill%/}" "$CLAUDE_SKILLS/$name"
-            ln -sfn "${skill%/}" "$CURSOR_SKILLS/$name"
+            ensure_link "${skill%/}" "$CLAUDE_SKILLS/$name"
+            ensure_link "${skill%/}" "$CURSOR_SKILLS/$name"
         done
     fi
 
@@ -34,8 +44,8 @@ link_from() {
             [ -d "$agent" ] || continue
             local name
             name=$(basename "$agent")
-            ln -sfn "${agent%/}" "$CLAUDE_AGENTS/$name"
-            ln -sfn "${agent%/}" "$CURSOR_AGENTS/$name"
+            ensure_link "${agent%/}" "$CLAUDE_AGENTS/$name"
+            ensure_link "${agent%/}" "$CURSOR_AGENTS/$name"
         done
     fi
 }
@@ -46,4 +56,6 @@ link_from "$HOME/.local/share/chezmoi-skills-personal"
 link_from "$HOME/.local/share/chezmoi-skills-work"
 {{- end }}
 
-echo "AI skills/agents mirror refreshed"
+if [[ "$CHANGED" -gt 0 ]]; then
+    echo "AI skills/agents mirror refreshed"
+fi
