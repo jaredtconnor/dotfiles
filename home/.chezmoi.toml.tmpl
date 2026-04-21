@@ -11,6 +11,13 @@
 
 sourceDir = {{ joinPath .chezmoi.homeDir ".dotfiles" | quote }}
 
+[edit]
+    command = "nvim"
+{{ if lookPath "delta" }}
+[diff]
+    pager = "delta"
+{{ end }}
+
 [data]
     work = {{ $work }}
     personal_email = "jaredconnor@fastmail.com"
