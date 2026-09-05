@@ -1,0 +1,14 @@
+{{- $priv := dict -}}
+{{- $pf := joinPath .chezmoi.homeDir ".dotfiles-private" "data.yaml" -}}
+{{- if stat $pf -}}{{ $priv = (include $pf | fromYaml) -}}{{- end -}}
+{{- $ids := get (get $priv "ssh" | default dict) "identities" | default dict -}}
+{{- $vault := get (get $priv "identity" | default dict) "op_vault" | default "Personal" -}}
+# 1Password SSH agent key allowlist.
+# IdentityFile entries in ~/.ssh/config point at public-key hints, while this
+# file tells 1Password which private keys the agent may offer. The key items
+# come from the private companion; a public checkout has none.
+{{ range $k, $v := $ids }}[[ssh-keys]]
+vault = "{{ $vault }}"
+item = "{{ $v }}"
+
+{{ end -}}

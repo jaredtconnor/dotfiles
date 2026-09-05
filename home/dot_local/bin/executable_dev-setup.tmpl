@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+#
+# dev-setup — create the top-level home layout (idempotent).
+#
+# The directory list is NOT hardcoded here. It is generated at `chezmoi apply`
+# from the single source of truth: home/.chezmoidata/home_layout.yaml. Edit that
+# file, run `chezmoi apply`, then re-run `dev-setup` to materialize changes.
+#
+# Layout (TitleCase categories; macOS system folders left untouched):
+#   ~/Code/      source repos — the ONLY repo root (managed by ghq); left flat
+#   ~/Notes/     Obsidian / work / personal notes
+#   ~/Data/      datasets, exports, non-document data
+#   ~/Tools/     local tools, binaries, scratch configs
+#   ~/Sandbox/   throwaway experiments
+#   ~/Archives/  backups and long-term snapshots
+#
+# Repos go under ~/Code via ghq: `clone <url>` (or `ghq get <url>`), then jump
+# with `repo` / `wt`. See ~/.config/gwq/config.toml and git config ghq.root.
+set -euo pipefail
+
+# Generated from home_layout.yaml. Relative to $HOME; nesting via `mkdir -p`.
+DIRS=(
+{{- range $bucket, $subs := .home_layout }}
+    {{ $bucket | quote }}
+{{- range $sub := $subs }}
+    {{ (printf "%s/%s" $bucket $sub) | quote }}
+{{- end }}
+{{- end }}
+)
+
+for rel in "${DIRS[@]}"; do
+    d="$HOME/$rel"
+    if [[ -d "$d" ]]; then
+        printf '  exists   ~/%s\n' "$rel"
+    else
+        mkdir -p "$d"
+        printf '  created  ~/%s\n' "$rel"
+    fi
+done
+
+root="$(git config --get ghq.root 2>/dev/null || echo "$HOME/Code")"
+printf '\nHome layout ready. Repo root: %s\n' "$root"
+printf "Clone a repo:  clone <url|host/owner/repo>   |   Jump:  repo / wt\n"

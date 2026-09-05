@@ -1,0 +1,15 @@
+# Dotfiles publication privacy policy (extended-regex, one per line).
+# verify-publication.sh rejects any file whose content matches a pattern here.
+# Structural patterns only — no private literals are committed. Host/identity
+# specifics live in the git-ignored publication-policy.local.txt.
+
+# --- private RFC1918 / homelab addressing ---
+\b10\.0\.[0-9]{1,3}\.[0-9]{1,3}\b
+# --- Tailscale CGNAT + tailnet ---
+\b100\.(6[4-9]|[7-9][0-9]|1[01][0-9]|12[0-7])\.[0-9]{1,3}\.[0-9]{1,3}\b
+[A-Za-z0-9-]+\.ts\.net\b
+# --- work / corporate identity domains ---
+[A-Za-z0-9-]+\.corp\b
+[A-Za-z0-9-]+\.internal\b
+# --- SSH private key material ---
+-----BEGIN [A-Z ]*PRIVATE KEY-----

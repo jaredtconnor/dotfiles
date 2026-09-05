@@ -1,0 +1,2 @@
+{{- $p := joinPath .chezmoi.homeDir ".dotfiles-private" "hermes" "config.yaml" -}}
+{{- if stat $p }}{{ include $p }}{{- end -}}

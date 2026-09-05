@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# Pre-push publication gate for the dotfiles repo. Dormant unless git hooksPath
+# is enabled (see dot_config/git/config.tmpl). When active, it blocks a push of
+# the dotfiles repo if secrets or private data are present.
+set -euo pipefail
+
+REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || true)"
+[ "$(basename "${REPO_ROOT:-}")" = ".dotfiles" ] || exit 0
+
+GATE="$REPO_ROOT/scripts/verify-publication.sh"
+[ -x "$GATE" ] || exit 0
+
+if ! bash "$GATE"; then
+  echo "pre-push: publication gate failed; push blocked." >&2
+  exit 1
+fi
+exit 0

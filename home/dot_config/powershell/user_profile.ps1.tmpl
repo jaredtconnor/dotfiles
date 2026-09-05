@@ -1,0 +1,132 @@
+# set PowerShell to UTF-8
+[console]::InputEncoding = [console]::OutputEncoding = [System.Text.UTF8Encoding]::new()
+
+# Env (set early so tools pick them up)
+$env:GIT_SSH = "C:\Windows\system32\OpenSSH\ssh.exe"
+
+# Load chezmoi-rendered POSIX env exports into PowerShell.
+$envFile = Join-Path $HOME ".env"
+if (Test-Path $envFile) {
+    switch -Regex -File $envFile {
+        '^\s*(?:export\s+)?([A-Za-z_][A-Za-z0-9_]*)=(.*)\s*$' {
+            $name = $Matches[1]
+            $value = $Matches[2].Trim()
+            if ($value.Length -ge 2 -and (
+                ($value.StartsWith('"') -and $value.EndsWith('"')) -or
+                ($value.StartsWith("'") -and $value.EndsWith("'"))
+            )) {
+                $value = $value.Substring(1, $value.Length - 2)
+            }
+            Set-Item -Path "Env:$name" -Value $value
+        }
+    }
+}
+
+# Load secrets if present
+$secretsFile = Join-Path $HOME ".secrets.ps1"
+if (Test-Path $secretsFile) { . $secretsFile }
+
+# --- Oh My Posh ---
+$omp_config = Join-Path $PSScriptRoot "jconnor.omp.json"
+oh-my-posh init pwsh --config $omp_config | Invoke-Expression
+
+# --- Terminal-Icons (deferred until first ls/dir) ---
+$global:_tiLoaded = $false
+$ExecutionContext.InvokeCommand.PreCommandLookupAction = {
+    param($cmd, $lookupEvent)
+    if (-not $global:_tiLoaded -and $cmd -in @('Get-ChildItem','ls','dir','gci')) {
+        $global:_tiLoaded = $true
+        Import-Module -Name Terminal-Icons -ErrorAction SilentlyContinue
+    }
+}
+
+# --- PSReadLine ---
+Set-PSReadLineOption -EditMode Emacs -BellStyle None -PredictionSource History
+Set-PSReadLineKeyHandler -Chord 'Ctrl+d' -Function DeleteChar
+
+# --- PSFzf (lazy-load on first chord press) ---
+Set-PSReadLineKeyHandler -Chord 'Ctrl+f' -ScriptBlock {
+    Import-Module PSFzf -ErrorAction SilentlyContinue
+    Set-PsFzfOption -PSReadlineChordProvider 'Ctrl+f' -PSReadlineChordReverseHistory 'Ctrl+r'
+    [Microsoft.PowerShell.PSConsoleReadLine]::AcceptLine()
+}
+Set-PSReadLineKeyHandler -Chord 'Ctrl+r' -ScriptBlock {
+    Import-Module PSFzf -ErrorAction SilentlyContinue
+    Set-PsFzfOption -PSReadlineChordProvider 'Ctrl+f' -PSReadlineChordReverseHistory 'Ctrl+r'
+    [Microsoft.PowerShell.PSConsoleReadLine]::ReverseSearchHistory()
+}
+
+# --- Aliases ---
+Set-Alias -Name vim -Value nvim
+Set-Alias ll ls
+Set-Alias g git
+Set-Alias grep findstr
+Set-Alias -Name find -Value fd
+Set-Alias tig 'C:\Program Files\Git\usr\bin\tig.exe'
+Set-Alias less 'C:\Program Files\Git\usr\bin\less.exe'
+
+# --- Utilities ---
+function which ($command) {
+    Get-Command -Name $command -ErrorAction SilentlyContinue |
+        Select-Object -ExpandProperty Path -ErrorAction SilentlyContinue
+}
+
+function Get-FilteredDir {
+    param(
+        [string]$Path = ".",
+        [string[]]$Exclude = @('\.git', 'node_modules', '\.env', 'bin', 'obj', '__pycache__', '\.vs', 'dist', 'build', '.\.azure')
+    )
+    $excludeRegex = '\\(' + ($Exclude -join '|') + ')($|\\)'
+    Get-ChildItem $Path -Recurse -Force | Where-Object {
+        $_.FullName -notmatch $excludeRegex
+    }
+}
+Set-Alias -Name lsf -Value Get-FilteredDir
+
+{{ if .workstation -}}
+# --- ghq + gwq + fzf navigation (repos + worktrees live under ~/Code) ---
+# Dev-workstation feature; gated to workstation hosts to mirror the zsh side
+# (see .chezmoiignore + $workstationHostnames in .chezmoi.toml.tmpl).
+# repo  : fuzzy-pick a cloned repo and cd in
+# clone : ghq-clone then cd in
+# wt    : fuzzy-pick a worktree and cd in (gwq shell-integration is unsupported
+#         on PowerShell, so this scans the gwq naming layout: <repo>=<branch>)
+# wta/wtl/wts/wtrm/wtp : gwq add/list/status/remove/prune
+function Get-RepoRoot {
+    $r = (git config --get ghq.root 2>$null)
+    if (-not $r) { $r = Join-Path $HOME 'Code' }
+    return ($r -replace '^~', $HOME)
+}
+
+function repo {
+    if (-not (Get-Command ghq -ErrorAction SilentlyContinue)) { Write-Warning 'repo: ghq not on PATH'; return }
+    if (-not (Get-Command fzf -ErrorAction SilentlyContinue)) { Write-Warning 'repo: fzf not on PATH'; return }
+    $dest = ghq list --full-path | fzf --prompt 'repo > ' --height 80%
+    if ($dest) { Set-Location $dest }
+}
+
+function clone {
+    if (-not (Get-Command ghq -ErrorAction SilentlyContinue)) { Write-Warning 'clone: ghq not on PATH'; return }
+    if ($args.Count -lt 1) { Write-Host 'usage: clone <url | host/owner/repo | owner/repo>'; return }
+    ghq get @args
+    $name = ($args[-1] -replace '\.git$', '') -replace '.*/', ''
+    $dest = ghq list --full-path | Select-String -SimpleMatch $name | Select-Object -First 1
+    if ($dest) { Set-Location $dest.Line }
+}
+
+function wt {
+    if (-not (Get-Command fzf -ErrorAction SilentlyContinue)) { Write-Warning 'wt: fzf not on PATH'; return }
+    $root = Get-RepoRoot
+    if (-not (Test-Path $root)) { Write-Warning "wt: $root does not exist"; return }
+    $dest = Get-ChildItem -Path $root -Directory -Recurse -Depth 2 -ErrorAction SilentlyContinue |
+        Where-Object { $_.Name -like '*=*' } |
+        Select-Object -ExpandProperty FullName | fzf --prompt 'worktree > ' --height 80%
+    if ($dest) { Set-Location $dest }
+}
+
+function wta  { gwq add @args }
+function wtl  { gwq list -g @args }
+function wts  { gwq status -g @args }
+function wtrm { gwq remove @args }
+function wtp  { gwq prune @args }
+{{ end -}}

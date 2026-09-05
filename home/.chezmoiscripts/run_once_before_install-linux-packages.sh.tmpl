@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+{{/*
+    One-shot Linux package bootstrap. Only runs once (run_once_ prefix).
+    Runs before other scripts (before_ prefix) so build tools are available
+    for mise, tmux plugin compilation, etc.
+    No-op on non-Linux.
+*/}}
+
+{{ if eq .chezmoi.os "linux" -}}
+set -euo pipefail
+
+echo "Installing Linux essential packages..."
+
+sudo apt-get update -qq
+sudo apt-get install -y -qq \
+    build-essential \
+    ca-certificates \
+    curl \
+    gnupg \
+    wget \
+    git \
+    tmux \
+    unzip \
+    locales \
+    libssl-dev \
+    zlib1g-dev \
+    libncurses5-dev \
+    libreadline-dev \
+    libsqlite3-dev \
+    libbz2-dev \
+    libffi-dev \
+    liblzma-dev \
+    tk-dev
+
+sudo locale-gen en_US.UTF-8 || true
+sudo update-locale LANG=en_US.UTF-8 || true
+
+if ! command -v mise &>/dev/null; then
+    echo "Installing mise..."
+    curl https://mise.jdx.dev/install.sh | sh
+fi
+
+if ! command -v op &>/dev/null; then
+    echo "Installing 1Password CLI..."
+
+    curl -sS https://downloads.1password.com/linux/keys/1password.asc |
+        sudo gpg --dearmor --yes --output /usr/share/keyrings/1password-archive-keyring.gpg
+
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/1password-archive-keyring.gpg] https://downloads.1password.com/linux/debian/$(dpkg --print-architecture) stable main" |
+        sudo tee /etc/apt/sources.list.d/1password.list >/dev/null
+
+    sudo mkdir -p /etc/debsig/policies/AC2D62742012EA22/
+    curl -sS https://downloads.1password.com/linux/debian/debsig/1password.pol |
+        sudo tee /etc/debsig/policies/AC2D62742012EA22/1password.pol >/dev/null
+
+    sudo mkdir -p /usr/share/debsig/keyrings/AC2D62742012EA22
+    curl -sS https://downloads.1password.com/linux/keys/1password.asc |
+        sudo gpg --dearmor --yes --output /usr/share/debsig/keyrings/AC2D62742012EA22/debsig.gpg
+
+    sudo apt-get update -qq
+    sudo apt-get install -y -qq 1password-cli
+fi
+
+echo "Linux package bootstrap complete"
+{{- else -}}
+exit 0
+{{- end }}

@@ -1,0 +1,63 @@
+version: "1.0"
+# Public/private classification for every tracked dotfiles path.
+#
+# Classes (first match wins, in this order):
+#   private_input   MUST move to the eigyn/dotfiles-private companion; never public.
+#   generated       projection/generated output, not an editing source.
+#   local           machine-local state, never published.
+#   public          safe to publish. Entries under `sanitize` stay public but
+#                   carry private LITERALS that Phase 4 replaces with data lookups
+#                   or private fragments (the file stays, the values leave).
+#
+# This file contains NO private values: only path globs and data-key names.
+
+private_input:
+  paths:
+    - "home/private_dot_ssh/hosts"          # machine inventory + VLAN topology
+    - "home/private_dot_ssh/jared-*.pub"    # named key hints (identities/hosts)
+    - "home/private_dot_hermes/**"           # Hermes agent config
+  # Identity/host data that moves into the companion's chezmoidata:
+  data_keys:
+    - "work_email"
+    - "work_hostname"
+    - "personal_email"
+    - "server_hostnames"
+    - "workstation_hostnames"
+    - "ssh_identities"
+
+generated:
+  paths:
+    - "home/.agents/**"
+
+local:
+  paths:
+    - "home/.claude/settings.local.json"
+    - "home/dot_claude/settings.local.json.tmpl"
+
+# Stay public, but Phase 4 replaces embedded private literals with data lookups
+# (from the companion) or generic includes. The file is public; the values are not.
+sanitize:
+  paths:
+    - "home/.chezmoi.toml.tmpl"                 # emails, work host, machine lists
+    - "home/.chezmoiignore"                      # machine hostnames in gating
+    - "home/.chezmoiexternal.toml.tmpl"          # forgejo host, work org
+    - "home/private_dot_ssh/config.tmpl"         # host blocks -> companion fragments
+    - "home/dot_config/git/config.tmpl"          # work/personal identity
+    - "home/dot_config/git/config.personal"      # personal identity
+    - "home/.chezmoiscripts/**"                  # forgejo host, machine refs
+    - "home/dot_local/bin/executable_*"          # host/service helpers
+    - "home/dot_config/raycast/scripts/**"
+    - "home/Library/LaunchAgents/com.jared.helium-sync.plist"
+    - "home/dot_config/helium-sync/**"
+    - "home/.chezmoitemplates/**"                # editor settings referencing hosts
+    - "README.md"
+    - "MIGRATION_MANIFEST.md"
+    - "install.sh"
+    - "install.ps1"
+    - "justfile"
+    - "skills-port-skill/SKILL.md"
+
+# Everything else tracked is public with no private data. Represented by the
+# implicit fallback in the classifier; listed here for intent.
+public:
+  rule: "all other tracked paths"

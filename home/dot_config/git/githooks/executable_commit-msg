@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+# Git commit-msg hook: Strip AI co-author trailers from commit messages
+# Prevents AI attribution from entering git history in the first place.
+#
+# Install as a commit-msg hook (handled by dotbot install.conf.yaml):
+#   ln -sf this-script .git/hooks/commit-msg
+
+set -e
+
+MSG_FILE="$1"
+
+if [[ -z "$MSG_FILE" || ! -f "$MSG_FILE" ]]; then
+    exit 0
+fi
+
+# Remove AI co-author and trailer lines (case-insensitive)
+# Matches: Co-Authored-By lines with Claude, Copilot, Cursor, Codeium, etc.
+# Matches: Made-with, Generated-by lines
+sed -i.bak -E \
+    -e '/^[Cc]o-[Aa]uthored-[Bb]y:.*([Cc]laude|[Aa]nthropic|noreply@anthropic)/Id' \
+    -e '/^[Cc]o-[Aa]uthored-[Bb]y:.*([Cc]opilot|GitHub Copilot|noreply@github\.com)/Id' \
+    -e '/^[Cc]o-[Aa]uthored-[Bb]y:.*([Cc]ursor|cursoragent|cursor\.com)/Id' \
+    -e '/^[Cc]o-[Aa]uthored-[Bb]y:.*([Cc]odeium|[Ww]indsurf)/Id' \
+    -e '/^[Cc]o-[Aa]uthored-[Bb]y:.*([Aa]mazon.Q|[Cc]ode[Ww]hisperer)/Id' \
+    -e '/^[Cc]o-[Aa]uthored-[Bb]y:.*(noreply@|bot@|\[bot\])/Id' \
+    -e '/^[Mm]ade-with:/Id' \
+    -e '/^[Gg]enerated-by:.*(Claude|Copilot|Cursor|AI|Codeium|Windsurf)/Id' \
+    "$MSG_FILE"
+
+# Clean up trailing blank lines
+sed -i.bak -e :a -e '/^\n*$/{$d;N;ba' -e '}' "$MSG_FILE"
+
+# Remove backup file
+rm -f "${MSG_FILE}.bak"
+
+exit 0

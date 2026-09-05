@@ -1,0 +1,206 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+AGENT_DIR="${HOME}/.pi/agent"
+
+if [[ ! -d "${AGENT_DIR}" ]]; then
+  exit 0
+fi
+
+# ---------------------------------------------------------------------------
+# Keybindings: free up ctrl+p so leader-key can claim it
+# ---------------------------------------------------------------------------
+cat > "${AGENT_DIR}/keybindings.json" <<'JSON'
+{
+  "app.model.cycleForward": ["ctrl+alt+p"],
+  "app.session.togglePath": ["ctrl+alt+/"],
+  "app.models.toggleProvider": ["ctrl+shift+alt+p"]
+}
+JSON
+
+# ---------------------------------------------------------------------------
+# Extensions: disable handoff (missing optional deps)
+# ---------------------------------------------------------------------------
+python3 - <<'PY'
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
+settings_path = Path.home() / ".pi" / "agent" / "settings.json"
+if not settings_path.exists():
+    raise SystemExit(0)
+
+data = json.loads(settings_path.read_text())
+
+desired_plain = "extensions"
+desired_disable = "-extensions/handoff/index.ts"
+
+extensions = data.get("extensions")
+if isinstance(extensions, list):
+    cleaned: list[str] = []
+    for e in extensions:
+        if not isinstance(e, str):
+            continue
+        # Drop any explicit enabling of handoff; re-add as disabled below.
+        if e.rstrip("/") == "extensions/handoff/index.ts":
+            continue
+        if e.lstrip("!+-").rstrip("/") == "extensions/handoff/index.ts" and not e.startswith("-"):
+            continue
+        cleaned.append(e)
+
+    if desired_plain not in cleaned:
+        cleaned.insert(0, desired_plain)
+    if desired_disable not in cleaned:
+        cleaned.append(desired_disable)
+
+    data["extensions"] = cleaned
+else:
+    data["extensions"] = [desired_plain, desired_disable]
+
+settings_path.write_text(json.dumps(data, indent=2) + "\n")
+PY
+
+# ---------------------------------------------------------------------------
+# tool-pills: local shims so the extension loads without npm
+# ---------------------------------------------------------------------------
+SHIM_DIR="${AGENT_DIR}/extensions/tool-pills/node_modules/@shikijs/cli"
+mkdir -p "${SHIM_DIR}"
+
+cat > "${SHIM_DIR}/package.json" <<'JSON'
+{
+  "name": "@shikijs/cli",
+  "version": "0.0.0-local-shim",
+  "private": true,
+  "main": "index.js"
+}
+JSON
+
+cat > "${SHIM_DIR}/index.js" <<'JS'
+async function codeToANSI(code) {
+  // Local shim to keep tool-pills loadable without npm installs.
+  // Intentionally returns plain text (no syntax highlighting).
+  return String(code ?? "");
+}
+
+module.exports = { codeToANSI };
+JS
+
+DIFF_SHIM_DIR="${AGENT_DIR}/extensions/tool-pills/node_modules/diff"
+mkdir -p "${DIFF_SHIM_DIR}"
+
+cat > "${DIFF_SHIM_DIR}/package.json" <<'JSON'
+{
+  "name": "diff",
+  "version": "0.0.0-local-shim",
+  "private": true,
+  "main": "index.js"
+}
+JSON
+
+cat > "${DIFF_SHIM_DIR}/index.js" <<'JS'
+function splitLines(text) {
+  if (!text) return [];
+  const lines = String(text).split("\n");
+  if (lines[lines.length - 1] === "") lines.pop();
+  return lines;
+}
+
+function tokenizeWords(text) {
+  return String(text).match(/\s+|\S+/g) || [];
+}
+
+function lcsChanges(oldItems, newItems, equal = (a, b) => a === b) {
+  const rows = oldItems.length + 1;
+  const cols = newItems.length + 1;
+  const dp = Array.from({ length: rows }, () => Array(cols).fill(0));
+
+  for (let i = oldItems.length - 1; i >= 0; i--) {
+    for (let j = newItems.length - 1; j >= 0; j--) {
+      dp[i][j] = equal(oldItems[i], newItems[j])
+        ? dp[i + 1][j + 1] + 1
+        : Math.max(dp[i + 1][j], dp[i][j + 1]);
+    }
+  }
+
+  const changes = [];
+  let i = 0;
+  let j = 0;
+  while (i < oldItems.length || j < newItems.length) {
+    if (i < oldItems.length && j < newItems.length && equal(oldItems[i], newItems[j])) {
+      changes.push({ type: "ctx", value: oldItems[i++] });
+      j++;
+    } else if (j < newItems.length && (i === oldItems.length || dp[i][j + 1] >= dp[i + 1][j])) {
+      changes.push({ type: "add", value: newItems[j++] });
+    } else {
+      changes.push({ type: "del", value: oldItems[i++] });
+    }
+  }
+
+  return changes;
+}
+
+function diffWords(oldText, newText) {
+  const changes = lcsChanges(tokenizeWords(oldText), tokenizeWords(newText));
+  const parts = [];
+
+  for (const change of changes) {
+    const last = parts[parts.length - 1];
+    const added = change.type === "add";
+    const removed = change.type === "del";
+    const sameKind = last && Boolean(last.added) === added && Boolean(last.removed) === removed;
+
+    if (sameKind) {
+      last.value += change.value;
+    } else if (added) {
+      parts.push({ value: change.value, added: true });
+    } else if (removed) {
+      parts.push({ value: change.value, removed: true });
+    } else {
+      parts.push({ value: change.value });
+    }
+  }
+
+  return parts;
+}
+
+function structuredPatch(oldFileName, newFileName, oldStr, newStr, oldHeader = "", newHeader = "") {
+  const oldLines = splitLines(oldStr);
+  const newLines = splitLines(newStr);
+  const changes = lcsChanges(oldLines, newLines);
+  if (!changes.some((change) => change.type !== "ctx")) {
+    return { oldFileName, newFileName, oldHeader, newHeader, hunks: [] };
+  }
+
+  let oldLinesInHunk = 0;
+  let newLinesInHunk = 0;
+  const lines = [];
+
+  for (const change of changes) {
+    if (change.type === "add") {
+      newLinesInHunk++;
+      lines.push(`+${change.value}`);
+    } else if (change.type === "del") {
+      oldLinesInHunk++;
+      lines.push(`-${change.value}`);
+    } else {
+      oldLinesInHunk++;
+      newLinesInHunk++;
+      lines.push(` ${change.value}`);
+    }
+  }
+
+  const hunks = [{
+    oldStart: 1,
+    oldLines: oldLinesInHunk,
+    newStart: 1,
+    newLines: newLinesInHunk,
+    lines,
+  }];
+
+  return { oldFileName, newFileName, oldHeader, newHeader, hunks };
+}
+
+module.exports = { diffWords, structuredPatch };
+JS
+

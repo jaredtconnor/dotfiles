@@ -1,0 +1,13 @@
+{{- $d := joinPath .chezmoi.homeDir ".dotfiles-private" "ssh" -}}
+{{- if stat $d -}}
+#!/usr/bin/env bash
+# Place public-key hints from the private companion into ~/.ssh. These are only
+# hints so the 1Password agent offers the right key (avoids the six-key limit);
+# no private key material is involved. Generic glob — no identities named here.
+set -eu
+mkdir -p "$HOME/.ssh"
+if compgen -G "$HOME/.dotfiles-private/ssh/*.pub" >/dev/null; then
+  cp "$HOME/.dotfiles-private"/ssh/*.pub "$HOME/.ssh/"
+  chmod 644 "$HOME"/.ssh/*.pub 2>/dev/null || true
+fi
+{{- end -}}

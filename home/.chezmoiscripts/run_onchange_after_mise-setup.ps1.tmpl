@@ -1,0 +1,24 @@
+# Windows counterpart to run_once_after_mise-setup.sh. Installs the tool
+# versions pinned in ~/.config/mise/config.toml.
+#
+# run_onchange_ + the config hash below means chezmoi re-runs `mise install`
+# automatically whenever the pinned versions change (bump a version, commit,
+# `chezmoi apply`). Non-fatal: individual tool failures are logged but don't
+# block apply. (.ps1 scripts run on Windows only, so no OS guard is needed.)
+#
+# mise config hash: {{ include "dot_config/mise/config.toml.tmpl" | sha256sum }}
+
+if (-not (Get-Command mise -ErrorAction SilentlyContinue)) {
+    Write-Host "mise not found -- skipping (https://mise.jdx.dev)"
+    exit 0
+}
+
+Write-Host "Running mise install (pinned versions from config.toml)..."
+mise install --yes
+if ($LASTEXITCODE -eq 0) {
+    Write-Host "mise install complete"
+} else {
+    Write-Warning "mise install had failures (see above) -- run 'mise install' manually to retry."
+}
+
+exit 0

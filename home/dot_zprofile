@@ -1,0 +1,19 @@
+# Zsh profile — macOS-focused. Safe to apply everywhere; PATHs no-op on missing dirs.
+
+FPATH=/opt/homebrew/share/zsh/site-functions:$FPATH
+export PATH="/opt/local/bin:/opt/local/sbin:$PATH"
+
+# iTerm2 ANSI colors
+export CLICOLOR=1
+export TERM=xterm-256color
+
+# Homebrew shellenv (macOS)
+if [[ -x "/opt/homebrew/bin/brew" ]]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
+
+# pyenv — only initialize if installed
+if command -v pyenv >/dev/null 2>&1; then
+    eval "$(pyenv init -)"
+    eval "$(pyenv virtualenv-init -)"
+fi

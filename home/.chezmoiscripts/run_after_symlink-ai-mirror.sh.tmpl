@@ -1,0 +1,222 @@
+#!/usr/bin/env bash
+{{/*
+    Flat-symlinks reusable AI tooling from cloned external repos into agent
+    runtime directories. Runs after every `chezmoi apply` but only touches the
+    filesystem when symlinks are missing or stale.
+*/}}
+
+set -euo pipefail
+shopt -s nullglob globstar
+
+CLAUDE_SKILLS="$HOME/.claude/skills"
+CLAUDE_AGENTS="$HOME/.claude/agents"
+CLAUDE_COMMANDS="$HOME/.claude/commands"
+CLAUDE_HOOKS="$HOME/.claude/hooks"
+CURSOR_SKILLS="$HOME/.cursor/skills"
+CURSOR_AGENTS="$HOME/.cursor/agents"
+CODEX_SKILLS="$HOME/.codex/skills"
+PI_SKILLS="$HOME/.pi/agent/skills"
+PI_PROMPTS="$HOME/.pi/agent/prompts"
+DOTAGENTS_SKILLS="$HOME/.agents/skills"
+DOTAGENTS_AGENTS="$HOME/.agents/agents"
+DOTAGENTS_COMMANDS="$HOME/.agents/commands"
+DOTAGENTS_HOOKS="$HOME/.agents/hooks"
+
+mkdir -p \
+    "$CLAUDE_SKILLS" "$CLAUDE_AGENTS" "$CLAUDE_COMMANDS" "$CLAUDE_HOOKS" \
+    "$CURSOR_SKILLS" "$CURSOR_AGENTS" "$CODEX_SKILLS" "$PI_SKILLS" "$PI_PROMPTS" \
+    "$DOTAGENTS_SKILLS" "$DOTAGENTS_AGENTS" "$DOTAGENTS_COMMANDS" "$DOTAGENTS_HOOKS"
+
+CHANGED=0
+REGISTRY_DIR="$(mktemp -d "${TMPDIR:-/tmp}/ai-tooling-links.XXXXXX")"
+trap 'rm -rf "$REGISTRY_DIR"' EXIT
+
+# Space-separated allowlist for work-overlay collisions. Entries may be either
+# "runtime:asset:name" (for example "cursor:skill:internal-debug") or just
+# "name" when the override is intentionally broad.
+AI_TOOLING_ALLOWED_WORK_OVERRIDES="${AI_TOOLING_ALLOWED_WORK_OVERRIDES:-}"
+
+ensure_link() {
+    local target="$1" link_path="$2"
+    if [[ -L "$link_path" ]] && [[ "$(readlink "$link_path")" == "$target" ]]; then
+        return
+    fi
+    ln -sfn "$target" "$link_path"
+    CHANGED=1
+}
+
+registry_key() {
+    printf '%s.%s.%s' "$1" "$2" "$3" | tr -c '[:alnum:]_.-' '_'
+}
+
+can_override() {
+    local kind="$1" name="$2"
+    case " $AI_TOOLING_ALLOWED_WORK_OVERRIDES " in
+        *" $kind:$name "*|*" $name "*) return 0 ;;
+        *) return 1 ;;
+    esac
+}
+
+ensure_export() {
+    local kind="$1" name="$2" target="$3" link_path="$4" role="$5"
+    local key record existing_target existing_role
+
+    key=$(registry_key "$kind" "$name" "$link_path")
+    record="$REGISTRY_DIR/$key"
+
+    if [[ -f "$record" ]]; then
+        existing_target=$(sed -n '1p' "$record")
+        existing_role=$(sed -n '2p' "$record")
+
+        if [[ "$existing_target" == "$target" ]]; then
+            ensure_link "$target" "$link_path"
+            return
+        fi
+
+        # External packs are lowest priority: a name already claimed by a
+        # canonical, overlay, or earlier external entry wins, and the duplicate
+        # is skipped silently (no link, no error).
+        if [[ "$role" == "external" ]]; then
+            return
+        fi
+
+        # A canonical or work overlay may always reclaim a name an external pack
+        # registered first.
+        if [[ "$existing_role" == "external" ]]; then
+            printf '%s\n%s\n' "$target" "$role" > "$record"
+            ensure_link "$target" "$link_path"
+            return
+        fi
+
+        if [[ "$role" == "overlay" ]] && can_override "$kind" "$name"; then
+            printf '%s\n%s\n' "$target" "$role" > "$record"
+            ensure_link "$target" "$link_path"
+            return
+        fi
+
+        {
+            echo "AI tooling projection collision for $kind:$name"
+            echo "  existing ($existing_role): $existing_target"
+            echo "  new      ($role): $target"
+            echo "  link path: $link_path"
+            echo "Set AI_TOOLING_ALLOWED_WORK_OVERRIDES='$kind:$name' only if this override is intentional."
+        } >&2
+        exit 1
+    fi
+
+    printf '%s\n%s\n' "$target" "$role" > "$record"
+    ensure_link "$target" "$link_path"
+}
+
+remove_stale_symlink() {
+    local link_path="$1"
+    if [[ -L "$link_path" ]]; then
+        rm "$link_path"
+        CHANGED=1
+    fi
+}
+
+# Prune links whose source is gone. Upstream packs delete and rename skills
+# (mattpocock dropped 7 in one fast-forward), which would otherwise leave dead
+# links that agents still enumerate. Only symlinks are considered, and only
+# those whose target no longer resolves, so no real file can be lost.
+prune_dead_links() {
+    local dir link
+    for dir in "$@"; do
+        [ -d "$dir" ] || continue
+        for link in "$dir"/*; do
+            [ -L "$link" ] || continue
+            [ -e "$link" ] && continue
+            rm "$link"
+            CHANGED=1
+        done
+    done
+}
+
+link_from() {
+    local root="$1"
+    local role="${2:-canonical}"
+    [ -d "$root" ] || return 0
+
+    local skill_file skill name agent_file command hook
+
+    for skill_file in "$root"/skills/**/SKILL.md; do
+        [ -f "$skill_file" ] || continue
+        skill=$(dirname "$skill_file")
+        name=$(basename "$skill")
+
+        # Claude Code surfaces command-backed skills as slash entries. When a
+        # workflow has both commands/<name>.md and skills/**/<name>/SKILL.md,
+        # export the command to Claude and .agents. Pi receives both the skill
+        # body and a prompt template so `/refine` expands natively there.
+        if [[ -f "$root/commands/$name.md" ]]; then
+            remove_stale_symlink "$CLAUDE_SKILLS/$name"
+            remove_stale_symlink "$CURSOR_SKILLS/$name"
+            remove_stale_symlink "$DOTAGENTS_SKILLS/$name"
+        else
+            ensure_export "claude:skill" "$name" "$skill" "$CLAUDE_SKILLS/$name" "$role"
+            ensure_export "cursor:skill" "$name" "$skill" "$CURSOR_SKILLS/$name" "$role"
+            ensure_export "dotagents:skill" "$name" "$skill" "$DOTAGENTS_SKILLS/$name" "$role"
+        fi
+
+        ensure_export "codex:skill" "$name" "$skill" "$CODEX_SKILLS/$name" "$role"
+        ensure_export "pi:skill" "$name" "$skill" "$PI_SKILLS/$name" "$role"
+    done
+
+    for agent_file in "$root"/agents/**/*.md; do
+        [ -f "$agent_file" ] || continue
+        [ "$(basename "$agent_file")" = "README.md" ] && continue
+        name=$(basename "$agent_file")
+        ensure_export "claude:agent" "$name" "$agent_file" "$CLAUDE_AGENTS/$name" "$role"
+        ensure_export "cursor:agent" "$name" "$agent_file" "$CURSOR_AGENTS/$name" "$role"
+        ensure_export "dotagents:agent" "$name" "$agent_file" "$DOTAGENTS_AGENTS/$name" "$role"
+    done
+
+    if [ -d "$root/commands" ]; then
+        for command in "$root"/commands/*.md; do
+            [ -f "$command" ] || continue
+            local name
+            name=$(basename "$command")
+            ensure_export "claude:command" "$name" "$command" "$CLAUDE_COMMANDS/$name" "$role"
+            ensure_export "dotagents:command" "$name" "$command" "$DOTAGENTS_COMMANDS/$name" "$role"
+            ensure_export "pi:prompt" "$name" "$command" "$PI_PROMPTS/$name" "$role"
+        done
+    fi
+
+    if [ -d "$root/hooks" ]; then
+        for hook in "$root"/hooks/*; do
+            [ -f "$hook" ] || continue
+            local name
+            name=$(basename "$hook")
+            ensure_export "claude:hook" "$name" "$hook" "$CLAUDE_HOOKS/$name" "$role"
+            ensure_export "dotagents:hook" "$name" "$hook" "$DOTAGENTS_HOOKS/$name" "$role"
+        done
+    fi
+
+}
+
+link_from "$HOME/.agent-tooling" "canonical"
+
+# External skill packs cloned by chezmoi from agent-tooling's registry. Projected
+# at lowest priority: where a pack's skill name collides with one of your own
+# canonical (or work overlay) skills, your version wins and the pack's duplicate
+# is silently skipped.
+if [ -d "$HOME/.skills-external" ]; then
+    for ext in "$HOME"/.skills-external/*/; do
+        [ -d "$ext" ] || continue
+        link_from "${ext%/}" "external"
+    done
+fi
+
+{{ if .work -}}
+link_from "$HOME/.skills-work" "overlay"
+{{- end }}
+
+prune_dead_links \
+    "$CLAUDE_SKILLS" "$CLAUDE_AGENTS" "$CLAUDE_COMMANDS" "$CLAUDE_HOOKS" \
+    "$CURSOR_SKILLS" "$CURSOR_AGENTS" "$CODEX_SKILLS" "$PI_SKILLS" "$PI_PROMPTS" \
+    "$DOTAGENTS_SKILLS" "$DOTAGENTS_AGENTS" "$DOTAGENTS_COMMANDS" "$DOTAGENTS_HOOKS"
+
+if [[ "$CHANGED" -gt 0 ]]; then
+    echo "AI skills/agents mirror refreshed"
+fi

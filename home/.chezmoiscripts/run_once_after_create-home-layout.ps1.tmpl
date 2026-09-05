@@ -1,0 +1,24 @@
+{{- if eq .chezmoi.os "windows" -}}
+# One-shot creation of the top-level home layout on Windows.
+# The directory list comes from the single source of truth,
+# home/.chezmoidata/home_layout.yaml, rendered here at `chezmoi apply`.
+# macOS/Linux use the .sh variant. Idempotent: existing folders are left alone.
+$dirs = @(
+{{- range $bucket, $subs := .home_layout }}
+    {{ $bucket | quote }}
+{{- range $sub := $subs }}
+    {{ (printf "%s/%s" $bucket $sub) | quote }}
+{{- end }}
+{{- end }}
+)
+foreach ($rel in $dirs) {
+    $d = Join-Path $HOME ($rel -replace '/', '\')
+    if (-not (Test-Path $d)) {
+        New-Item -ItemType Directory -Force -Path $d | Out-Null
+        Write-Host "created  ~/$rel"
+    } else {
+        Write-Host "exists   ~/$rel"
+    }
+}
+Write-Host "Home layout ready. Repo root: $env:USERPROFILE\Code (clone <url> | repo | wt)"
+{{- end }}

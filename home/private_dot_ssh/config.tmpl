@@ -1,0 +1,223 @@
+{{/*
+    Rendered to ~/.ssh/config with 0600 perms (private_ prefix).
+
+    Reusable pattern: generic SSH behavior lives here; the host inventory,
+    identities, addresses, and ports come from a private companion
+    (~/.dotfiles-private/data.yaml, repo eigyn/dotfiles-private) loaded via
+    stat+include. Without that companion this renders only the local-override
+    include and connection keepalive, so a public checkout is safe and works.
+
+    Identity model — two storage tiers (the security boundary), then purpose:
+      Managed identities (1Password, human present): external accounts scoped
+      per org, plus a homelab admin key.
+      Service keys (on-disk, headless, never in 1Password or this repo), named
+      <type>-<detail>: agent-*, svc-*, storage-*.
+    The 1Password SSH agent serves private keys; on-disk .pub files are just
+    hints so the agent offers the right key (avoids the six-key limit).
+    Infra hosts use IPs, not DNS — when DNS is the thing that's broken.
+*/}}
+{{- $priv := dict -}}
+{{- $pf := joinPath .chezmoi.homeDir ".dotfiles-private" "data.yaml" -}}
+{{- if stat $pf -}}{{ $priv = (include $pf | fromYaml) -}}{{- end -}}
+{{- $ssh := get $priv "ssh" | default dict -}}
+{{- $ids := get $ssh "identities" | default dict -}}
+{{- $personalKey := get $ids "personal" | default "" -}}
+{{- $overindexKey := get $ids "overindex" | default "" -}}
+{{- $workKey := get $ids "work" | default "" -}}
+{{- $homelabKey := get $ids "homelab" | default "" -}}
+{{- $forgejoKey := get $ids "forgejo" | default "" -}}
+{{- $adoKey := get $ssh "ado_identity" | default "" -}}
+{{- $overindexAlias := get $ssh "overindex_alias" | default "github-alt" -}}
+{{- $forgejo := get $ssh "forgejo" | default dict -}}
+{{- $forgejoHost := get $forgejo "host" | default "" -}}
+{{- $forgejoPort := get $forgejo "port" | default 22 -}}
+{{- $groups := get $ssh "groups" | default (list) -}}
+{{- $hops := get $ssh "hops" | default (list) -}}
+{{- $headlessHosts := get $ssh "headless_hosts" | default (list) -}}
+{{- $serverAliasHosts := get $ssh "server_alias_hosts" | default (list) -}}
+{{- $havePrivate := hasKey $ssh "groups" -}}
+{{- $server := false -}}
+{{- if hasKey . "server" -}}
+{{-   $server = .server -}}
+{{- end -}}
+{{- $headless := has .chezmoi.hostname $headlessHosts -}}
+
+# ============================================================
+# Local machine overrides
+# ============================================================
+# Use ~/.ssh/config.local.d/*.conf for machine-local or service identity
+# overrides. Put these before managed Host blocks so a headless agent can
+# set IdentityAgent none and point at its own on-disk service key.
+Include ~/.ssh/config.local.d/*.conf
+
+# ============================================================
+# Connection keepalive (all hosts)
+# ============================================================
+# Probe the link every 30s and drop after 3 missed probes (~90s), so dead
+# sessions fail fast instead of hanging on the kernel TCP timeout, and idle
+# LAN/NAT flows don't get reaped mid-session.
+Host *
+    ServerAliveInterval 30
+    ServerAliveCountMax 3
+    TCPKeepAlive yes
+{{ if not $havePrivate }}
+# Private host inventory and identities are not present on this machine
+# (no ~/.dotfiles-private companion). Only the generic behavior above applies.
+{{- else if or $server $headless -}}
+# ============================================================
+# Server-safe aliases (also used by headless homelab agent VMs)
+# ============================================================
+# Headless infrastructure hosts do not have 1Password. Keep this file to host
+# names, users, and ports only; machine-local service keys belong in
+# ~/.ssh/config.local.d/*.conf.
+{{ if $headless -}}
+# Headless agent VMs have no 1Password, so they reach homelab hosts with the
+# on-disk agent-claude service key (cross-authorized between hosts). Pinned with
+# IdentitiesOnly so an unrelated default key is never offered to a homelab host.
+# Forgejo and GitHub keep their own config.local.d keys (svc-forgejo, svc-github).
+Host {{ $serverAliasHosts | join " " }}
+    IdentityFile ~/.ssh/agent-claude
+    IdentitiesOnly yes
+
+{{ end -}}
+Host {{ $forgejoHost }}
+    HostName {{ $forgejoHost }}
+    User git
+    Port {{ $forgejoPort }}
+{{ range $groups }}{{ range .hosts }}
+Host {{ .name }}
+    HostName {{ .hostname }}
+    User {{ .user }}
+{{ end }}{{ end -}}
+{{- else -}}
+# ============================================================
+# 1Password SSH agent
+# ============================================================
+{{- if eq .chezmoi.os "darwin" }}
+Host *
+    IdentityAgent "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+{{- else if eq .chezmoi.os "linux" }}
+Match exec "test -S ${SSH_AUTH_SOCK:-/dev/null}"
+    IdentityAgent SSH_AUTH_SOCK
+
+Host *
+    IdentityAgent ~/.1password/agent.sock
+{{- else if eq .chezmoi.os "windows" }}
+Host *
+    # Disable the built-in Windows ssh-agent service so 1Password owns this pipe.
+    IdentityAgent //./pipe/openssh-ssh-agent
+{{- end }}
+
+# Agent forwarding is intentionally opt-in. Use these aliases only for
+# interactive admin sessions where the next hop needs your workstation's
+# 1Password-backed SSH agent.
+{{ range $hops -}}
+Host {{ .name }}
+    HostName {{ .hostname }}
+    User {{ .user }}
+    IdentityFile ~/.ssh/{{ $homelabKey }}.pub
+    IdentitiesOnly yes
+    ForwardAgent yes
+
+{{ end -}}
+# ============================================================
+# GitHub identities
+# ============================================================
+{{- if .work }}
+
+# Work machine: default github.com uses work key
+Host github.com
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/{{ $workKey }}.pub
+    IdentitiesOnly yes
+
+# Explicit work alias for repos that should never use a personal GitHub key
+Host github.com-work
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/{{ $workKey }}.pub
+    IdentitiesOnly yes
+
+# Azure DevOps
+Host vs-ssh.visualstudio.com
+  HostName vs-ssh.visualstudio.com
+  User git
+  IdentityFile ~/.ssh/{{ $adoKey }}
+  IdentitiesOnly yes
+
+# Personal repos on work machine (used by chezmoi externals)
+Host github.com-personal
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/{{ $personalKey }}.pub
+    IdentitiesOnly yes
+
+# Over Index repos on work machine
+Host {{ $overindexAlias }}
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/{{ $overindexKey }}.pub
+    IdentitiesOnly yes
+
+{{- else }}
+
+# Personal machine: default github.com uses personal key
+Host github.com
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/{{ $personalKey }}.pub
+    IdentitiesOnly yes
+
+# Alias so remote URLs using github.com-personal resolve on all machines
+Host github.com-personal
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/{{ $personalKey }}.pub
+    IdentitiesOnly yes
+
+# Work GitHub account from personal machines
+Host github.com-work
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/{{ $workKey }}.pub
+    IdentitiesOnly yes
+
+# Over Index org
+Host {{ $overindexAlias }}
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/{{ $overindexKey }}.pub
+    IdentitiesOnly yes
+
+{{- end }}
+
+# ============================================================
+# Forgejo
+# ============================================================
+Host {{ $forgejoHost }}
+    HostName {{ $forgejoHost }}
+    User git
+    Port {{ $forgejoPort }}
+    IdentityFile ~/.ssh/{{ $forgejoKey }}.pub
+    IdentitiesOnly yes
+{{ range $groups }}
+# ============================================================
+# Homelab — {{ .header }}
+# ============================================================
+{{ range .hosts -}}
+Host {{ .name }}
+    HostName {{ .hostname }}
+    User {{ .user }}
+    IdentityFile ~/.ssh/{{ $homelabKey }}.pub
+    IdentitiesOnly yes
+
+{{ end }}{{- end -}}
+{{- if .work }}
+
+# ============================================================
+# Work-specific hosts (VPN bastions, etc.)
+# ============================================================
+# Add work bastion hosts here. Only materializes on work machines.
+{{- end }}
+{{- end }}

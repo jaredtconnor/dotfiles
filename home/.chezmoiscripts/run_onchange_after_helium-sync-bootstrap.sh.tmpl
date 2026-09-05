@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+{{/*
+    Bootstrap helium-sync automated push on personal Macs.
+      1. Clone the canonical data repo to ~/.helium-data if absent.
+      2. (Re)load the com.jared.helium-sync LaunchAgent.
+    Re-runs whenever the plist or wrapper changes (hashes below).
+    Gated to the helium hosts via .chezmoiignore; darwin-guarded here too.
+
+    plist:   {{ include "Library/LaunchAgents/com.jared.helium-sync.plist" | sha256sum }}
+    wrapper: {{ include "dot_local/bin/executable_helium-autosync" | sha256sum }}
+*/}}
+{{ if eq .chezmoi.os "darwin" -}}
+set -euo pipefail
+
+REPO="$HOME/.helium-data"
+REMOTE="{{ .forgejo_base }}/helium-data.git"
+PLIST="$HOME/Library/LaunchAgents/com.jared.helium-sync.plist"
+
+# 1. Ensure the data repo exists (clone canonical state on a new machine).
+#    Non-fatal: a new machine may not have Forgejo SSH access wired up yet.
+if [[ ! -d "$REPO/.git" ]]; then
+  echo "helium-sync: cloning data repo -> $REPO"
+  if ! git clone "$REMOTE" "$REPO"; then
+    echo "helium-sync: WARN clone failed (no Forgejo SSH access yet?) — skipping."
+    echo "  Once Forgejo SSH works: git clone $REMOTE $REPO"
+    exit 0
+  fi
+elif ! git -C "$REPO" remote get-url origin >/dev/null 2>&1; then
+  git -C "$REPO" remote add origin "$REMOTE"
+fi
+
+# 2. (Re)load the LaunchAgent.
+if [[ -f "$PLIST" ]]; then
+  uid="$(id -u)"
+  launchctl bootout "gui/$uid/com.jared.helium-sync" 2>/dev/null || true
+  launchctl bootstrap "gui/$uid" "$PLIST" 2>/dev/null \
+    || launchctl load "$PLIST" 2>/dev/null || true
+  echo "helium-sync: LaunchAgent (re)loaded"
+fi
+
+echo "helium-sync: bootstrap complete."
+echo "  Push auto-runs every 5 min but ONLY when armed:"
+echo "    touch $REPO/.autosync-enabled"
+{{ else -}}
+exit 0
+{{ end -}}

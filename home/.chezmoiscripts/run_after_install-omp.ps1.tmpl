@@ -1,0 +1,50 @@
+{{- if eq .chezmoi.os "windows" -}}
+# Windows counterpart to install-omp.sh. Installs / updates the omp (Oh My Pi)
+# coding agent via the official PowerShell installer (irm https://omp.sh/install.ps1).
+#
+# Uses -Binary so a self-contained omp.exe lands in %LOCALAPPDATA%\omp (the
+# installer adds it to the user PATH). Keep OMP_VERSION in lockstep with the
+# pinned tag in install-omp.sh; bump both, commit, then re-apply on each host.
+$ErrorActionPreference = "Stop"
+
+$OmpVersion = "v16.3.2"
+$desired = $OmpVersion.TrimStart("v")
+$InstallDir = Join-Path $env:LOCALAPPDATA "omp"
+$OmpBin = Join-Path $InstallDir "omp.exe"
+
+function Get-OmpVersion {
+    $cmd = Get-Command omp -ErrorAction SilentlyContinue
+    if (-not $cmd) { return $null }
+    try {
+        $out = & $cmd.Source --version 2>$null
+        if ($out -match '\d+\.\d+\.\d+') { return $Matches[0] }
+    } catch { }
+    return $null
+}
+
+$current = Get-OmpVersion
+
+if ($desired -eq "latest") {
+    if ($current) {
+        Write-Host "omp $current present; OMP_VERSION=latest, leaving as-is"
+        exit 0
+    }
+} elseif ($current -eq $desired) {
+    Write-Host "omp $current already at pinned version"
+    exit 0
+}
+
+Write-Host "Installing omp $OmpVersion to $InstallDir..."
+try {
+    $installer = [scriptblock]::Create((Invoke-RestMethod https://omp.sh/install.ps1))
+    if ($desired -eq "latest") {
+        & $installer -Binary
+    } else {
+        & $installer -Binary -Ref $OmpVersion
+    }
+    $now = Get-OmpVersion
+    Write-Host "omp install complete: $(if ($now) { $now } else { 'installed' })"
+} catch {
+    Write-Warning "omp install failed: $_ -- retry with 'chezmoi apply'"
+}
+{{- end }}

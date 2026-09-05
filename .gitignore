@@ -1,0 +1,21 @@
+
+# Chezmoi
+# Editor
+# OS
+# The actual chezmoi state/config lives in ~/.config/chezmoi/, not here
+*.swo
+*.swp
+*~
+.DS_Store
+.idea/
+.vscode/
+Thumbs.db
+mise.toml
+.cursor/*
+# Repo-root only. Agent instructions for editing this repo stay local, but
+# managed context files under home/ (home/dot_omp/agent/AGENTS.md) must be
+# tracked, so this is anchored instead of matching AGENTS.md at every depth.
+/AGENTS.md
+
+# Local (private) publication denylist merged by scripts/verify-publication.sh
+scripts/publication-policy.local.txt

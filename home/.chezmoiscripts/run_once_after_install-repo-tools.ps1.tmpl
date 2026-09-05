@@ -1,0 +1,49 @@
+{{- if eq .chezmoi.os "windows" -}}
+# One-shot install of the repo/worktree navigation tools on Windows.
+# macOS/Linux get these from mise (~/.config/mise/config.toml); mise is not
+# activated in PowerShell, so Windows installs them here instead.
+#
+#   ghq  -> scoop | winget | go install   (repository clones)
+#   fzf  -> scoop | winget                 (fuzzy picker; also used by PSFzf)
+#   gwq  -> go install                     (no scoop/winget package exists)
+#
+# Idempotent: anything already on PATH is skipped. Non-fatal: a missing package
+# manager logs guidance instead of aborting `chezmoi apply`.
+$ErrorActionPreference = 'Continue'
+
+function Test-Cmd($name) { [bool](Get-Command $name -ErrorAction SilentlyContinue) }
+
+function Install-Via {
+    param([string]$Tool, [string]$ScoopId, [string]$WingetId)
+    if (Test-Cmd $Tool) { Write-Host "[repo-tools] $Tool already installed"; return }
+    if ($ScoopId -and (Test-Cmd scoop)) {
+        Write-Host "[repo-tools] installing $Tool via scoop..."
+        scoop install $ScoopId; if (Test-Cmd $Tool) { return }
+    }
+    if ($WingetId -and (Test-Cmd winget)) {
+        Write-Host "[repo-tools] installing $Tool via winget..."
+        winget install -e --id $WingetId --accept-package-agreements --accept-source-agreements
+        if (Test-Cmd $Tool) { return }
+    }
+    Write-Warning "[repo-tools] could not install $Tool automatically (no scoop/winget)."
+}
+
+# ghq + fzf: prefer a package manager.
+Install-Via -Tool ghq -ScoopId ghq -WingetId 'x-motemen.ghq'
+Install-Via -Tool fzf -ScoopId fzf -WingetId 'junegunn.fzf'
+
+# ghq fallback + gwq: build with Go (gwq has no scoop/winget package).
+foreach ($t in @(
+    @{ Name = 'ghq'; Pkg = 'github.com/x-motemen/ghq@v1.10.1' },
+    @{ Name = 'gwq'; Pkg = 'github.com/d-kuro/gwq/cmd/gwq@v0.1.1' }
+)) {
+    if (Test-Cmd $t.Name) { continue }
+    if (Test-Cmd go) {
+        Write-Host "[repo-tools] installing $($t.Name) via 'go install'..."
+        go install $t.Pkg
+    } else {
+        Write-Warning "[repo-tools] $($t.Name) not installed: Go toolchain not found. Install Go (or download a release from https://github.com/d-kuro/gwq/releases) and re-run."
+    }
+}
+Write-Host "[repo-tools] done. Restart PowerShell so new PATH entries take effect."
+{{- end }}

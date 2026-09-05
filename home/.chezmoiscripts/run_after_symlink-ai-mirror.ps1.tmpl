@@ -1,0 +1,83 @@
+{{- if eq .chezmoi.os "windows" -}}
+# Windows counterpart to symlink-ai-mirror.sh. Flat-links AI skill packs into
+# agent runtime skills directories using directory junctions (mklink /J), which
+# need no elevation. Scope is skills only: agents, commands, hooks, and Pi
+# prompts are projected on Linux/macOS but not yet on Windows.
+#
+# Precedence, first claim wins: canonical agent-tooling > work overlay >
+# external packs. A skill name already claimed by a higher-priority root is
+# skipped, so your own skills always beat third-party duplicates.
+
+$ErrorActionPreference = "Stop"
+$userHome = $env:USERPROFILE
+
+$skillDests = @(
+    (Join-Path $userHome ".claude\skills"),
+    (Join-Path $userHome ".cursor\skills"),
+    (Join-Path $userHome ".codex\skills"),
+    (Join-Path $userHome ".agents\skills")
+)
+foreach ($d in $skillDests) { New-Item -ItemType Directory -Force -Path $d | Out-Null }
+
+function Ensure-Junction([string]$target, [string]$link) {
+    $existing = Get-Item -LiteralPath $link -ErrorAction SilentlyContinue
+    if ($existing) {
+        if ($existing.LinkType -and ($existing.Target -eq $target)) { return $false }
+        if ($existing.LinkType) { Remove-Item -LiteralPath $link -Force }
+        else { return $false }  # a real directory is in the way; leave it alone
+    }
+    cmd /c mklink /J "$link" "$target" | Out-Null
+    return $true
+}
+
+# Roots in priority order. Work overlay only exists on work machines; external
+# packs are whatever agent-tooling's registry cloned under ~/.skills-external.
+$roots = @( (Join-Path $userHome ".agent-tooling") )
+$work = Join-Path $userHome ".skills-work"
+if (Test-Path $work) { $roots += $work }
+$extRoot = Join-Path $userHome ".skills-external"
+if (Test-Path $extRoot) {
+    foreach ($p in (Get-ChildItem -Path $extRoot -Directory -ErrorAction SilentlyContinue)) {
+        $roots += $p.FullName
+    }
+}
+
+$claimed = @{}
+$changed = 0
+foreach ($root in $roots) {
+    $skillsDir = Join-Path $root "skills"
+    if (-not (Test-Path $skillsDir)) { continue }
+    foreach ($sf in (Get-ChildItem -Path $skillsDir -Recurse -Filter "SKILL.md" -File -ErrorAction SilentlyContinue)) {
+        $name = $sf.Directory.Name
+        if ($claimed.ContainsKey($name)) { continue }
+        $claimed[$name] = $true
+        foreach ($dest in $skillDests) {
+            if (Ensure-Junction $sf.Directory.FullName (Join-Path $dest $name)) { $changed++ }
+        }
+    }
+}
+
+# Prune junctions whose source is gone. Upstream packs delete and rename skills
+# (mattpocock dropped 7 in one fast-forward), which would otherwise leave dead
+# links that agents still enumerate. Only reparse points are removed, never a
+# real directory, and only dangling ones, so there is no target left to lose.
+function Remove-DeadJunctions([string[]]$dirs) {
+    $removed = 0
+    foreach ($d in $dirs) {
+        if (-not (Test-Path $d)) { continue }
+        foreach ($e in (Get-ChildItem -LiteralPath $d -Directory -Force -ErrorAction SilentlyContinue)) {
+            if (-not $e.LinkType) { continue }
+            $t = [string]$e.Target
+            if ($t -and (Test-Path -LiteralPath $t)) { continue }
+            Remove-Item -LiteralPath $e.FullName -Force
+            $removed++
+        }
+    }
+    return $removed
+}
+
+$pruned = Remove-DeadJunctions $skillDests
+
+if ($changed -gt 0) { Write-Host "AI skills mirror refreshed ($changed junctions)" }
+if ($pruned -gt 0) { Write-Host "Pruned $pruned dead skill junctions" }
+{{- end }}

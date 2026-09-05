@@ -1,0 +1,14 @@
+# Gitleaks configuration for the public dotfiles.
+# Full default ruleset. The public repo is scanned over its complete (clean-root)
+# history and must report zero findings.
+
+title = "dotfiles"
+
+[extend]
+useDefault = true
+
+# 1Password secret references (op://...) are not secrets — they resolve at
+# runtime and contain no credential material.
+[[allowlists]]
+description = "1Password secret references"
+regexes = ['''op://[^"'\s]+''']

@@ -1,0 +1,56 @@
+{{- /* Identity and host inventory come from the private companion when present
+       (~/.dotfiles-private/data.yaml, repo eigyn/dotfiles-private). A public-only
+       checkout has no companion: emails/work host are empty and profile
+       detection falls back to env vars and the work prompt. */ -}}
+{{- $priv := dict -}}
+{{- $pf := joinPath .chezmoi.homeDir ".dotfiles-private" "data.yaml" -}}
+{{- if stat $pf -}}{{ $priv = (include $pf | fromYaml) -}}{{- end -}}
+{{- $id := get $priv "identity" | default dict -}}
+{{- $serverHostnames := get $id "server_hostnames" | default (list) -}}
+{{- $workstationHostnames := get $id "workstation_hostnames" | default (list) -}}
+{{- $workHostname := get $id "work_hostname" | default "" -}}
+{{- $workstation := has .chezmoi.hostname $workstationHostnames -}}
+{{- $server := false -}}
+{{- if (env "CHEZMOI_SERVER") -}}
+{{-   $server = true -}}
+{{- else if has .chezmoi.hostname $serverHostnames -}}
+{{-   $server = true -}}
+{{- else if hasKey . "server" -}}
+{{-   $server = .server -}}
+{{- end -}}
+
+{{- $work := false -}}
+{{- if $server -}}
+{{-   $work = false -}}
+{{- else if (env "CHEZMOI_WORK") -}}
+{{-   $work = true -}}
+{{- else if and (ne $workHostname "") (eq .chezmoi.hostname $workHostname) -}}
+{{-   $work = true -}}
+{{- else if hasKey . "work" -}}
+{{-   $work = .work -}}
+{{- else -}}
+{{-   $work = promptBoolOnce . "work" "Is this a work machine" -}}
+{{- end -}}
+
+sourceDir = {{ joinPath .chezmoi.homeDir ".dotfiles" | quote }}
+
+[edit]
+    command = "nvim"
+{{ if lookPath "delta" }}
+[diff]
+    pager = "delta"
+{{ end }}
+
+[onepassword]
+    mode = "account"
+    prompt = false
+
+[data]
+    server = {{ $server }}
+    work = {{ $work }}
+    workstation = {{ $workstation }}
+    personal_email = {{ get $id "personal_email" | default "" | quote }}
+    work_email = {{ get $id "work_email" | default "" | quote }}
+    work_hostname = {{ $workHostname | quote }}
+    forgejo_base = {{ get $id "forgejo_base" | default "" | quote }}
+    work_git_org = {{ get $id "work_git_org" | default "" | quote }}

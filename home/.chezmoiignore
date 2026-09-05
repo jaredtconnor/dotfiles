@@ -1,0 +1,160 @@
+{{/*
+    Ignore rules are target paths (e.g. .config/foo, not dot_config/foo).
+    Templates evaluated at every `chezmoi apply`.
+*/}}
+{{- $server := false -}}
+{{- if hasKey . "server" -}}
+{{-   $server = .server -}}
+{{- end -}}
+
+{{- if $server }}
+# Server profile: keep infrastructure hosts intentionally small.
+# Allowlist — ignore everything, then re-include the SSH + Git basics.
+# New configs added to the repo stay off servers by default instead of
+# leaking until someone remembers to blocklist them.
+# Note: !-exceptions need their parent dirs re-included too (!.ssh before
+# !.ssh/config) — an ignored directory is pruned before its children match.
+**
+!.ssh
+!.ssh/config
+!.ssh/hosts
+!.config
+!.config/git
+!.config/git/**
+{{- end }}
+
+{{- if ne .chezmoi.os "darwin" }}
+# macOS-only tools (karabiner dropped from scope per migration decision)
+.hammerspoon
+.config/sketchybar
+.config/aerospace
+.config/raycast
+.config/espanso
+Library
+{{- end }}
+
+{{- if ne .chezmoi.os "windows" }}
+# Windows-only
+.config/powershell
+AppData
+.chezmoiscripts/*.ps1
+{{- end }}
+
+{{- if eq .chezmoi.os "windows" }}
+# Zed and herdr read %APPDATA% on Windows (see AppData/Roaming/{Zed,herdr}),
+# not the XDG paths. macOS/Linux use ~/.config for both. Same content is
+# shared via .chezmoitemplates; only the target location differs per OS.
+.config/zed/**
+.config/herdr/**
+
+# Bash scripts cannot execute on Windows
+.chezmoiscripts/create-env-from-1password.sh
+.chezmoiscripts/create-home-layout.sh
+.chezmoiscripts/install-brewfile.sh
+.chezmoiscripts/install-omp.sh
+.chezmoiscripts/install-linux-packages.sh
+.chezmoiscripts/mise-setup.sh
+.chezmoiscripts/pi-agent-ux-patches.sh
+.chezmoiscripts/symlink-ai-mirror.sh
+.chezmoiscripts/windows-paths.sh
+
+# Unix-only shell surface — written but never used on Windows (pwsh is the
+# shell here; no zsh, no Homebrew). Trimmed so `chezmoi diff`/`apply` stays
+# focused on files this machine actually consumes. .bashrc/.bash_profile are
+# left managed because Git Bash on Windows still reads them.
+.zshrc
+.zprofile
+.zshenv
+.oh-my-zsh/**
+.zgenom/**
+.tmux.conf
+.gitmux.conf
+.tmux/**
+.config/zsh/**
+.config/homebrew/**
+.ssh/hosts
+# .local/bin: only the POSIX-shell helpers. git-difftool-auto / git-mergetool-auto
+# stay managed — the git config wires difftool/mergetool to them on every OS
+# (Windows runs them via Git's bundled sh). See dot_config/git/config.tmpl.
+.local/bin/clear-icon-cache
+.local/bin/cws
+.local/bin/dev-setup
+.local/bin/fcom
+.local/bin/fdd
+.local/bin/fjq
+.local/bin/fyr
+.local/bin/fzl
+.local/bin/happy-fleet
+.local/bin/helium-autosync
+.local/bin/manage-service-keys
+.local/bin/npmjs
+.local/bin/sesh-picker
+.local/bin/share-ssh-keys
+.local/bin/sync-notes
+{{- end }}
+
+{{- if ne .chezmoi.os "linux" }}
+# Linux-only (VS Code on Linux uses ~/.config/Code/ instead of ~/Library)
+.config/Code
+.config/Cursor
+{{- end }}
+
+{{- $ident := dict }}
+{{- $identFile := joinPath .chezmoi.homeDir ".dotfiles-private" "data.yaml" }}
+{{- if stat $identFile }}{{ $ident = (get (include $identFile | fromYaml) "identity" | default dict) }}{{ end }}
+{{- $hermesHost := get $ident "hermes_host" | default "" }}
+{{- $heliumHosts := get $ident "helium_hosts" | default (list) }}
+
+{{- if ne .chezmoi.hostname $hermesHost }}
+# Hermes agent runtime config — only the designated Hermes host runs the agent.
+# Host identity comes from the private companion; absent on public checkouts,
+# so this file is ignored everywhere without one. Secrets (.env, auth.json)
+# are never managed by chezmoi.
+.hermes/config.yaml
+{{- end }}
+
+{{- if not (has .chezmoi.hostname $heliumHosts) }}
+# helium-sync automated push — only the designated personal browsing Macs.
+# Host list comes from the private companion; ignored everywhere without it.
+.config/helium-sync
+.local/bin/helium-autosync
+Library/LaunchAgents/com.jared.helium-sync.plist
+# Target path, not the source name: chezmoi strips the run_onchange_after_
+# prefix and the .tmpl suffix before matching .chezmoiignore patterns.
+.chezmoiscripts/helium-sync-bootstrap.sh
+{{- end }}
+
+{{- if not .workstation }}
+# Dev-workstation feature — home layout buckets + ghq/gwq repo navigation.
+# Applies ONLY on the personal dev workstations; every other host (servers and
+# otherwise) skips it. See $workstationHostnames in .chezmoi.toml.tmpl.
+.chezmoiscripts/create-home-layout.sh
+.chezmoiscripts/create-home-layout.ps1
+.chezmoiscripts/install-repo-tools.ps1
+.config/gwq/**
+.config/zsh/aliases/ghq.aliases.sh
+.config/zsh/functions/ghq.functions.sh
+.local/bin/dev-setup
+{{- end }}
+
+# Editor variants not currently used
+.config/lunarvim
+
+{{- $privData := joinPath .chezmoi.homeDir ".dotfiles-private" "data.yaml" }}
+{{- if not (stat $privData) }}
+# Private companion (~/.dotfiles-private) absent: skip companion-sourced files
+# so a public-only checkout renders nothing private and no empty placeholders.
+.ssh/hosts
+.hermes/config.yaml
+{{- end }}
+
+{{/*
+    Skills and agents arrive via chezmoi-external into
+    ~/.agent-tooling and ~/.skills-work.
+    The run_after_symlink-ai-mirror.sh script flat-links them into
+    ~/.claude and ~/.cursor. No source-tree gating needed here.
+
+    Claude commands, hooks, ccstatusline, and claude/settings.json
+    live directly under home/dot_claude/ and home/dot_config/ccstatusline/
+    in this repo (per AI split Option 2).
+*/}}

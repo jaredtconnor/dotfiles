@@ -1,0 +1,35 @@
+# Home directory layout — the single source of truth for the top-level "buckets"
+# and their nested subfolders. Consumed at `chezmoi apply` by:
+#   - dot_local/bin/executable_dev-setup.tmpl                     (macOS/Linux, canonical)
+#   - .chezmoiscripts/run_once_after_create-home-layout.sh.tmpl   (macOS/Linux)
+#   - .chezmoiscripts/run_once_after_create-home-layout.ps1.tmpl  (Windows)
+#
+# Edit here, then `chezmoi apply` (or just re-run `dev-setup`) to materialize.
+# Each key is a top-level bucket under $HOME; its list is the subfolders to
+# create inside it (empty list = bucket only). Directories are made with
+# `mkdir -p`, so parents are implicit. Iterated in alphabetical key order.
+#
+# NOTE: Code is intentionally flat ([]). Its host/owner/repo tree (and gwq
+# worktrees) is created on demand by ghq/gwq — never pre-seed it here.
+
+home_layout:
+  Code: []
+
+  Notes:
+    - work
+    - personal
+    - archive
+
+  Data:
+    - databases
+    - datasets
+
+  Tools: []
+
+  Sandbox:
+    - forks
+    - tutorials
+    - proof-of-concept
+    - temp
+
+  Archives: []

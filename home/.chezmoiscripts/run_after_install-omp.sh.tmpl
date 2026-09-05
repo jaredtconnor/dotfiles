@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+{{/*
+    Install / update the omp (Oh My Pi) coding agent.
+
+    Scope: runs only where .chezmoiscripts is applied, i.e. the non-server
+    profile. Server hosts ignore .chezmoiscripts/** via .chezmoiignore, so this
+    lands on the coding + VM hosts and the workstations -- never on the minimal
+    infra hosts.
+
+    Installs a self-contained binary to ~/.local/bin/omp (already on PATH), so
+    there is no runtime dependency on bun / node -- works on headless VMs.
+
+    Pin: bump OMP_VERSION below, commit, then `just sync-all`. Every host
+    reconciles to the pinned tag on the next apply (same convergence model as
+    ~/.config/mise/config.toml). Set OMP_VERSION="latest" to always track the
+    newest release (installs only when omp is missing).
+*/}}
+{{ if ne .chezmoi.os "windows" -}}
+set -euo pipefail
+
+OMP_VERSION="v16.3.2"
+INSTALL_DIR="${HOME}/.local/bin"
+OMP_BIN="${INSTALL_DIR}/omp"
+
+desired="${OMP_VERSION#v}"
+
+installed_version() {
+    local bin
+    bin="$(command -v omp 2>/dev/null || true)"
+    [[ -n "${bin}" ]] || return 0
+    "${bin}" --version 2>/dev/null | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1 || true
+}
+
+current="$(installed_version)"
+
+if [[ "${desired}" == "latest" ]]; then
+    if [[ -n "${current}" ]]; then
+        echo "omp ${current} present; OMP_VERSION=latest, leaving as-is"
+        exit 0
+    fi
+elif [[ -n "${current}" && "${current}" == "${desired}" ]]; then
+    echo "omp ${current} already at pinned version"
+    exit 0
+fi
+
+if ! command -v curl >/dev/null 2>&1; then
+    echo "WARNING: curl not found; skipping omp install" >&2
+    exit 0
+fi
+
+echo "Installing omp ${OMP_VERSION} to ${INSTALL_DIR}..."
+args="--binary"
+[[ "${desired}" != "latest" ]] && args="${args} --ref ${OMP_VERSION}"
+
+if curl -fsSL https://omp.sh/install | sh -s -- ${args}; then
+    echo "omp install complete: $(installed_version || echo installed)"
+else
+    echo "WARNING: omp install failed (see above); retry with 'just sync'" >&2
+fi
+{{- else -}}
+exit 0
+{{- end }}

@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+# helium-autosync — periodically snapshot THIS machine's Helium bookmarks +
+# saved tab groups and push them to the Forgejo data repo.
+# Runs via LaunchAgent (com.jared.helium-sync) every 5 minutes.
+#
+# PUSH ONLY. We never auto-`pull`: helium-sync pull writes straight into the
+# live Helium profile and refuses to run while Helium is open, so pulling is a
+# deliberate manual step you do at the *other* machine (Helium quit):
+#     helium-sync pull
+#
+# Safety: helium-sync is "last push wins" with no merge. A freshly provisioned
+# machine that auto-pushed its blank/default profile would clobber the canonical
+# state. So this wrapper is a no-op until you ARM it on this machine:
+#     touch ~/.helium-data/.autosync-enabled
+# Arm it only after you've confirmed this machine's Helium state is the one you
+# want flowing out (e.g. right after a successful `helium-sync pull` or an
+# intentional first `helium-sync push`).
+
+set -euo pipefail
+
+# LaunchAgent runs with a minimal PATH; make Homebrew tools (helium-sync, git)
+# resolvable.
+export PATH="/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
+
+REPO="${HELIUM_SYNC_REPO:-$HOME/.helium-data}"
+SENTINEL="$REPO/.autosync-enabled"
+LOG="$HOME/.local/share/helium-sync/sync.log"
+mkdir -p "$(dirname "$LOG")"
+
+log() {
+  echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*" | tee -a "$LOG"
+}
+
+# --- Preconditions -----------------------------------------------------------
+if ! command -v helium-sync >/dev/null 2>&1; then
+  log "helium-sync not installed — skipping"
+  exit 0
+fi
+
+if [[ ! -d "$REPO/.git" ]]; then
+  log "data repo $REPO is missing or not a git repo — skipping"
+  exit 0
+fi
+
+if ! git -C "$REPO" remote get-url origin >/dev/null 2>&1; then
+  log "no 'origin' remote on $REPO — skipping (run setup / add remote first)"
+  exit 0
+fi
+
+if [[ ! -f "$SENTINEL" ]]; then
+  log "autosync not armed on this machine — skipping."
+  log "  To enable once this machine's Helium state is correct: touch $SENTINEL"
+  exit 0
+fi
+
+# --- Push --------------------------------------------------------------------
+log "=== helium-autosync push start ($(hostname -s)) ==="
+if helium-sync push >>"$LOG" 2>&1; then
+  log "=== helium-autosync push done ==="
+else
+  rc=$?
+  log "WARN: helium-sync push failed (exit $rc) — see log above"
+  # Don't fail the LaunchAgent hard; it'll retry next interval.
+  exit 0
+fi

@@ -1,0 +1,6 @@
+# Personal identity for repos that are mine regardless of which machine I am
+# on. Pulled in by the [includeIf "gitdir/i:~/.dotfiles/"] block in
+# ~/.config/git/config. Name comes from the global config; only the address
+# differs, so work machines do not push dotfiles commits as the work identity.
+[user]
+    email = {{ .personal_email }}

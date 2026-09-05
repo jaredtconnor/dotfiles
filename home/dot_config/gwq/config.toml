@@ -1,0 +1,32 @@
+# gwq — git worktree manager. Managed by chezmoi (~/.config/gwq/config.toml).
+# gwq resolves this path as $HOME/.config/gwq/config.toml on macOS, Linux, AND
+# Windows (it uses os.UserHomeDir()+/.config, not os.UserConfigDir()).
+#
+# NOTE: this file is intentionally NOT a chezmoi .tmpl — the {{.Host}} etc.
+# below are gwq's own Go text/template variables and must reach gwq verbatim.
+
+[worktree]
+# Worktrees live under the same root as ghq clones so a single fzf finds both.
+basedir = "~/Code"
+auto_mkdir = true
+
+[naming]
+# Sibling layout next to the clone, e.g.:
+#   ~/Code/github.com/owner/repo          (clone, via ghq)
+#   ~/Code/github.com/owner/repo=feature  (worktree, via gwq)
+template = "{{.Host}}/{{.Owner}}/{{.Repository}}={{.Branch}}"
+sanitize_chars = { "/" = "-", ":" = "-" }
+
+[finder]
+preview = true
+
+[cd]
+# Shell integration (sourced completion) lets `gwq cd` / `gwq add -s` change the
+# CURRENT shell's directory instead of spawning a nested shell.
+# Not supported in PowerShell — Windows falls back to launching a new shell.
+launch_shell = false
+auto_cd_on_add = true
+
+[ui]
+icons = true
+tilde_home = true

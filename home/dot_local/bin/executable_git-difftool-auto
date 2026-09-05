@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+# Dispatch `git difftool` to whichever editor's terminal we're running in.
+# Detection is best-effort via env signals leaked by integrated terminals.
+#   VS Code / Cursor : TERM_PROGRAM=vscode (Cursor is a VS Code fork)
+#   Zed              : TERM_PROGRAM=zed
+#   Visual Studio    : VSINSTALLDIR set (Developer PowerShell / Dev terminal)
+# Falls back to VS Code, then to a plain `git diff`.
+set -u
+
+LOCAL="$1"
+REMOTE="$2"
+
+# Cursor reports TERM_PROGRAM=vscode but its askpass path contains "Cursor".
+if [ -n "${VSCODE_GIT_ASKPASS_NODE:-}" ] && printf '%s' "$VSCODE_GIT_ASKPASS_NODE" | grep -qi cursor; then
+    exec cursor --wait --diff "$LOCAL" "$REMOTE"
+fi
+
+case "${TERM_PROGRAM:-}" in
+    vscode) exec code --wait --diff "$LOCAL" "$REMOTE" ;;
+    zed)    exec zed  --wait --diff "$LOCAL" "$REMOTE" ;;
+esac
+
+# Visual Studio developer terminal.
+if [ -n "${VSINSTALLDIR:-}" ]; then
+    vsdm="$VSINSTALLDIR/Common7/IDE/CommonExtensions/Microsoft/TeamFoundation/Team Explorer/vsDiffMerge.exe"
+    if [ -x "$vsdm" ] || [ -f "$vsdm" ]; then
+        # //t opens in a tab of the running VS instance (// escapes MSYS path mangling).
+        exec "$vsdm" "$LOCAL" "$REMOTE" //t
+    fi
+fi
+
+# Fallbacks.
+if command -v code >/dev/null 2>&1; then
+    exec code --wait --diff "$LOCAL" "$REMOTE"
+fi
+exec git --no-pager diff --no-index "$LOCAL" "$REMOTE"

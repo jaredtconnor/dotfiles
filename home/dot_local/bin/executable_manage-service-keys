@@ -1,0 +1,193 @@
+#!/usr/bin/env bash
+#
+# manage-service-keys — lifecycle helper for on-disk homelab service keys.
+#
+# Convention (see note "SSH Key Management in Homelab"):
+#   agent     -> agent-<name>        e.g. agent-claude, agent-hermes
+#   service   -> svc-<name>          e.g. svc-web
+#   storage   -> storage-<name>      e.g. storage-backup
+#   dotfiles  -> dotfiles-deploy
+#   All service keys are type-prefixed so `ls ~/.ssh` groups by type.
+#   comment is ALWAYS <filename>@<host-where-the-key-lives>.
+#
+# Private keys are generated ON the host that owns them and never copied
+# between hosts or into 1Password / the dotfiles repo. Only the .pub moves.
+#
+# Usage:
+#   manage-service-keys new --host H --type {agent|service|storage|dotfiles} [--name N]
+#   manage-service-keys show --host H --key KEYNAME
+#   manage-service-keys authorize --src S --key KEYNAME --on TARGET [--from IP] [--command CMD]
+#   manage-service-keys audit [--hosts "h1 h2 ..."]
+#
+# You enter SSH passwords interactively when a host/target doesn't yet trust you.
+
+set -uo pipefail
+
+GREEN='\033[0;32m'; YELLOW='\033[1;33m'; RED='\033[0;31m'; BLUE='\033[0;34m'; NC='\033[0m'
+info()  { printf "${GREEN}%s${NC}\n" "$*"; }
+warn()  { printf "${YELLOW}%s${NC}\n" "$*"; }
+fail()  { printf "${RED}%s${NC}\n" "$*" >&2; }
+head_() { printf "${BLUE}%s${NC}\n" "$*"; }
+
+HOSTS_FILE="$HOME/.ssh/hosts"
+
+
+usage() { awk 'NR>1 && /^#/{sub(/^# ?/,""); print; next} NR>1{exit}' "$0"; exit "${1:-0}"; }
+
+load_hosts() {
+    if [[ -f "$HOSTS_FILE" ]]; then
+        local hosts=()
+        while IFS= read -r line; do
+            line="${line%%#*}"; line="${line// /}"
+            [[ -n "$line" ]] && hosts+=("$line")
+        done < "$HOSTS_FILE"
+        [[ ${#hosts[@]} -gt 0 ]] && { printf '%s\n' "${hosts[@]}"; return; }
+    fi
+    fail "No host inventory at $HOSTS_FILE (needs the private companion)."; return 1
+}
+
+# Map (type, name) -> filename, enforcing the convention.
+key_filename() {
+    local type="$1" name="${2:-}"
+    case "$type" in
+        agent)    [[ -n "$name" ]] || { fail "agent keys need --name (e.g. claude)"; return 2; }; echo "agent-$name" ;;
+        service)  [[ -n "$name" ]] || { fail "service keys need --name (target/purpose)"; return 2; }; echo "svc-$name" ;;
+        storage)  [[ -n "$name" ]] || { fail "storage keys need --name (purpose)"; return 2; }; echo "storage-$name" ;;
+        dotfiles) echo "dotfiles-deploy" ;;
+        *) fail "unknown --type '$type' (agent|service|storage|dotfiles)"; return 2 ;;
+    esac
+}
+
+# ---- subcommand: new -------------------------------------------------------
+cmd_new() {
+    local host="" type="" name=""
+    while [[ $# -gt 0 ]]; do case "$1" in
+        --host) host="$2"; shift 2 ;;
+        --type) type="$2"; shift 2 ;;
+        --name) name="$2"; shift 2 ;;
+        *) fail "unknown arg: $1"; return 2 ;;
+    esac; done
+    [[ -n "$host" && -n "$type" ]] || { fail "new requires --host and --type"; return 2; }
+
+    local fname; fname="$(key_filename "$type" "$name")" || return 2
+    local comment="${fname}@${host}"
+
+    head_ "Generating $fname on $host (comment: $comment)"
+    # shellcheck disable=SC2029
+    ssh -o ConnectTimeout=10 "$host" bash -s -- "$fname" "$comment" <<'REMOTE'
+        set -euo pipefail
+        fname="$1"; comment="$2"
+        umask 077; mkdir -p "$HOME/.ssh"
+        key="$HOME/.ssh/$fname"
+        if [[ -f "$key" ]]; then
+            echo "  already exists, leaving in place:"
+        else
+            ssh-keygen -t ed25519 -f "$key" -C "$comment" -N "" >/dev/null
+            chmod 600 "$key"; chmod 644 "$key.pub"
+            echo "  created:"
+        fi
+        ssh-keygen -lf "$key.pub"
+        echo "  public key:"
+        cat "$key.pub"
+REMOTE
+    local rc=$?
+    [[ $rc -eq 0 ]] && info "Done. Register the .pub where it's needed (authorize / Forgejo deploy key)." \
+                    || fail "Generation failed (rc=$rc)."
+    return $rc
+}
+
+# ---- subcommand: show ------------------------------------------------------
+cmd_show() {
+    local host="" key=""
+    while [[ $# -gt 0 ]]; do case "$1" in
+        --host) host="$2"; shift 2 ;;
+        --key)  key="$2"; shift 2 ;;
+        *) fail "unknown arg: $1"; return 2 ;;
+    esac; done
+    [[ -n "$host" && -n "$key" ]] || { fail "show requires --host and --key"; return 2; }
+    ssh -o ConnectTimeout=10 "$host" "cat \"\$HOME/.ssh/$key.pub\""
+}
+
+# ---- subcommand: authorize -------------------------------------------------
+cmd_authorize() {
+    local src="" key="" target="" from="" command=""
+    while [[ $# -gt 0 ]]; do case "$1" in
+        --src)     src="$2"; shift 2 ;;
+        --key)     key="$2"; shift 2 ;;
+        --on)      target="$2"; shift 2 ;;
+        --from)    from="$2"; shift 2 ;;
+        --command) command="$2"; shift 2 ;;
+        *) fail "unknown arg: $1"; return 2 ;;
+    esac; done
+    [[ -n "$src" && -n "$key" && -n "$target" ]] || { fail "authorize requires --src, --key, --on"; return 2; }
+
+    local pub; pub="$(ssh -o ConnectTimeout=10 "$src" "cat \"\$HOME/.ssh/$key.pub\"" 2>/dev/null)"
+    [[ -n "$pub" ]] || { fail "could not read $key.pub from $src"; return 1; }
+
+    # Build restriction prefix.
+    local opts="no-agent-forwarding,no-X11-forwarding,no-port-forwarding"
+    [[ -n "$from" ]]    && opts="from=\"$from\",$opts"
+    [[ -n "$command" ]] && opts="$opts,no-pty,command=\"$command\""
+    local line="$opts $pub"
+    # Match on the base64 key body so we don't duplicate across re-runs.
+    local body; body="$(awk '{print $2}' <<<"$pub")"
+
+    head_ "Authorizing $key (from $src) on $target"
+    warn  "  restrictions: $opts"
+    # shellcheck disable=SC2029
+    ssh -o ConnectTimeout=10 "$target" bash -s -- "$body" "$line" <<'REMOTE'
+        set -euo pipefail
+        body="$1"; line="$2"
+        umask 077; mkdir -p "$HOME/.ssh"; touch "$HOME/.ssh/authorized_keys"
+        if grep -qF "$body" "$HOME/.ssh/authorized_keys"; then
+            echo "  already authorized (key body present)"
+        else
+            printf '%s\n' "$line" >> "$HOME/.ssh/authorized_keys"
+            echo "  appended restricted entry"
+        fi
+REMOTE
+}
+
+# ---- subcommand: audit -----------------------------------------------------
+cmd_audit() {
+    local hosts=()
+    while [[ $# -gt 0 ]]; do case "$1" in
+        --hosts) read -r -a hosts <<<"$2"; shift 2 ;;
+        *) fail "unknown arg: $1"; return 2 ;;
+    esac; done
+    [[ ${#hosts[@]} -eq 0 ]] && mapfile -t hosts < <(load_hosts)
+
+    local fn
+    fn=$(cat <<'REMOTE'
+inv() {
+  echo "  host=$(hostname -s) user=$(whoami)"
+  for pub in "$HOME"/.ssh/*.pub; do
+    [ -f "$pub" ] || continue
+    b="${pub%.pub}"; p="no"; [ -f "$b" ] && p="yes"
+    line=$(ssh-keygen -lf "$pub" 2>/dev/null)
+    fp=$(echo "$line" | awk '{print $2}')
+    c=$(echo "$line" | sed -E 's/^[0-9]+ [^ ]+ //; s/ \([A-Z0-9]+\)$//')
+    printf "    %-22s priv=%-3s %-50s [%s]\n" "$(basename "$b")" "$p" "$fp" "$c"
+  done
+  echo "  --- trusts (authorized_keys comments) ---"
+  awk "{print \$NF}" "$HOME"/.ssh/authorized_keys 2>/dev/null | sort | uniq -c | sed "s/^/    /"
+}
+REMOTE
+)
+    for h in "${hosts[@]}"; do
+        head_ "######## $h ########"
+        ssh -o BatchMode=yes -o ConnectTimeout=6 "$h" "$fn; inv" 2>&1 \
+            | grep -vE 'Permanently added|Warning: ' || warn "  (unreachable / no key access)"
+    done
+}
+
+# ---- dispatch --------------------------------------------------------------
+sub="${1:-}"; shift || true
+case "$sub" in
+    new)       cmd_new "$@" ;;
+    show)      cmd_show "$@" ;;
+    authorize) cmd_authorize "$@" ;;
+    audit)     cmd_audit "$@" ;;
+    -h|--help|help|"") usage 0 ;;
+    *) fail "unknown subcommand: $sub"; usage 2 ;;
+esac

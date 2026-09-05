@@ -1,0 +1,2 @@
+{{- $p := joinPath .chezmoi.homeDir ".dotfiles-private" "ssh" "hosts" -}}
+{{- if stat $p }}{{ include $p }}{{- end -}}

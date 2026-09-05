@@ -1,0 +1,141 @@
+{{/*
+    External clones. Replaces the git submodules used by dotbot.
+    All refresh weekly except NvChad (monthly — rarely changes).
+*/}}
+{{- $server := false -}}
+{{- if hasKey . "server" -}}
+{{-   $server = .server -}}
+{{- end -}}
+
+# -----------------------------------------------------------------------------
+# Private companion — identities, SSH host inventory, Hermes config.
+# Cloned on every profile (servers render SSH host blocks from it too). Absent
+# on a public checkout (no forgejo_base), where templates fall back to generic.
+# -----------------------------------------------------------------------------
+{{- if .forgejo_base }}
+[".dotfiles-private"]
+    type = "git-repo"
+    url = "{{ .forgejo_base }}/dotfiles-private.git"
+    refreshPeriod = "168h"
+{{- end }}
+
+# -----------------------------------------------------------------------------
+# ZSH frameworks
+# -----------------------------------------------------------------------------
+{{ if not $server -}}
+[".oh-my-zsh"]
+    type = "git-repo"
+    url = "https://github.com/ohmyzsh/ohmyzsh.git"
+    refreshPeriod = "168h"
+
+[".zgenom"]
+    type = "git-repo"
+    url = "https://github.com/jandamm/zgenom.git"
+    refreshPeriod = "168h"
+
+# -----------------------------------------------------------------------------
+# Tmux plugins
+# -----------------------------------------------------------------------------
+[".tmux/plugins/tmux-sensible"]
+    type = "git-repo"
+    url = "https://github.com/tmux-plugins/tmux-sensible.git"
+    refreshPeriod = "168h"
+
+[".tmux/plugins/tmux-resurrect"]
+    type = "git-repo"
+    url = "https://github.com/tmux-plugins/tmux-resurrect.git"
+    refreshPeriod = "168h"
+
+[".tmux/plugins/tmux-continuum"]
+    type = "git-repo"
+    url = "https://github.com/tmux-plugins/tmux-continuum.git"
+    refreshPeriod = "168h"
+
+[".tmux/plugins/tmux-fzf-url"]
+    type = "git-repo"
+    url = "https://github.com/wfxr/tmux-fzf-url.git"
+    refreshPeriod = "168h"
+
+[".tmux/plugins/vim-tmux-navigator"]
+    type = "git-repo"
+    url = "https://github.com/christoomey/vim-tmux-navigator.git"
+    refreshPeriod = "168h"
+
+# -----------------------------------------------------------------------------
+# Editor scaffolding
+# -----------------------------------------------------------------------------
+[".config/nvchad-nvim"]
+    type = "git-repo"
+    url = "https://github.com/NvChad/starter.git"
+    refreshPeriod = "720h"
+
+# -----------------------------------------------------------------------------
+# Tool-specific agent runtimes
+# -----------------------------------------------------------------------------
+[".pi/agent"]
+    type = "git-repo"
+    url = "{{ .forgejo_base }}/pi-agent-setup.git"
+    refreshPeriod = "168h"
+
+# -----------------------------------------------------------------------------
+# AI tooling. Repos keep their natural checkout paths; the mirror script
+# flat-links reusable pieces into agent runtime directories.
+# -----------------------------------------------------------------------------
+[".agent-tooling"]
+    type = "git-repo"
+    url = "{{ .forgejo_base }}/agent-tooling.git"
+    refreshPeriod = "168h"
+
+# -----------------------------------------------------------------------------
+# External skill packs. The registry is owned by agent-tooling
+# (~/.agent-tooling/external-skills.json) so the source list is versioned with
+# the tooling itself. That same "source" string is also fed to `npx skills add`
+# by scripts/install-agent-skills.sh, so it has to stay in whatever form that
+# CLI accepts. Three shapes are handled here:
+#
+#   owner/repo                        -> git-repo clone of the whole repo
+#   scheme://.../repo(.git)           -> git-repo clone, url used verbatim
+#   https://host/o/r/tree/REF/SUBDIR  -> archive of just SUBDIR
+#
+# The third shape is a monorepo subdirectory (pstack lives in cursor/plugins).
+# git cannot clone a subdirectory, so those become tarball archives filtered to
+# the subdir. include patterns match pre-strip archive paths, and the tarball
+# root is one component, hence stripComponents = 1 + depth(SUBDIR).
+# NOTE: the manifest only exists once .agent-tooling has been cloned, so on a
+# brand-new machine these entries appear on the *second* `chezmoi apply`.
+# -----------------------------------------------------------------------------
+{{ $manifest := printf "%s/.agent-tooling/external-skills.json" .chezmoi.homeDir -}}
+{{ if stat $manifest -}}
+{{   range (include $manifest | fromJson).sources -}}
+{{     $parts := splitList "/" (trimSuffix "/" .source) -}}
+{{     if and (contains "://" .source) (has "tree" $parts) -}}
+{{       $repo := printf "%s/%s" (index $parts 3) (index $parts 4) -}}
+{{       $ref := index $parts 6 -}}
+{{       $subdir := join "/" (slice $parts 7) -}}
+[".skills-external/{{ .name }}"]
+    type = "archive"
+    url = "https://github.com/{{ $repo }}/archive/{{ $ref }}.tar.gz"
+    stripComponents = {{ add 1 (len (slice $parts 7)) }}
+    include = ["*/{{ $subdir }}/**"]
+    refreshPeriod = "168h"
+{{     else -}}
+{{       $url := .source -}}
+{{       if not (contains "://" .source) -}}{{ $url = printf "https://github.com/%s.git" .source -}}{{ end -}}
+[".skills-external/{{ .name }}"]
+    type = "git-repo"
+    url = "{{ $url }}"
+    refreshPeriod = "168h"
+{{     end }}
+{{   end -}}
+{{ end -}}
+
+{{ if .work -}}
+[".skills-work"]
+    type = "git-repo"
+    url = "git@github.com-work:{{ .work_git_org }}/skills.git"
+    refreshPeriod = "168h"
+{{- end }}
+{{- else -}}
+# Server profile intentionally has no externals. Proxmox and storage hosts only
+# receive the minimal managed files from this repo.
+{{- end }}

@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+{{/*
+    One-shot creation of the top-level home buckets (Code, Notes, Data, Tools,
+    Sandbox, Archives). Runs once (run_once_) after files are applied, so the
+    dev-setup helper is already at ~/.local/bin. No-op on Windows (handled by
+    the .ps1 variant; this .sh is also ignored there via .chezmoiignore).
+*/}}
+{{ if or (eq .chezmoi.os "darwin") (eq .chezmoi.os "linux") -}}
+set -euo pipefail
+
+if [[ -f "$HOME/.local/bin/dev-setup" ]]; then
+    bash "$HOME/.local/bin/dev-setup"
+else
+    # Fallback if the helper is missing: same source of truth (home_layout.yaml).
+{{- range $bucket, $subs := .home_layout }}
+    mkdir -p "$HOME/{{ $bucket }}"
+{{- range $sub := $subs }}
+    mkdir -p "$HOME/{{ $bucket }}/{{ $sub }}"
+{{- end }}
+{{- end }}
+    echo "Home layout ready under $HOME"
+fi
+{{- else -}}
+exit 0
+{{- end }}

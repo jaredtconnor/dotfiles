@@ -1,0 +1,9 @@
+phase: refine_complete
+issue_id: agent-tooling-migration
+objective: >-
+  Rename the reusable AI tooling source from ~/.skills to ~/.agent-tooling,
+  preserve current runtime projections, and update dotfiles to bootstrap the
+  renamed Forgejo repository.
+spec_file: specs/spec-agent-tooling-migration.md
+flags:
+  local: true
