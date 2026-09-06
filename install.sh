@@ -7,6 +7,8 @@ set -euo pipefail
 
 REPO_URL="${DOTFILES_REPO_URL:-https://github.com/jaredtconnor/.dotfiles.git}"
 DOTFILES_DIR="$HOME/.dotfiles"
+PRIVATE_REPO_URL="${DOTFILES_PRIVATE_REPO_URL:-}"
+PRIVATE_DOTFILES_DIR="$HOME/.dotfiles-private"
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -19,6 +21,16 @@ fail() {
 }
 
 command_exists() { command -v "$1" &>/dev/null; }
+
+as_root() {
+    if [[ $EUID -eq 0 ]]; then
+        "$@"
+    elif command_exists sudo; then
+        sudo "$@"
+    else
+        fail "Root access is required to install system packages"
+    fi
+}
 
 # ---------------------------------------------------------------------------
 # OS detection
@@ -62,18 +74,37 @@ if [[ "$OS" == "darwin" ]]; then
     fi
 
 elif [[ "$OS" == "linux" ]]; then
-    if ! command_exists git || ! command_exists curl || ! dpkg -s build-essential &>/dev/null; then
-        info "Installing essentials via apt..."
-        sudo apt-get update -qq
-        sudo apt-get install -y -qq \
-            build-essential curl wget git tmux unzip locales \
-            libssl-dev zlib1g-dev libncurses5-dev libreadline-dev \
-            libsqlite3-dev libbz2-dev libffi-dev liblzma-dev tk-dev
+    distro=""
+    if [[ -r /etc/os-release ]]; then
+        distro="$(. /etc/os-release && printf '%s' "${ID:-}")"
     fi
+    case "$distro" in
+        alpine)
+            if ! command_exists git || ! command_exists curl || ! command_exists bash; then
+                info "Installing essentials via apk..."
+                as_root apk add --no-cache bash ca-certificates curl git openssh-client
+            fi
+            ;;
+        debian | ubuntu | linuxmint | pop)
+            if ! command_exists git || ! command_exists curl || ! dpkg -s build-essential &>/dev/null; then
+                info "Installing essentials via apt..."
+                as_root apt-get update -qq
+                as_root apt-get install -y -qq \
+                    build-essential curl wget git tmux unzip locales \
+                    libssl-dev zlib1g-dev libncurses5-dev libreadline-dev \
+                    libsqlite3-dev libbz2-dev libffi-dev liblzma-dev tk-dev
+            fi
 
-    sudo locale-gen en_US.UTF-8 2>/dev/null || true
-    sudo update-locale LANG=en_US.UTF-8 2>/dev/null || true
-    export LANG=en_US.UTF-8
+            as_root locale-gen en_US.UTF-8 2>/dev/null || true
+            as_root update-locale LANG=en_US.UTF-8 2>/dev/null || true
+            export LANG=en_US.UTF-8
+            ;;
+        *)
+            command_exists git || fail "git is required on unsupported Linux distribution '$distro'"
+            command_exists curl || fail "curl is required on unsupported Linux distribution '$distro'"
+            warn "Unknown Linux distribution '$distro'; using existing prerequisites"
+            ;;
+    esac
 
     if ! command_exists chezmoi; then
         info "Installing chezmoi..."
@@ -163,11 +194,21 @@ fi
 if [[ -d "$DOTFILES_DIR/.git" ]]; then
     if [[ -f "$DOTFILES_DIR/.chezmoiroot" ]]; then
         info "Chezmoi repo already at $DOTFILES_DIR -- pulling latest..."
-        git -C "$DOTFILES_DIR" pull --ff-only origin main 2>/dev/null || true
+        git -C "$DOTFILES_DIR" pull --ff-only origin main
     fi
 else
     info "Cloning $REPO_URL to $DOTFILES_DIR..."
     git clone "$REPO_URL" "$DOTFILES_DIR"
+fi
+
+if [[ -n "$PRIVATE_REPO_URL" ]]; then
+    if [[ -d "$PRIVATE_DOTFILES_DIR/.git" ]]; then
+        info "Private companion already at $PRIVATE_DOTFILES_DIR -- pulling latest..."
+        git -C "$PRIVATE_DOTFILES_DIR" pull --ff-only origin main
+    else
+        info "Cloning private companion to $PRIVATE_DOTFILES_DIR..."
+        git clone "$PRIVATE_REPO_URL" "$PRIVATE_DOTFILES_DIR"
+    fi
 fi
 
 info "Running chezmoi init --apply..."

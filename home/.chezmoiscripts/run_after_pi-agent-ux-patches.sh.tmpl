@@ -21,45 +21,36 @@ JSON
 # ---------------------------------------------------------------------------
 # Extensions: disable handoff (missing optional deps)
 # ---------------------------------------------------------------------------
-python3 - <<'PY'
-from __future__ import annotations
+node <<'JS'
+const fs = require("node:fs");
+const os = require("node:os");
+const path = require("node:path");
 
-import json
-from pathlib import Path
+const settingsPath = path.join(os.homedir(), ".pi", "agent", "settings.json");
+if (!fs.existsSync(settingsPath)) process.exit(0);
 
-settings_path = Path.home() / ".pi" / "agent" / "settings.json"
-if not settings_path.exists():
-    raise SystemExit(0)
+const data = JSON.parse(fs.readFileSync(settingsPath, "utf8"));
+const desiredPlain = "extensions";
+const desiredDisable = "-extensions/handoff/index.ts";
+const handoff = "extensions/handoff/index.ts";
 
-data = json.loads(settings_path.read_text())
+if (Array.isArray(data.extensions)) {
+  const cleaned = data.extensions.filter((entry) => {
+    if (typeof entry !== "string") return false;
+    const normalized = entry.replace(/\/+$/, "");
+    if (normalized === handoff) return false;
+    return !(!entry.startsWith("-") && normalized.replace(/^[!+-]+/, "") === handoff);
+  });
 
-desired_plain = "extensions"
-desired_disable = "-extensions/handoff/index.ts"
+  if (!cleaned.includes(desiredPlain)) cleaned.unshift(desiredPlain);
+  if (!cleaned.includes(desiredDisable)) cleaned.push(desiredDisable);
+  data.extensions = cleaned;
+} else {
+  data.extensions = [desiredPlain, desiredDisable];
+}
 
-extensions = data.get("extensions")
-if isinstance(extensions, list):
-    cleaned: list[str] = []
-    for e in extensions:
-        if not isinstance(e, str):
-            continue
-        # Drop any explicit enabling of handoff; re-add as disabled below.
-        if e.rstrip("/") == "extensions/handoff/index.ts":
-            continue
-        if e.lstrip("!+-").rstrip("/") == "extensions/handoff/index.ts" and not e.startswith("-"):
-            continue
-        cleaned.append(e)
-
-    if desired_plain not in cleaned:
-        cleaned.insert(0, desired_plain)
-    if desired_disable not in cleaned:
-        cleaned.append(desired_disable)
-
-    data["extensions"] = cleaned
-else:
-    data["extensions"] = [desired_plain, desired_disable]
-
-settings_path.write_text(json.dumps(data, indent=2) + "\n")
-PY
+fs.writeFileSync(settingsPath, `${JSON.stringify(data, null, 2)}\n`);
+JS
 
 # ---------------------------------------------------------------------------
 # tool-pills: local shims so the extension loads without npm

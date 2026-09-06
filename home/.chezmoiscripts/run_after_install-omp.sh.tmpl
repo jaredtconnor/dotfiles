@@ -25,10 +25,8 @@ OMP_BIN="${INSTALL_DIR}/omp"
 desired="${OMP_VERSION#v}"
 
 installed_version() {
-    local bin
-    bin="$(command -v omp 2>/dev/null || true)"
-    [[ -n "${bin}" ]] || return 0
-    "${bin}" --version 2>/dev/null | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1 || true
+    [[ -x "${OMP_BIN}" ]] || return 0
+    "${OMP_BIN}" --version 2>/dev/null | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1 || true
 }
 
 current="$(installed_version)"

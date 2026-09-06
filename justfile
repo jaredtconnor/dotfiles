@@ -16,22 +16,23 @@ default:
 
 # Apply chezmoi locally
 sync:
-    @cd ~/.dotfiles && git pull --ff-only origin main 2>/dev/null || true
-    @chezmoi init --source ~/.dotfiles
-    @chezmoi apply --refresh-externals
+    @~/.dotfiles/scripts/sync-chezmoi.sh
 
 # Apply chezmoi locally without prompting
 sync-force:
-    @cd ~/.dotfiles && git pull --ff-only origin main 2>/dev/null || true
-    @chezmoi init --no-tty --source ~/.dotfiles
-    @chezmoi apply --no-tty --force --refresh-externals
+    @~/.dotfiles/scripts/sync-chezmoi.sh --force
 
 # Force-apply locally then push to all remote hosts
 sync-all: sync-force
     #!/usr/bin/env bash
     hosts_file="{{ hosts_file }}"
+    sync_script="$HOME/.dotfiles/scripts/sync-chezmoi.sh"
     if [[ ! -f "$hosts_file" ]]; then
         echo "No hosts file at $hosts_file"
+        exit 1
+    fi
+    if [[ ! -f "$sync_script" ]]; then
+        echo "No sync helper at $sync_script"
         exit 1
     fi
     # Current host, lowercased short name -- skipped below since `sync-force`
@@ -53,7 +54,7 @@ sync-all: sync-force
             skip=$((skip + 1))
             continue
         fi
-        output=$(ssh -n "$host" 'export PATH="$HOME/.local/bin:/opt/homebrew/bin:/usr/local/bin:$PATH"; if [ ! -d "$HOME/.dotfiles/.git" ]; then echo "no ~/.dotfiles repo -- run install.sh on this host first"; exit 1; fi; cd "$HOME/.dotfiles" && git pull --ff-only origin main 2>/dev/null; chezmoi init --no-tty --source "$HOME/.dotfiles" 2>&1; chezmoi apply --no-tty --force --refresh-externals 2>&1' 2>&1)
+        output=$(ssh "$host" 'set -e; export PATH="$HOME/.local/bin:/opt/homebrew/bin:/usr/local/bin:$PATH"; if [ ! -d "$HOME/.dotfiles/.git" ]; then echo "no ~/.dotfiles repo -- run install.sh on this host first"; exit 1; fi; bash -s -- --force' < "$sync_script" 2>&1)
         rc=$?
         [[ -n "$output" ]] && echo "$output" | sed 's/^/  /'
         if [[ $rc -eq 0 ]]; then
@@ -66,14 +67,20 @@ sync-all: sync-force
     done < "$hosts_file"
     echo ""
     printf '\033[1;34mSummary: %d ok, %d failed, %d skipped, %d self\033[0m\n' "$ok" "$fail" "$skip" "$selfskip"
+    [[ $fail -eq 0 ]]
 
 # Force-apply chezmoi on one configured host (e.g. `just sync-host apollo`)
 sync-host HOST:
     #!/usr/bin/env bash
     hosts_file="{{ hosts_file }}"
+    sync_script="$HOME/.dotfiles/scripts/sync-chezmoi.sh"
     host="{{ HOST }}"
     if [[ ! -f "$hosts_file" ]]; then
         echo "No hosts file at $hosts_file"
+        exit 1
+    fi
+    if [[ ! -f "$sync_script" ]]; then
+        echo "No sync helper at $sync_script"
         exit 1
     fi
 
@@ -102,7 +109,7 @@ sync-host HOST:
         exit 1
     fi
 
-    output=$(ssh -n "$host" 'export PATH="$HOME/.local/bin:/opt/homebrew/bin:/usr/local/bin:$PATH"; if [ ! -d "$HOME/.dotfiles/.git" ]; then echo "no ~/.dotfiles repo -- run install.sh on this host first"; exit 1; fi; cd "$HOME/.dotfiles" && git pull --ff-only origin main 2>/dev/null; chezmoi init --no-tty --source "$HOME/.dotfiles" 2>&1; chezmoi apply --no-tty --force --refresh-externals 2>&1' 2>&1)
+    output=$(ssh "$host" 'set -e; export PATH="$HOME/.local/bin:/opt/homebrew/bin:/usr/local/bin:$PATH"; if [ ! -d "$HOME/.dotfiles/.git" ]; then echo "no ~/.dotfiles repo -- run install.sh on this host first"; exit 1; fi; bash -s -- --force' < "$sync_script" 2>&1)
     rc=$?
     [[ -n "$output" ]] && echo "$output"
     exit $rc
