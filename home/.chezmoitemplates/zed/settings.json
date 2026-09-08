@@ -35,6 +35,10 @@
             "type": "registry"
         },
         "omp": {
+            "default_config_options": {
+                "thinking": "high",
+                "mode": "plan"
+            },
             "type": "custom",
             "command": "/Users/jaredconnor/.bun/bin/omp",
             "args": ["acp"],

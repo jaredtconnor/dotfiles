@@ -78,11 +78,10 @@ printf 'Repositories:\n'
 sync_repo "dotfiles" "$DOTFILES_DIR"
 sync_repo "private companion" "$PRIVATE_DIR"
 
-init_args=(--source "$DOTFILES_DIR")
-apply_args=(--refresh-externals)
+init_args=(--no-tty --source "$DOTFILES_DIR")
+apply_args=(--no-tty --refresh-externals)
 if [[ "$FORCE" -eq 1 ]]; then
-    init_args=(--no-tty "${init_args[@]}")
-    apply_args=(--no-tty --force "${apply_args[@]}")
+    apply_args+=(--force)
 fi
 chezmoi init "${init_args[@]}"
 
