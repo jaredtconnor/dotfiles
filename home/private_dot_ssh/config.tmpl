@@ -209,7 +209,7 @@ Host {{ $forgejoHost }}
 Host {{ .name }}
     HostName {{ .hostname }}
     User {{ .user }}
-    IdentityFile ~/.ssh/{{ $homelabKey }}.pub
+    IdentityFile ~/.ssh/{{ (get . "identity") | default $homelabKey }}.pub
     IdentitiesOnly yes
 
 {{ end }}{{- end -}}
