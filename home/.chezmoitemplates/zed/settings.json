@@ -1,6 +1,8 @@
 {{- $zpriv := dict -}}
 {{- $zpf := joinPath .chezmoi.homeDir ".dotfiles-private" "data.yaml" -}}
 {{- if stat $zpf }}{{ $zpriv = (include $zpf | fromYaml) }}{{- end -}}
+{{- $ompCmd := joinPath .chezmoi.homeDir ".local" "bin" "omp" -}}
+{{- if eq .chezmoi.os "windows" }}{{ $ompCmd = joinPath .chezmoi.homeDir "AppData" "Local" "omp" "omp.exe" }}{{ end -}}
 // Zed settings
 //
 // For information on how to configure Zed, see the Zed
@@ -40,7 +42,7 @@
                 "mode": "plan"
             },
             "type": "custom",
-            "command": "/Users/jaredconnor/.bun/bin/omp",
+            "command": {{ $ompCmd | toJson }},
             "args": ["acp"],
             "env": {}
         }

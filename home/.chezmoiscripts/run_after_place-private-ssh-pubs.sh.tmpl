@@ -1,5 +1,5 @@
 {{- $d := joinPath .chezmoi.homeDir ".dotfiles-private" "ssh" -}}
-{{- if stat $d -}}
+{{- if and (ne .chezmoi.os "windows") (stat $d) -}}
 #!/usr/bin/env bash
 # Place public-key hints from the private companion into ~/.ssh. These are only
 # hints so the 1Password agent offers the right key (avoids the six-key limit);
