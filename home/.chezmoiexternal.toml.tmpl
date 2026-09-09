@@ -70,21 +70,24 @@
     refreshPeriod = "720h"
 
 # -----------------------------------------------------------------------------
-# Tool-specific agent runtimes
+# Tool-specific agent runtimes + AI tooling. Both live on the private forgejo,
+# so they only apply when a private companion supplies forgejo_base. A public
+# checkout (no companion, and typically no network route to forgejo) skips
+# them instead of rendering a broken "/agent-tooling.git" URL. Repos keep their
+# natural checkout paths; the mirror script flat-links reusable pieces into
+# agent runtime directories.
 # -----------------------------------------------------------------------------
+{{ if .forgejo_base -}}
 [".pi/agent"]
     type = "git-repo"
     url = "{{ .forgejo_base }}/pi-agent-setup.git"
     refreshPeriod = "168h"
 
-# -----------------------------------------------------------------------------
-# AI tooling. Repos keep their natural checkout paths; the mirror script
-# flat-links reusable pieces into agent runtime directories.
-# -----------------------------------------------------------------------------
 [".agent-tooling"]
     type = "git-repo"
     url = "{{ .forgejo_base }}/agent-tooling.git"
     refreshPeriod = "168h"
+{{- end }}
 
 # -----------------------------------------------------------------------------
 # External skill packs. The registry is owned by agent-tooling
