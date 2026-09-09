@@ -53,4 +53,5 @@ sourceDir = {{ joinPath .chezmoi.homeDir ".dotfiles" | quote }}
     work_email = {{ get $id "work_email" | default "" | quote }}
     work_hostname = {{ $workHostname | quote }}
     forgejo_base = {{ get $id "forgejo_base" | default "" | quote }}
+    forgejo_host = {{ get $id "forgejo_host" | default "" | quote }}
     work_git_org = {{ get $id "work_git_org" | default "" | quote }}

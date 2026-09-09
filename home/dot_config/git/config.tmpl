@@ -80,8 +80,13 @@
     autoSetupMerge = true
 
 [credential]
-    helper = cache
+    helper = {{ if eq .chezmoi.os "windows" }}manager{{ else }}cache{{ end }}
 
+{{ if and (eq .chezmoi.os "windows") .forgejo_host -}}
+[credential "https://{{ .forgejo_host }}"]
+    provider = generic
+
+{{ end -}}
 [pack]
     windowMemory = 32m
 
